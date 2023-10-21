@@ -19,6 +19,8 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import de.fh_muenster.blackboard.Blackboard;
+
 /**
  *
  */
@@ -84,8 +86,8 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(AssignNode n) {
-		// TODO
-		throw new IllegalStateException("not implemented yet");
+		Blackboard blackboard = Blackboard.getInstance();
+		return blackboard.answer(Double.class, n.toString());
 	}
 
 	/**
@@ -95,8 +97,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(Label n) {
-		// TODO
-		throw new IllegalStateException("not implemented yet");
+		return Double.valueOf(n.toString());
 	}
 
 }
