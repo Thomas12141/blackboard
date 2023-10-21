@@ -51,7 +51,7 @@ unit-test-job:   # This job runs in the test stage.
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
-  script: gradle --build-cache publishToMavenLocal -x build -x test 
+  script: gradle --build-cache -x build -x test
   cache: 
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
