@@ -1,4 +1,4 @@
-# blackboard
+# Blackboard
 
 
 
@@ -15,14 +15,14 @@ Already a pro? Just edit this README.md and make it your own. Want to make it ea
 
 ```
 cd existing_repo
-git remote add origin https://git.fh-muenster.de/ci-hpk/niko/blackboard.git
+git remote add origin https://git.fh-muenster.de/dv052777/blackboard.git
 git branch -M main
 git push -uf origin main
 ```
 
 ## Integrate with your tools
 
-- [ ] [Set up project integrations](https://git.fh-muenster.de/ci-hpk/niko/blackboard/-/settings/integrations)
+- [ ] [Set up project integrations](https://git.fh-muenster.de/dv052777/blackboard/-/settings/integrations)
 
 ## Collaborate with your team
 
