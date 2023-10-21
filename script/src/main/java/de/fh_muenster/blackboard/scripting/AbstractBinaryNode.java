@@ -28,8 +28,8 @@ import java.util.List;
 abstract class AbstractBinaryNode<D> extends AstNode<D> {
 
 	/**
-	 * @param id   of the variable to the left
-	 * @param expr expression of the right side
+	 * @param lhs   of the variable to the left
+	 * @param rhs expression of the right side
 	 */
 	AbstractBinaryNode(AST<?> lhs, D data, AST<?> rhs) {
 		super(null, data);
