@@ -1,0 +1,4 @@
+##
+## blackboard implementations to be found by the reflection API
+##
+de.fh_muenster.blackboard.internal.BasicBlackboard

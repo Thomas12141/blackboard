@@ -1,0 +1,61 @@
+image: gradle:8.4-jdk20   #  still no gcc
+# image: gradle:8.3-jdk19 #  not existent 
+# image: gradle:8.4-jdk19 #  not existent
+# image: gradle:8.3-jdk17 # runing but old versions
+# =========================================================== #
+# GitLab CI/CD configuration of N. Wulff for HPK-WiSe23/24    #
+# =========================================================== #
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  ## install a C++ compiler missing in the docker image
+  ## - apt-get update -yqq
+  ## - apt-get install -yqq --no-install-recommends g++
+
+
+stages:          # List of stages for jobs, and their order of execution
+  - build
+  - test
+  - deploy
+
+build-job:       # This job runs in the build stage, which runs first.
+  stage: build
+  script: gradle --build-cache clean build -x test
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - gradle
+      - .gradle
+
+unit-test-job:   # This job runs in the test stage.
+  stage: test
+  script: gradle --build-cache test -x build
+  artifacts:   # export test-results to GitLab
+    reports:
+      junit: 
+        -  analysis/build/test-results/test/TEST-*.xml  
+        -  blackboard/build/test-results/test/TEST-*.xml  
+        -  javaccparser/build/test-results/test/TEST-*.xml  
+        -  script/build/test-results/test/TEST-*.xml  
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - gradle
+      - .gradle
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  script: gradle --build-cache publishToMavenLocal -x build -x test 
+  cache: 
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+       - build
+       - gradle
+       - .gradle
