@@ -68,6 +68,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case DIVIDE:
 				ret = ls / rs;
 				break;
+			case POWER:
+				ret = Math.pow(ls, rs);
+				break;
 			default:
 				throw new IllegalArgumentException("unkown operation: " + op);
 		}

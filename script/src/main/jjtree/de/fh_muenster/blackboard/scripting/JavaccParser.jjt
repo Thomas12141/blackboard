@@ -140,7 +140,7 @@ protected AST<?> assignment(): {
 protected AST<?> expr(): {
   AST<?> n=null, m = null;
   Token op=null;}
-{  
+{  // TODO more arithmetic operations are missing with appropriate  rang.
   ( n = secondLevelExpr()
       (   (op=< PLUS > |op=< MINUS > ) m=secondLevelExpr()
           {
@@ -157,8 +157,24 @@ protected AST<?> secondLevelExpr(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
+  ( n = thirdLevelExpr()
+      (   (op=< TIMES > |op=< DIVIDE >) m=thirdLevelExpr()
+          {
+              n = node(n,op.image,m);
+          }
+      )*
+  )
+   {
+	return n;
+   }
+}
+
+protected AST<?> thirdLevelExpr(): {
+  AST<?> n=null, m = null;
+  Token op=null;}
+{
   ( n = leaf()
-      (   (op=< TIMES > |op=< DIVIDE >) m=leaf()
+      (   (op= <POWER> ) m=leaf()
           {
               n = node(n,op.image,m);
           }

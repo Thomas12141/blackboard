@@ -19,36 +19,21 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import java.util.Objects;
-
 /**
- * Enumeration of mathematical operations.
+ * Power operation node
  */
-public enum Operation {
-
-	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**");
-
-	Operation(String s) {
-		op = Objects.requireNonNull(s, "op is null");
+public class PowerNode extends OperationNode {
+	PowerNode(AST<?> left, AST<?> right) {
+		super(left, Operation.POWER, right);
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see @see java.lang.Enum#toString()
+	 * @see AST#accept(AstVisitor)
 	 */
 	@Override
-	public String toString() {
-		return op;
+	public <V> V accept(AstVisitor<V> visitor) {
+		return visitor.visit(this);
 	}
-
-	public static Operation of(String op) {
-		for (Operation o : values()) {
-			if (o.op.equals(op))
-				return o;
-		}
-		throw new IllegalArgumentException("no operation: " + op);
-	}
-
-	private String op;
 }
