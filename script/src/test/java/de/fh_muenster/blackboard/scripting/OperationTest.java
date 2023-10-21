@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 class OperationTest {
 
 	/**
-	 * @throws java.lang.Exception
+	 * @throws java.lang.Exception throw an exeption
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
