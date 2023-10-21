@@ -22,7 +22,7 @@ stages:          # List of stages for jobs, and their order of execution
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
-  script: gradle --build-cache clean linkDebug linkRelease build -x test
+  script: gradle --build-cache clean build -x test
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
