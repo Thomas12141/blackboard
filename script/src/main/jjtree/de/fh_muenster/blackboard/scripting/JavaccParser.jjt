@@ -140,14 +140,30 @@ protected AST<?> assignment(): {
 protected AST<?> expr(): {
   AST<?> n=null, m = null;
   Token op=null;}
-{  // TODO more arithmetic operations are missing with appropriate  rang.
-  ( n = leaf()
-      (   (op=< PLUS > |op=< MINUS > |op=< TIMES > |op=< DIVIDE >) m=leaf()
+{  
+  ( n = secondLevelExpr()
+      (   (op=< PLUS > |op=< MINUS > ) m=secondLevelExpr()
           {
               n = node(n,op.image,m);
           }
       )* 
   ) 
+   {
+	return n;
+   }
+}
+
+protected AST<?> secondLevelExpr(): {
+  AST<?> n=null, m = null;
+  Token op=null;}
+{
+  ( n = leaf()
+      (   (op=< TIMES > |op=< DIVIDE >) m=leaf()
+          {
+              n = node(n,op.image,m);
+          }
+      )*
+  )
    {
 	return n;
    }

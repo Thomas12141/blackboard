@@ -70,7 +70,6 @@ class ValueVisitorTest {
 
 	@Test
 	@Timeout(2)
-	@Disabled
 	void testArithmetic() throws Exception {
 		String task = "  7.5 + 3 * 5 - 2.25";
 		double expected = 20.25;

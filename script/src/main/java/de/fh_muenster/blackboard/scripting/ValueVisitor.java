@@ -20,13 +20,13 @@
 package de.fh_muenster.blackboard.scripting;
 
 /**
- * 
+ *
  */
 public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.LongValue)
 	 */
 	@Override
@@ -36,7 +36,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.DoubleValue)
 	 */
 	@Override
@@ -46,7 +46,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.OperationNode)
 	 */
 	@Override
@@ -56,19 +56,27 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		double rs = n.right().accept(this);
 		Operation op = n.data();
 		switch (op) {
-		case PLUS:
-			ret = ls + rs;
-			break;
-		// TODO rest of the operations missing
-		default:
-			throw new IllegalArgumentException("unkown operation: " + op);
+			case PLUS:
+				ret = ls + rs;
+				break;
+			case MINUS:
+				ret = ls - rs;
+				break;
+			case TIMES:
+				ret = ls * rs;
+				break;
+			case DIVIDE:
+				ret = ls / rs;
+				break;
+			default:
+				throw new IllegalArgumentException("unkown operation: " + op);
 		}
 		return ret;
 	}
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.AssignNode)
 	 */
 	@Override
@@ -79,7 +87,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.Label)
 	 */
 	@Override
