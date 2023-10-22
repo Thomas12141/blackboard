@@ -87,7 +87,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	@Override
 	public Double visit(AssignNode n) {
 		Blackboard blackboard = Blackboard.getInstance();
-		return blackboard.answer(Double.class, n.toString());
+		return blackboard.answer(Double.class, n.expr());
 	}
 
 	/**
@@ -97,7 +97,12 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(Label n) {
-		return Double.valueOf(n.toString());
+		Blackboard blackboard = Blackboard.getInstance();
+		AST<?> parentNode = n.parent();
+		if(!(parentNode instanceof AssignNode)){
+			throw new IllegalArgumentException("Es ist keine richtige Zuweisung.");
+		}
+		return blackboard.answer(Double.class, ((AssignNode)parentNode).expr());
 	}
 
 }
