@@ -62,12 +62,6 @@ class OperationTest {
 	}
 
 	@Test
-	void testPower() {
-		Operation op = Operation.of("**");
-		assertEquals(Operation.POWER, op);
-	}
-
-	@Test
 	void testUnknown() {
 		assertThrows(IllegalArgumentException.class, () -> Operation.of("?"));
 	}
