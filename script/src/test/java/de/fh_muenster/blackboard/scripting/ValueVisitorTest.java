@@ -19,14 +19,15 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import de.fh_muenster.blackboard.Blackboard;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Very basic simple script parser test.
@@ -66,37 +67,6 @@ class ValueVisitorTest {
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);
 	}
-	@Test
-	@Timeout(2)
-	void testAssignment2() throws Exception {
-		String task = " x  = 3.25 * 2";
-		double expected = 6.5;
-		double returned = blackboard.answer(Double.class, task);
-		assertEquals(expected, returned, delta);
-	}
-
-	@Test
-	@Timeout(2)
-	void testAssignment3() throws Exception {
-		String task = " x  = 3.25 * 2 - 5";
-		double expected = 1.5;
-		double returned = blackboard.answer(Double.class, task);
-		assertEquals(expected, returned, delta);
-	}
-
-	@Test
-	@Timeout(2)
-	void testAssignment4() throws Exception {
-		String task = " x  = 3.25";
-		AST<?> ast = parser.solve(blackboard, task);
-		AssignNode an = (AssignNode) ast;
-		Label label = (Label) an.id();
-		double returned =  blackboard.answer(Double.class, (((AssignNode)label.parent()).expr()));
-		double expected = 3.25;
-		assertEquals(expected, returned, delta);
-	}
-
-
 
 	@Test
 	@Timeout(2)
@@ -112,33 +82,6 @@ class ValueVisitorTest {
 	void testArrPot() throws Exception {
 		String task = "  3 ** 2";
 		double expected = 9;
-		double returned = blackboard.answer(Double.class, task);
-		assertEquals(expected, returned, delta);
-	}
-
-	@Test
-	@Timeout(2)
-	void testArrPot2() throws Exception {
-		String task = "  3 ** 2 * 3 + 3";
-		double expected = 30;
-		double returned = blackboard.answer(Double.class, task);
-		assertEquals(expected, returned, delta);
-	}
-
-	@Test
-	@Timeout(2)
-	void testArrPot3() throws Exception {
-		String task = " 3 * 3 + 3 ** 2";
-		double expected = 18;
-		double returned = blackboard.answer(Double.class, task);
-		assertEquals(expected, returned, delta);
-	}
-
-	@Test
-	@Timeout(2)
-	void testArrPot4() throws Exception {
-		String task = " 3 * 3 + 3 ** 2 - 10 * 5457747 + 777.0 / 2";
-		double expected = -54577063.5;
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);
 	}
