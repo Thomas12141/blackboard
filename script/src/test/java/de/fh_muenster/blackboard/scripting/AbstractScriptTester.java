@@ -35,6 +35,7 @@ import de.fh_muenster.blackboard.Blackboard;
 /**
  * Base class for the test of the blackboard script module as of exam II.
  */
+
 public abstract class AbstractScriptTester {
 	protected static Blackboard blackboard;
 	protected boolean useLogging = true;
