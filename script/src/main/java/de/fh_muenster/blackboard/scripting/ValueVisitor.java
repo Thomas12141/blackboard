@@ -68,6 +68,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				ret = ls * rs;
 				break;
 			case DIVIDE:
+				if(rs==0){
+					throw new IllegalArgumentException("division by zero");
+				}
 				ret = ls / rs;
 				break;
 			case POWER:
