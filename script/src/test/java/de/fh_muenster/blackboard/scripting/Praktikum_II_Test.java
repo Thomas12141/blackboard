@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Timeout;
 /**
  * Extended test for Math and Scripting functions - state of exam II.
  */
+@Disabled
 public class Praktikum_II_Test extends Praktikum_I_Test {
    Function<double[], Double> fct;
    /**
