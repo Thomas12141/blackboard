@@ -73,10 +73,10 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				}
 				ret = ls / rs;
 				break;
-			case POWER:
+			case POWER, POWERCaret:
 				ret = Math.pow(ls, rs);
 				break;
-			default:
+            default:
 				throw new IllegalArgumentException("unkown operation: " + op);
 		}
 		return ret;

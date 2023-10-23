@@ -175,7 +175,7 @@ protected AST<?> thirdLevelExpr(): {
   Token op=null;}
 {
   ( n = leaf()
-      (   (op= <POWER> ) m=leaf()
+      (   (op= <POWER>) m=leaf()
           {
               n = node(n,op.image,m);
           }

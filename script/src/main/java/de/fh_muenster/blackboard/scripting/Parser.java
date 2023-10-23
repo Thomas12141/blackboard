@@ -159,6 +159,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new DivideNode(ls, rs);
 			case POWER:
 				return new PowerNode(ls, rs);
+			case POWERCaret:
+				return new PowerCaretNode(ls, rs);
 		default:
 			throw new IllegalArgumentException("unknown operation: " + s);
 		}

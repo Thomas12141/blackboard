@@ -85,4 +85,13 @@ class ValueVisitorTest {
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);
 	}
+
+	@Test
+	@Timeout(2)
+	void testPowerCaret() throws Exception {
+		String task = "  3 ^ 2";
+		double expected = 9;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
 }
