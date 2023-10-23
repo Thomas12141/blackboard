@@ -56,6 +56,8 @@ public class JavaccParser extends Parser {
 		} catch (ParseException e) {
 			//e.printStackTrace();
 			throw new IllegalArgumentException(stm);
+		}catch (TokenMgrError e){
+            throw new IllegalArgumentException(stm);
 		}
 		return ret;
 	}  
@@ -122,6 +124,9 @@ protected AST<?> statement(): {
   (   // TODO functions are missing
       LOOKAHEAD(3) n = assignment()
     | LOOKAHEAD(2) n = expr()
+    (<SEMI>
+      LOOKAHEAD(3) n = assignment()
+    | LOOKAHEAD(2) n = expr())*
 
   )
   {
@@ -186,6 +191,17 @@ protected AST<?> thirdLevelExpr(): {
    }
 }
 
+protected AST<?> bracketExpr(): {
+  AST<?> n=null;
+  Token op=null;}
+{
+  ( <LPARA> n = expr() <RPARA>
+  )
+   {
+	return n;
+   }
+}
+
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
@@ -193,6 +209,7 @@ protected AST<?> leaf(): {
   ( n = id()
   | n = integer()
   | n = floating()
+  | n = bracketExpr()
   ) 
    {
 	return n;

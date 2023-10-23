@@ -24,7 +24,7 @@ package de.fh_muenster.blackboard.scripting;
  */
 public class PowerCaretNode extends OperationNode {
 	PowerCaretNode(AST<?> left, AST<?> right) {
-		super(left, Operation.POWERCaret, right);
+		super(left, Operation.POWERCARET, right);
 	}
 
 	/**

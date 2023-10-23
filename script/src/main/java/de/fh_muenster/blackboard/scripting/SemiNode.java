@@ -19,36 +19,21 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import java.util.Objects;
-
 /**
- * Enumeration of mathematical operations.
+ * Divide operation node
  */
-public enum Operation {
+public class SemiNode extends OperationNode {
+    SemiNode(AST<?> left, AST<?> right) {
+        super(left, Operation.SEMI, right);
+    }
 
-	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**"), POWERCARET("^"), SEMI(";");
-
-	Operation(String s) {
-		op = Objects.requireNonNull(s, "op is null");
-	}
-
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see @see java.lang.Enum#toString()
-	 */
-	@Override
-	public String toString() {
-		return op;
-	}
-
-	public static Operation of(String op) {
-		for (Operation o : values()) {
-			if (o.op.equals(op))
-				return o;
-		}
-		throw new IllegalArgumentException("no operation: " + op);
-	}
-
-	private String op;
+    /**
+     * (non-Javadoc)
+     *
+     * @see AST#accept(AstVisitor)
+     */
+    @Override
+    public <V> V accept(AstVisitor<V> visitor) {
+        return visitor.visit(this);
+    }
 }

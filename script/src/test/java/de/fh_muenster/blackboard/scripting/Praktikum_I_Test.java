@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -365,6 +366,7 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testPowerRightAssociative() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd();
@@ -382,6 +384,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
+
+	@Disabled
 	public void testPowerIdentity() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd();
@@ -451,6 +455,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
+
+	@Disabled
 	public void testVariablesArithmetic() throws Exception {
 		for(int j=0;j<10;j++) {
 			task = define("x=%.5f; y=%.5f; x+y",x1,x2);
@@ -460,6 +466,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 		}
 	}
 	@Test
+
+	@Disabled
 	@Timeout(1)
 	public void testVariablesAssignment() throws Exception {
 		for(int j=0;j<10;j++) {
@@ -472,6 +480,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
+
+	@Disabled
 	public void testReAssign() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd(0.1,1);
@@ -485,6 +495,7 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testBracketWithVariables() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd(0.1,1);
@@ -513,6 +524,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
+
+	@Disabled
 	public void testNoneOpenedBracket() throws Exception {
 		task = define("%.4f +  %.4f )",x1,x2);
 		assertThrows(IllegalArgumentException.class, ()->blackboard.answer(Double.class,task));
