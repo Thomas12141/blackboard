@@ -19,15 +19,14 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import de.fh_muenster.blackboard.Blackboard;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Very basic simple script parser test.
@@ -85,4 +84,64 @@ class ValueVisitorTest {
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);
 	}
+
+	@Test
+	@Timeout(2)
+	void testPowerCaret() throws Exception {
+		String task = "  3 ^ 2 ";
+		double expected = 9;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testPowerCaret2() throws Exception {
+		String task = "  3 ^ 2 - 2";
+		double expected = 7;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testMinus() throws Exception {
+		String task = "  2 - 2";
+		double expected = 0;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testDivide() throws Exception {
+		String task = "  0 / 2";
+		double expected = 0;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testDivideByZero() throws Exception {
+		String task = "  5 / 0";
+		try  {
+			blackboard.answer(Double.class, task);
+			fail("division by zero not detected");
+		} catch(IllegalArgumentException e) {
+			assertTrue(e.getMessage().contains("division by zero"));
+		} catch(Exception e) {
+			fail("wrong exception thrown " + e);
+		}
+	}
+
+	@Test
+	@Timeout(2)
+	void testMore() throws Exception {
+		String task = " 1 + 4    *  3.2";
+		double expected = 13.8;
+		double returned = blackboard.answer(Double.class, task);
+	}
+
 }
+

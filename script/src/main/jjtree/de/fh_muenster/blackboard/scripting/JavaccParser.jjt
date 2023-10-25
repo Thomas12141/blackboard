@@ -56,6 +56,8 @@ public class JavaccParser extends Parser {
 		} catch (ParseException e) {
 			//e.printStackTrace();
 			throw new IllegalArgumentException(stm);
+		}catch (TokenMgrError e){
+            throw new IllegalArgumentException(stm);
 		}
 		return ret;
 	}  
@@ -63,7 +65,7 @@ public class JavaccParser extends Parser {
 
 PARSER_END(JavaccParser)
 
-
+// Token, welche ignoriert werden sollen
 SKIP :
 {
   " "
@@ -74,6 +76,7 @@ SKIP :
 | <"/*" (~["*"])* "*" (~["/"] (~["*"])* "*")* "/">
 }
 
+// Token, welche im Parser verwendet werden
 TOKEN : /* LITERALS */
 {  
   < INTEGER_LITERAL:  (
@@ -122,6 +125,9 @@ protected AST<?> statement(): {
   (   // TODO functions are missing
       LOOKAHEAD(3) n = assignment()
     | LOOKAHEAD(2) n = expr()
+    (<SEMI>
+      LOOKAHEAD(3) n = assignment()
+    | LOOKAHEAD(2) n = expr())*
 
   )
   {
@@ -175,11 +181,22 @@ protected AST<?> thirdLevelExpr(): {
   Token op=null;}
 {
   ( n = leaf()
-      (   (op= <POWER> ) m=leaf()
+      (   (op= <POWER>) m=leaf()
           {
               n = node(n,op.image,m);
           }
       )*
+  )
+   {
+	return n;
+   }
+}
+
+protected AST<?> bracketExpr(): {
+  AST<?> n=null;
+  Token op=null;}
+{
+  ( <LPARA> n = expr() <RPARA>
   )
    {
 	return n;
@@ -193,6 +210,7 @@ protected AST<?> leaf(): {
   ( n = id()
   | n = integer()
   | n = floating()
+  | n = bracketExpr()
   ) 
    {
 	return n;

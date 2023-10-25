@@ -73,10 +73,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				}
 				ret = ls / rs;
 				break;
-			case POWER:
+			case POWER, POWERCARET:
 				ret = Math.pow(ls, rs);
+				if(Double.isNaN(ret)){
+					throw new IllegalArgumentException("complex number");
+				}
 				break;
-			default:
+            default:
 				throw new IllegalArgumentException("unkown operation: " + op);
 		}
 		return ret;

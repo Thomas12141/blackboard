@@ -65,4 +65,31 @@ class StringVisitorTest {
 		String expected = task.replace(" ", "");
 		assertEquals(expected, returned);
 	}
+
+	@Test
+	@Timeout(2)
+	void testMinus() throws Exception {
+		String task = "  4    -  3.2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testDivide() throws Exception {
+		String task = "  4    /  3.2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testTimes() throws Exception {
+		String task = " 4    *  3.2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
 }

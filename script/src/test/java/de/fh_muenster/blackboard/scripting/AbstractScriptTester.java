@@ -94,7 +94,6 @@ public abstract class AbstractScriptTester {
 	 * Test of the internal round operation.
 	 */
 	@Test
-    @Disabled
 	final void testInternalRound() {
 	    assertEquals(0.25,round(0.249999,2),0.0001);
 	    assertEquals(0.25,round(0.249,2),0.0001);
@@ -133,7 +132,6 @@ public abstract class AbstractScriptTester {
 	 * Test of the internal random number generation.
 	 */
 	@Test
-    @Disabled
 	final void testInternalRnd() {
 		double x;
 		for(int j=0;j<100;j++) {
@@ -149,7 +147,6 @@ public abstract class AbstractScriptTester {
 	 * Test of the internal random number generation.
 	 */
 	@Test
-    @Disabled
 	final void testInternalRndMinMax() {
 		double x;
 		double min = -10;
