@@ -366,7 +366,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testPowerRightAssociative() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd();
@@ -384,8 +383,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
-
-	@Disabled
 	public void testPowerIdentity() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd();
@@ -443,6 +440,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
+
+	@Disabled
 	public void testAssignmentVariable() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd(-1,1);
@@ -455,7 +454,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
-
 	@Disabled
 	public void testVariablesArithmetic() throws Exception {
 		for(int j=0;j<10;j++) {
@@ -512,11 +510,11 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	public void testOpenBracket() throws Exception {
 		task = define(" ( %.4f +  %.4f",x1,x2);
 		try  {
-			blackboard.answer(Double.class, task);
+			Double result = blackboard.answer(Double.class, task);
 		    fail("open bracket not detected");
 		} catch(IllegalArgumentException e) {
 			// ok
-			// log("e: %s",e);
+			log("e: %s",e);
 		} catch(Exception e) {
 			fail("wrong exception thrown " + e);
 		}
@@ -524,8 +522,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
-
-	@Disabled
 	public void testNoneOpenedBracket() throws Exception {
 		task = define("%.4f +  %.4f )",x1,x2);
 		assertThrows(IllegalArgumentException.class, ()->blackboard.answer(Double.class,task));

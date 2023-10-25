@@ -129,7 +129,7 @@ protected AST<?> statement(): {
       LOOKAHEAD(3) n = assignment()
     | LOOKAHEAD(2) n = expr())*
 
-  )
+  )<EOF>
   {
     return n;
   }
@@ -181,7 +181,7 @@ protected AST<?> thirdLevelExpr(): {
   Token op=null;}
 {
   ( n = leaf()
-      (   (op= <POWER>) m=leaf()
+      (   (op= <POWER>) m=thirdLevelExpr()
           {
               n = node(n,op.image,m);
           }
