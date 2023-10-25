@@ -105,6 +105,9 @@ abstract class AstNode<T> implements AST<T> {
 	 */
 	@Override
 	public final boolean equals(final Object obj) {
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
 		boolean ret = false;
 		if (obj instanceof AstNode<?> that) {
 			ret = (null == parent) ? (null == that.parent) : parent.equals(that.parent);
