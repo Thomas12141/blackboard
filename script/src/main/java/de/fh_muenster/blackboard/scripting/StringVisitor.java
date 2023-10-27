@@ -74,4 +74,19 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 		return String.format("%s%s%s", n.left(), n.data(), n.right());
 	}
 
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AstVisitor#visit(de.fh_muenster.blackboard.scripting.AssignNode)
+	 */
+	@Override
+	public String visit(UnaryOperationNode n) {
+		return String.format("%s(%s)",  n.data(), n.child());
+	}
+
+	@Override
+	public String visit(SemiNode n) {
+		return String.format("%s%s%s", n.right(),  n.data(), n.left());
+	}
+
 }

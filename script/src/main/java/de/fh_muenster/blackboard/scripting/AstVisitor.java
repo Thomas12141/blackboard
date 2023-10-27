@@ -71,4 +71,6 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
 	 * @return V value
 	 */
 	V visit(UnaryOperationNode n);
+
+    V visit(SemiNode n);
 }

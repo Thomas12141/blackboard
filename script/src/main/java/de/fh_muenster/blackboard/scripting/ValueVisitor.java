@@ -111,6 +111,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return ret;
 	}
 
+	@Override
+	public Double visit(SemiNode n) {
+		double ls = n.left().accept(this);
+		double rs = n.right().accept(this);
+		return rs;
+	}
+
 
 	/**
 	 * (non-Javadoc)
@@ -126,5 +133,4 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		return blackboard.answer(Double.class, ((AssignNode)parentNode).expr());
 	}
-
 }

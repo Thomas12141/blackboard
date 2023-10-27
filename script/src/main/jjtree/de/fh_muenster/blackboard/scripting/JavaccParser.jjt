@@ -115,24 +115,28 @@ TOKEN : {  < TIMES : "*" > }
 TOKEN : {  < DIVIDE: "/" > }  
 TOKEN : {  < POWER : "^" | "**" > }  
 TOKEN : {  < LPARA : "(" > }  
-TOKEN : {  < RPARA : ")" > }  
+TOKEN : {  < RPARA : ")" > }
+TOKEN : {  < SIN : "sin" > }
 
 
 /** statement. */
 protected AST<?> statement(): {
-  AST<?> n=null;}
+  AST<?> n=null; AST<?> m=null;}
 {
   (   // TODO functions are missing
+
       LOOKAHEAD(3) n = assignment()
     | LOOKAHEAD(2) n = expr()
     (<SEMI>
-      LOOKAHEAD(3) n = assignment()
-    | LOOKAHEAD(2) n = expr())*
+      LOOKAHEAD(3) m = assignment()
+    | LOOKAHEAD(2) m = expr())*
 
   )<EOF>
   {
+    if(m!=null){
+    return node(n, ";",m);}
     return n;
-  }
+    }
 }
 
 /** assignment. */
@@ -180,7 +184,7 @@ protected AST<?> thirdLevelExpr(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
-  ( n = leaf()
+  ( n = fourthLevelExpr()
       (   (op= <POWER>) m=thirdLevelExpr()
           {
               n = node(n,op.image,m);
@@ -192,9 +196,15 @@ protected AST<?> thirdLevelExpr(): {
    }
 }
 
+protected AST<?> fourthLevelExpr():{
+    AST<?> n = null;}{
+   ( n = sinExpr()
+      | n = bracketExpr()
+      | n = leaf())
+  {return n;}
+}
 protected AST<?> bracketExpr(): {
-  AST<?> n=null;
-  Token op=null;}
+  AST<?> n=null;}
 {
   ( <LPARA> n = expr() <RPARA>
   )
@@ -203,15 +213,24 @@ protected AST<?> bracketExpr(): {
    }
 }
 
+protected AST<?> sinExpr(): {
+  AST<?> n=null;}
+{
+   (<SIN> <LPARA> n = expr() <RPARA>)
+   {
+	return node(n, "sin");
+   }
+}
+
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
-  ( n = id()
-  | n = integer()
+  (  n = integer()
   | n = floating()
-  | n = bracketExpr()
-  ) 
+   | n = id()
+
+  )
    {
 	return n;
    }
