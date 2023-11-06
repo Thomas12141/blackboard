@@ -107,7 +107,7 @@ TOKEN : /* IDENTIFIERS */
   < #DIGIT: ["0"-"9"] >
 }
 
-TOKEN : {  < ASSIGN: "=" > }  
+TOKEN : {  < ASSIGN: "=" > }
 TOKEN : {  < SEMI  : ";" > }  
 TOKEN : {  < PLUS  : "+" > }  
 TOKEN : {  < MINUS : "-" > }  
@@ -123,18 +123,12 @@ TOKEN : {  < SIN : "sin" > }
 protected AST<?> statement(): {
   AST<?> n=null; AST<?> m=null;}
 {
-  (   // TODO functions are missing
-
-      LOOKAHEAD(3) n = assignment()
-    | LOOKAHEAD(2) n = expr()
-    (<SEMI>
-      LOOKAHEAD(3) m = assignment()
-    | LOOKAHEAD(2) m = expr())*
-
-  )<EOF>
+  ( LOOKAHEAD(3) n = assignment()
+       | LOOKAHEAD(2) n = expr())
+  (<SEMI>
+         (m = statement() {n=node(n, ";",m);}))*<EOF>
   {
-    if(m!=null){
-    return node(n, ";",m);}
+
     return n;
     }
 }
@@ -216,7 +210,7 @@ protected AST<?> bracketExpr(): {
 protected AST<?> sinExpr(): {
   AST<?> n=null;}
 {
-   (<SIN> <LPARA> n = expr() <RPARA>)
+   <SIN> <LPARA> n = expr() <RPARA>
    {
 	return node(n, "sin");
    }

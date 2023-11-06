@@ -113,7 +113,6 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(SemiNode n) {
-		double ls = n.left().accept(this);
 		double rs = n.right().accept(this);
 		return rs;
 	}
@@ -127,10 +126,35 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	@Override
 	public Double visit(Label n) {
 		Blackboard blackboard = Blackboard.getInstance();
-		AST<?> parentNode = n.parent();
-		if(!(parentNode instanceof AssignNode)){
-			throw new IllegalArgumentException("Es ist keine richtige Zuweisung.");
+
+		if(n.parent() instanceof AssignNode){
+			return blackboard.answer(Double.class, ((AssignNode)n.parent()).expr());
 		}
-		return blackboard.answer(Double.class, ((AssignNode)parentNode).expr());
+		return blackboard.answer(Double.class, needleInHaystack(n));
+	}
+
+
+	private Label needleInHaystack(Label needle){
+		AST<?> iterator = needle.parent();
+		while (iterator!=null){
+			if (iterator instanceof SemiNode) {
+				iterator = ((SemiNode) iterator).left();
+				if(( iterator) instanceof AssignNode){
+					iterator = ((AssignNode) iterator).left();
+					if(iterator.data().equals(needle.data())){
+						return (Label) iterator;
+					}
+					iterator = iterator.parent();
+				}
+				iterator = iterator.parent();
+			}
+			while (!(iterator instanceof SemiNode)){
+				iterator = iterator.parent();
+			}
+			if (iterator!=null){
+				iterator = iterator.parent();
+			}
+		}
+		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
 	}
 }

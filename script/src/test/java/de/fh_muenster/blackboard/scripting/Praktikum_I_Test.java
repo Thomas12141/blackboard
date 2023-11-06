@@ -440,7 +440,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
-
 	@Disabled
 	public void testAssignmentVariable() throws Exception {
 		for(int j=0;j<10;j++) {
@@ -464,9 +463,8 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 		}
 	}
 	@Test
-
-	@Disabled
 	@Timeout(1)
+	@Disabled
 	public void testVariablesAssignment() throws Exception {
 		for(int j=0;j<10;j++) {
 			task = define("x=%.5f; y=%.5f; z=x*y",x1,x2);
@@ -478,7 +476,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 
 	@Test
 	@Timeout(1)
-
 	@Disabled
 	public void testReAssign() throws Exception {
 		for(int j=0;j<10;j++) {

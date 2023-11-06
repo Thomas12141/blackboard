@@ -2,7 +2,12 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class myFunction implements java.util.function.Function<double[],Double> {
+public class myFunction extends AstNode implements java.util.function.Function<double[],Double> {
+
+    myFunction(AST p, Object d) {
+        super(p, d);
+    }
+
     @Override
     public Double apply(double[] doubles) {
         return null;
@@ -16,5 +21,20 @@ public class myFunction implements java.util.function.Function<double[],Double> 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
         return Function.super.andThen(after);
+    }
+
+    @Override
+    public Object accept(AstVisitor visitor) {
+        return null;
+    }
+
+    @Override
+    public boolean isRoot() {
+        return super.isRoot();
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return super.isLeaf();
     }
 }
