@@ -96,6 +96,29 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return blackboard.answer(Double.class, n.expr());
 	}
 
+	@Override
+	public Double visit(UnaryOperationNode n) {
+		double ret = 0;
+		double childValue = n.child().accept(this);
+		switch (n.data()){
+			case SIN:
+				ret = Math.sin(childValue);
+				break;
+
+			default:
+				throw new IllegalArgumentException("unkown operation: " + n.data());
+		}
+		return ret;
+	}
+
+	@Override
+	public Double visit(SemiNode n) {
+		double ls = n.left().accept(this);
+		double rs = n.right().accept(this);
+		return rs;
+	}
+
+
 	/**
 	 * (non-Javadoc)
 	 *
@@ -110,5 +133,4 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		return blackboard.answer(Double.class, ((AssignNode)parentNode).expr());
 	}
-
 }
