@@ -163,6 +163,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new PowerCaretNode(ls, rs);
 			case SEMI:
 				return new SemiNode(ls, rs);
+			case POWERFUNCTION:
+				return new PowerCaretNode(ls, rs);
 		default:
 			throw new IllegalArgumentException("unknown operation: " + s);
 		}
@@ -180,6 +182,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		switch (op) {
 			case SIN:
 				return new SinNode(child);
+			case COS:
+				return new CosNode(child);
 			case EXP:
 				return new ExpNode(child);
 			default:

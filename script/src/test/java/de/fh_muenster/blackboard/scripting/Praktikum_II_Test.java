@@ -73,7 +73,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@Disabled
-	public void testUnkownFunction() throws Exception {
+	public void testUnknownFunction() throws Exception {
 		try {
 			task = define("x=%.8f;  y=foo(x)",x1);
 			returned = resultOf(task,7);
@@ -171,6 +171,15 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	public void testDirectSine() throws Exception {
 		task = define("sin(%.8f)",x1);
 		expected = sin(x1);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	@Test
+	@Timeout(1)
+	public void testDirectCosine() throws Exception {
+		task = define("cos(%.8f)",x1);
+		expected = cos(x1);
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
