@@ -109,6 +109,8 @@ TOKEN : {  < RPARA : ")" > }
 TOKEN : {  < SIN : "sin" > }
 TOKEN : {  < COS : "cos" > }
 TOKEN : {  < EXP : "exp" > }
+TOKEN : {  < ASIN : "asin" > }
+TOKEN : {  < LN : "ln" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -218,12 +220,28 @@ protected AST<?> sinExpr(): {
    }
 }
 
+protected AST<?> aSinExpr(): {
+  AST<?> n=null;}
+{
+   <ASIN> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "asin");
+   }
+}
+
 protected AST<?> cosExpr(): {
   AST<?> n=null;}
 {
    <COS> <LPARA> n = expr() <RPARA>
    {
 	return node(n, "cos");}
+}
+protected AST<?> logExpr(): {
+  AST<?> n=null;}
+{
+   <LN> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "ln");}
 }
 protected AST<?> expExpr(): {
   AST<?> n=null;}
@@ -234,13 +252,24 @@ protected AST<?> expExpr(): {
    }
 }
 
+protected AST<?> minusExpr(): {
+  AST<?> n=null;}
+{
+   <MINUS>  n = expr()
+   {
+	return node(n, "-");
+   }
+}
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
   ( n=sinExpr()
+  | n=aSinExpr()
   | n=cosExpr()
+  | n=minusExpr()
   | n = expExpr()
+  | n= logExpr()
   | n = integer()
   | n = floating()
    | n = id()

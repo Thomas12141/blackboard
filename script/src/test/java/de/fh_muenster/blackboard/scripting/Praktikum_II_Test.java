@@ -157,7 +157,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testMinusDirectSine() throws Exception {
 		task = define("-sin(%.8f)",x1);
 		expected = -sin(x1);
@@ -180,6 +179,24 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	public void testDirectCosine() throws Exception {
 		task = define("cos(%.8f)",x1);
 		expected = cos(x1);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	@Test
+	@Timeout(1)
+	public void testDirectArcsine() throws Exception {
+		task = define("asin(%.8f)",x1);
+		expected = Math.asin(x1);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	@Test
+	@Timeout(1)
+	public void testDirectLog() throws Exception {
+		task = define("ln(%.8f)",x1);
+		expected = Math.log(x1);
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
