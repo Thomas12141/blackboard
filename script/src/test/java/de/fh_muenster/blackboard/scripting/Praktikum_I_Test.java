@@ -440,7 +440,6 @@ public class Praktikum_I_Test extends AbstractScriptTester {
 	}
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testAssignmentVariable() throws Exception {
 		for(int j=0;j<10;j++) {
 			x1 = rnd(-1,1);

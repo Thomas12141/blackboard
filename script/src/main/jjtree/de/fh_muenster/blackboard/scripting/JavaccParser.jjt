@@ -108,9 +108,11 @@ TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
 TOKEN : {  < SIN : "sin" > }
 TOKEN : {  < COS : "cos" > }
+TOKEN : {  < ACOS : "acos" > }
 TOKEN : {  < EXP : "exp" > }
 TOKEN : {  < ASIN : "asin" > }
 TOKEN : {  < LN : "ln" > }
+TOKEN : {  < FUNCTIONPOW : "pow" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -236,6 +238,13 @@ protected AST<?> cosExpr(): {
    {
 	return node(n, "cos");}
 }
+protected AST<?> aCosExpr(): {
+  AST<?> n=null;}
+{
+   <ACOS> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "acos");}
+}
 protected AST<?> logExpr(): {
   AST<?> n=null;}
 {
@@ -260,12 +269,27 @@ protected AST<?> minusExpr(): {
 	return node(n, "-");
    }
 }
+
+protected AST<?> functionPowExpr(): {
+
+  AST<?> n=null, m = null;
+  Token op=null;}
+{
+
+   <FUNCTIONPOW> <LPARA> n = expr() "," m=expr() <RPARA>
+   {
+    n=node(n,"pow",m);
+   	return n;
+      }
+}
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
   ( n=sinExpr()
   | n=aSinExpr()
+  | n=functionPowExpr()
+  | n= aCosExpr()
   | n=cosExpr()
   | n=minusExpr()
   | n = expExpr()

@@ -192,6 +192,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new ASinNode(child);
 			case LN:
 				return new LogNode(child);
+			case ACOS:
+				return new ACosNode(child);
 			default:
 				throw new IllegalArgumentException("unknown operation: " + s);
 		}

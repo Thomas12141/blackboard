@@ -203,6 +203,24 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 
 	@Test
 	@Timeout(1)
+	public void testDirectArcos() throws Exception {
+		task = define("acos(%.8f)",x1);
+		expected = Math.acos(x1);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	@Test
+	@Timeout(1)
+	public void testDirectPow() throws Exception {
+		task = define("pow(%.8f,%.8f)",x1,x2);
+		expected = Math.pow(x1,x2);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	@Test
+	@Timeout(1)
 	@SuppressWarnings("unchecked")
 	@Disabled
 	public void testGetFunction() throws Exception {
