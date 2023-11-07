@@ -218,21 +218,18 @@ protected AST<?> sinExpr(): {
    }
 }
 
-<<<<<<< script/src/main/jjtree/de/fh_muenster/blackboard/scripting/JavaccParser.jjt
 protected AST<?> cosExpr(): {
   AST<?> n=null;}
 {
    <COS> <LPARA> n = expr() <RPARA>
    {
 	return node(n, "cos");
-=======
 protected AST<?> expExpr(): {
   AST<?> n=null;}
 {
    <EXP> <LPARA> n = expr() <RPARA>
    {
 	return node(n, "exp");
->>>>>>> script/src/main/jjtree/de/fh_muenster/blackboard/scripting/JavaccParser.jjt
    }
 }
 
