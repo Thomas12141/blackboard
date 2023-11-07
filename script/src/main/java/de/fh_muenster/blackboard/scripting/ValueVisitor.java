@@ -104,10 +104,14 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case SIN:
 				ret = Math.sin(childValue);
 				break;
+			case EXP:
+				ret = Math.exp(childValue);
+				break;
 
 			default:
 				throw new IllegalArgumentException("unkown operation: " + n.data());
 		}
+
 		return ret;
 	}
 

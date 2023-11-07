@@ -5,7 +5,7 @@ public enum UnaryOperation {
 
 
 
-    SIN("sin"), COS("cos"), MINUS("-");
+    SIN("sin"), COS("cos"), MINUS("-"), EXP("exp");
     UnaryOperation(String s) {
         op = Objects.requireNonNull(s, "op is null");
     }

@@ -180,6 +180,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		switch (op) {
 			case SIN:
 				return new SinNode(child);
+			case EXP:
+				return new ExpNode(child);
 			default:
 				throw new IllegalArgumentException("unknown operation: " + s);
 		}

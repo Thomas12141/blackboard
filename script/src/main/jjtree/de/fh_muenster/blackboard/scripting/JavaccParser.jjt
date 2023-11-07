@@ -107,6 +107,7 @@ TOKEN : {  < POWER : "^" | "**" > }
 TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
 TOKEN : {  < SIN : "sin" > }
+TOKEN : {  < EXP : "exp" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -216,11 +217,21 @@ protected AST<?> sinExpr(): {
    }
 }
 
+protected AST<?> expExpr(): {
+  AST<?> n=null;}
+{
+   <EXP> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "exp");
+   }
+}
+
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
   ( n=sinExpr()
+  | n = expExpr()
   | n = integer()
   | n = floating()
    | n = id()
