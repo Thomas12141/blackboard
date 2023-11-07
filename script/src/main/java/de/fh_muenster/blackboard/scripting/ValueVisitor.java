@@ -107,9 +107,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case COS:
 				ret = Math.cos(childValue);
 				break;
+			case EXP:
+				ret = Math.exp(childValue);
+				break;
 			default:
 				throw new IllegalArgumentException("unkown operation: " + n.data());
 		}
+
 		return ret;
 	}
 
