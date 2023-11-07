@@ -109,6 +109,7 @@ TOKEN : {  < RPARA : ")" > }
 TOKEN : {  < SIN : "sin" > }
 TOKEN : {  < COS : "cos" > }
 TOKEN : {  < EXP : "exp" > }
+TOKEN : {  < ASIN : "asin" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -218,6 +219,15 @@ protected AST<?> sinExpr(): {
    }
 }
 
+protected AST<?> aSinExpr(): {
+  AST<?> n=null;}
+{
+   <ASIN> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "asin");
+   }
+}
+
 protected AST<?> cosExpr(): {
   AST<?> n=null;}
 {
@@ -247,6 +257,7 @@ protected AST<?> leaf(): {
   Token op=null;}
 {
   ( n=sinExpr()
+  | n=aSinExpr()
   | n=cosExpr()
   | n=minusExpr()
   | n = expExpr()

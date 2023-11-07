@@ -104,6 +104,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case SIN:
 				ret = Math.sin(childValue);
 				break;
+			case ASIN:
+				ret = Math.asin(childValue);
+				break;
 			case COS:
 				ret = Math.cos(childValue);
 				break;
