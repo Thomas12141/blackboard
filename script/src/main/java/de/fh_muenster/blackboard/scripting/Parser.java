@@ -190,6 +190,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new MinusUnaryNode(child);
 			case ASIN:
 				return new ASinNode(child);
+			case LN:
+				return new LogNode(child);
 			default:
 				throw new IllegalArgumentException("unknown operation: " + s);
 		}
