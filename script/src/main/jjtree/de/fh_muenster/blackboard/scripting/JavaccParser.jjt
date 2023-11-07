@@ -97,26 +97,27 @@ TOKEN : /* FLOATING POINT */
 {
   < FLOATING_LITERAL: ("-"|"+")?  (<DIGIT>)* "." (<DIGIT >)* >
 }
+TOKEN : {  < ASSIGN: "=" > }
+TOKEN : {  < SEMI  : ";" > }
+TOKEN : {  < PLUS  : "+" > }
+TOKEN : {  < MINUS : "-" > }
+TOKEN : {  < TIMES : "*" > }
+TOKEN : {  < DIVIDE: "/" > }
+TOKEN : {  < POWER : "^" | "**" > }
+TOKEN : {  < LPARA : "(" > }
+TOKEN : {  < RPARA : ")" > }
+TOKEN : {  < SIN : "sin" > }
 
 TOKEN : /* IDENTIFIERS */
 {
-  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+  < IDENTIFIER: (<LETTER> (<LETTER>|<DIGIT>)*) >
 |
   < #LETTER: ["_","a"-"z","A"-"Z"] >
 |
   < #DIGIT: ["0"-"9"] >
 }
 
-TOKEN : {  < ASSIGN: "=" > }
-TOKEN : {  < SEMI  : ";" > }  
-TOKEN : {  < PLUS  : "+" > }  
-TOKEN : {  < MINUS : "-" > }  
-TOKEN : {  < TIMES : "*" > }  
-TOKEN : {  < DIVIDE: "/" > }  
-TOKEN : {  < POWER : "^" | "**" > }  
-TOKEN : {  < LPARA : "(" > }  
-TOKEN : {  < RPARA : ")" > }
-TOKEN : {  < SIN : "sin" > }
+
 
 
 /** statement. */
@@ -126,7 +127,7 @@ protected AST<?> statement(): {
   ( LOOKAHEAD(3) n = assignment()
        | LOOKAHEAD(2) n = expr())
   (<SEMI>
-         (m = statement() {n=node(n, ";",m);}))*<EOF>
+         m = statement() {n=node(n, ";",m);})*<EOF>
   {
 
     return n;
@@ -192,8 +193,7 @@ protected AST<?> thirdLevelExpr(): {
 
 protected AST<?> fourthLevelExpr():{
     AST<?> n = null;}{
-   ( n = sinExpr()
-      | n = bracketExpr()
+   (n = bracketExpr()
       | n = leaf())
   {return n;}
 }
@@ -220,7 +220,8 @@ protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
-  (  n = integer()
+  ( n=sinExpr()
+  | n = integer()
   | n = floating()
    | n = id()
 
