@@ -149,8 +149,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	protected AST<?> node(AST<?> ls, String s, AST<?> rs) {
 		Operation op = Operation.of(s);
 		switch (op) {
-		case PLUS:
-			return new PlusNode(ls, rs);
+			case PLUS:
+				return new PlusNode(ls, rs);
 			case MINUS:
 				return new MinusNode(ls, rs);
 			case TIMES:
@@ -165,6 +165,25 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new SemiNode(ls, rs);
 		default:
 			throw new IllegalArgumentException("unknown operation: " + s);
+		}
+	}
+
+
+	/**
+	 * Factory method to create an arithmetic operation AST.
+	 *
+	 * @param s value
+	 * @return AST
+	 */
+	protected AST<?> node(AST<?> child, String s) {
+		UnaryOperation op = UnaryOperation.of(s);
+		switch (op) {
+			case SIN:
+				return new SinNode(child);
+			case EXP:
+				return new ExpNode(child);
+			default:
+				throw new IllegalArgumentException("unknown operation: " + s);
 		}
 	}
 }

@@ -110,8 +110,15 @@ abstract class AstNode<T> implements AST<T> {
 		}
 		boolean ret = false;
 		if (obj instanceof AstNode<?> that) {
-			ret = (null == parent) ? (null == that.parent) : parent.equals(that.parent);
-			ret &= this.data.equals(that.data) && this.childs.equals(that.childs);
+			ret = this.data.equals(that.data);
+			if(!ret){
+				return false;
+			}
+			ret &= this.childs.equals(that.childs);
+			if(!ret){
+				return false;
+			}
+			ret &= (null == parent) ? (null == that.parent) : parent.equals(that.parent);
 		}
 		return ret;
 	}
