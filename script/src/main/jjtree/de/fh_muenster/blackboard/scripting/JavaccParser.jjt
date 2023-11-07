@@ -234,12 +234,21 @@ protected AST<?> expExpr(): {
    }
 }
 
+protected AST<?> minusExpr(): {
+  AST<?> n=null;}
+{
+   <MINUS>  n = expr()
+   {
+	return node(n, "-");
+   }
+}
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
   ( n=sinExpr()
   | n=cosExpr()
+  | n=minusExpr()
   | n = expExpr()
   | n = integer()
   | n = floating()

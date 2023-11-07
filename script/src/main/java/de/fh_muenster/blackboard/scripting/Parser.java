@@ -186,6 +186,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new CosNode(child);
 			case EXP:
 				return new ExpNode(child);
+			case MINUS:
+				return new MinusUnaryNode(child);
 			default:
 				throw new IllegalArgumentException("unknown operation: " + s);
 		}
