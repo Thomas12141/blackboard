@@ -26,7 +26,7 @@ import java.util.Objects;
  */
 public enum Operation {
 
-	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**"), POWERCARET("^"), SEMI(";");
+	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**"), POWERCARET("^"), SEMI(";"), POWERFUNCTION("pow");
 
 	Operation(String s) {
 		op = Objects.requireNonNull(s, "op is null");
