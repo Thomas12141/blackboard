@@ -238,11 +238,8 @@ protected AST<?> leaf(): {
   Token op=null;}
 {
   ( n=sinExpr()
-<<<<<<< script/src/main/jjtree/de/fh_muenster/blackboard/scripting/JavaccParser.jjt
   | n=cosExpr()
-=======
   | n = expExpr()
->>>>>>> script/src/main/jjtree/de/fh_muenster/blackboard/scripting/JavaccParser.jjt
   | n = integer()
   | n = floating()
    | n = id()
