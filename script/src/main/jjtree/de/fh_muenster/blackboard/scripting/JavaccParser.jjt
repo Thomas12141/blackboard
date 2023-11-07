@@ -223,7 +223,8 @@ protected AST<?> cosExpr(): {
 {
    <COS> <LPARA> n = expr() <RPARA>
    {
-	return node(n, "cos");
+	return node(n, "cos");}
+}
 protected AST<?> expExpr(): {
   AST<?> n=null;}
 {
