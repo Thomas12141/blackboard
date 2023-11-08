@@ -86,10 +86,111 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
+	void testDivide2() throws Exception {
+		String task = "  4    /  3.2 / 1 / 1 / 3";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
 	void testTimes() throws Exception {
 		String task = " 4    *  3.2";
 		String returned = blackboard.answer(String.class, task);
 		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testTimes2() throws Exception {
+		String task = " 4    *  3.2 *3";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testPow() throws Exception {
+		String task = " 4 ^ 2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testPow2() throws Exception {
+		String task = " 4 ^ 2 ** 3";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	/////// besprechen
+	void testSemi() throws Exception {
+		String task = " 4 ; 2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = "2;4";
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testAcos() throws Exception {
+		String task = " acos( 2 + 2  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testCos() throws Exception {
+		String task = " cos( 2 + 2  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testAsin() throws Exception {
+		String task = " asin( 2 + 2  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testLn() throws Exception {
+		String task = " ln( 2 + 2  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	void testLb() throws Exception {
+		String task = " lb( 2 + 2  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = task.replace(" ", "");
+		assertEquals(expected, returned);
+	}
+
+	@Test
+	@Timeout(2)
+	/////// besprechen
+	void testPow3() throws Exception {
+		String task = " pow( 2, 4  )";
+		String returned = blackboard.answer(String.class, task);
+		String expected = "2^4";
 		assertEquals(expected, returned);
 	}
 }

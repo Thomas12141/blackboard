@@ -171,5 +171,14 @@ class ValueVisitorTest {
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);
 	}
+
+	@Test
+	@Timeout(2)
+	void testPow3() throws Exception {
+		String task = "pow(2, 2)";
+		double expected = 4;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
 }
 
