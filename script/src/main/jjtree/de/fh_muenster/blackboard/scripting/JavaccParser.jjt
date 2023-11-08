@@ -112,6 +112,7 @@ TOKEN : {  < ACOS : "acos" > }
 TOKEN : {  < EXP : "exp" > }
 TOKEN : {  < ASIN : "asin" > }
 TOKEN : {  < LN : "ln" > }
+TOKEN : {  < LB : "lb" > }
 TOKEN : {  < FUNCTIONPOW : "pow" > }
 
 TOKEN : /* IDENTIFIERS */
@@ -252,6 +253,15 @@ protected AST<?> logExpr(): {
    {
 	return node(n, "ln");}
 }
+
+protected AST<?> log2Expr(): {
+  AST<?> n=null;}
+{
+   <LB> <LPARA> n = expr() <RPARA>
+   {
+	return node(n, "lb");}
+}
+
 protected AST<?> expExpr(): {
   AST<?> n=null;}
 {
@@ -294,6 +304,7 @@ protected AST<?> leaf(): {
   | n=minusExpr()
   | n = expExpr()
   | n= logExpr()
+  | n= log2Expr()
   | n = integer()
   | n = floating()
    | n = id()
