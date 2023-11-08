@@ -122,6 +122,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case ACOS:
 				ret = Math.acos(childValue);
 				break;
+			case LB:
+				ret = Math.log(childValue)/Math.log(2);
+				break;
 			default:
 				throw new IllegalArgumentException("unkown operation: " + n.data());
 		}

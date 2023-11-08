@@ -150,6 +150,7 @@ class ValueVisitorTest {
 		String task = " 1 + 4    *  3.2";
 		double expected = 13.8;
 		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
 	}
 
 	@Test
@@ -158,7 +159,17 @@ class ValueVisitorTest {
 		String task = " 1 + 4    *  3.2 ^ 2";
 		double expected = 1 + 4 * Math.pow(3.2, 2);
 		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
 	}
 
+
+	@Test
+	@Timeout(2)
+	void testLogBaseTwo() throws Exception {
+		String task = "lb(8)";
+		double expected = 3;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
 }
 
