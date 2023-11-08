@@ -1,6 +1,20 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
-public class MinusUnaryNode extends UnaryOperationNode{
+/**
+ * implements the unary minus
+ */
+public class MinusUnaryNode extends UnaryOperationNode {
+
+    /**
+     * Constructor for a unary minus node.
+     *
+     * @param child Node
+     */
     MinusUnaryNode(AST<?> child) {
         super(UnaryOperation.MINUS, child);
     }

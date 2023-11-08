@@ -23,10 +23,21 @@ package de.fh_muenster.blackboard.scripting;
  * Long as AST label.
  */
 public final class LongValue extends Value<Long> {
+
+	/**
+	 * Constructor for a long value as an AST label.
+	 *
+	 * @param v long value
+	 */
 	LongValue(Long v) {
 		this(null, v);
 	}
 
+	/**
+	 * Constructor for a long value as an AST label.
+	 *
+	 * @param v long value
+	 */
 	LongValue(AST<?> p, Long v) {
 		super(p, v);
 	}

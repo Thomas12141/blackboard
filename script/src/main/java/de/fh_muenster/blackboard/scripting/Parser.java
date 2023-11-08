@@ -27,6 +27,9 @@ import de.fh_muenster.blackboard.KnowledgeSource;
  */
 public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 
+	/**
+	 * The constructor for the parser.
+	 */
 	public Parser() {
 		Blackboard blackboard = Blackboard.getInstance();
 		blackboard.register(this);
@@ -49,8 +52,9 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	 */
 	@Override
 	public final boolean equals(Object o) {
-		if (null == o)
+		if (null == o) {
 			return false;
+		}
 		return getClass().equals(o.getClass());
 	}
 
@@ -148,6 +152,7 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	 */
 	protected AST<?> node(AST<?> ls, String s, AST<?> rs) {
 		Operation op = Operation.of(s);
+
 		switch (op) {
 			case PLUS:
 				return new PlusNode(ls, rs);
@@ -179,6 +184,7 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	 */
 	protected AST<?> node(AST<?> child, String s) {
 		UnaryOperation op = UnaryOperation.of(s);
+
 		switch (op) {
 			case SIN:
 				return new SinNode(child);

@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * POWERCaret operation node
  */
 public class PowerCaretNode extends OperationNode {
+
+	/**
+	 * The constructor for power nodes using the caret "^".
+	 *
+	 * @param left left child
+	 * @param right right child
+	 */
 	PowerCaretNode(AST<?> left, AST<?> right) {
 		super(left, Operation.POWERCARET, right);
 	}

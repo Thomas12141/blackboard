@@ -1,6 +1,20 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
-public class LogNode extends UnaryOperationNode{
+/**
+ * Implements logarithmus naturalis
+ */
+public class LogNode extends UnaryOperationNode {
+
+    /**
+     * Constructor for a log node.
+     *
+     * @param child Node
+     */
     LogNode(AST<?> child) {
         super(UnaryOperation.LN, child);
     }

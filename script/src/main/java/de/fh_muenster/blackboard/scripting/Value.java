@@ -23,9 +23,11 @@ package de.fh_muenster.blackboard.scripting;
  * A numeric value as AST label.
  */
 abstract sealed class Value<T extends Number> extends AstNode<T> permits LongValue, DoubleValue{
+
 	Value(T v) {
 		this(null,v);
 	}
+
 	Value(AST<?> p, T v) {
 		super(p,v);
 	}    	

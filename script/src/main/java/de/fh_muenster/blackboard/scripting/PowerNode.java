@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * Power operation node
  */
 public class PowerNode extends OperationNode {
+
+	/**
+	 * The constructor for power nodes using two asterisks "**".
+	 *
+	 * @param left left child
+	 * @param right right child
+	 */
 	PowerNode(AST<?> left, AST<?> right) {
 		super(left, Operation.POWER, right);
 	}

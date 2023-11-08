@@ -22,9 +22,10 @@ package de.fh_muenster.blackboard.scripting;
 import de.fh_muenster.blackboard.Blackboard;
 
 /**
- * 
+ * An abstract class for an abstract ast visitor.
  */
 abstract class AbstractAstVisitor<T> implements AstVisitor<T> {
+
 	/**
 	 * POJO constructor.
 	 */
@@ -50,8 +51,9 @@ abstract class AbstractAstVisitor<T> implements AstVisitor<T> {
 	 */
 	@Override
 	public final boolean equals(Object o) {
-		if (null == o)
+		if (null == o) {
 			return false;
+		}
 		return getClass().equals(o.getClass());
 	}
 

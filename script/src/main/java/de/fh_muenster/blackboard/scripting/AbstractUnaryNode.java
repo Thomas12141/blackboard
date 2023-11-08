@@ -1,9 +1,26 @@
+/*
+ * Project: Blackboard
+ *
+ * @author Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
 import java.util.Collections;
 import java.util.List;
 
-public abstract class AbstractUnaryNode<D> extends AstNode<D>{
+/**
+ * A class, which AstNode to provide abstract unary nodes for unary operations.
+ *
+ * @param <D> Type of data to be processed.
+ */
+public abstract class AbstractUnaryNode<D> extends AstNode<D> {
+
+    /**
+     * Constructor for unary nodes
+     *
+     * @param child Node
+     * @param data Data
+     */
     AbstractUnaryNode(AST<?> child, D data) {
         super(null, data);
         super.childs().add(child);

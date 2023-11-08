@@ -1,7 +1,15 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
+/**
+ * Various auxiliary classes - bundled in one class.
+ */
 public class myFunction extends AstNode implements java.util.function.Function<double[],Double> {
 
     myFunction(AST p, Object d) {

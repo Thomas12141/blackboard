@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * Minus operation node
  */
 public class MinusNode extends OperationNode {
+
+    /**
+     * Constructor for minus nodes.
+     *
+     * @param left left child
+     * @param right right child
+     */
     MinusNode(AST<?> left, AST<?> right) {
         super(left, Operation.MINUS, right);
     }

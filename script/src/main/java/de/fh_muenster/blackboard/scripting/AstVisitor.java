@@ -64,6 +64,7 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
 	 * @return V value
 	 */
 	V visit(AssignNode n);
+
 	/**
 	 * visit a unary arithmetic operation node.
 	 *
@@ -72,5 +73,11 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
 	 */
 	V visit(UnaryOperationNode n);
 
+	/**
+	 * visit a semi node.
+	 *
+	 * @param n node to visit
+	 * @return V value
+	 */
     V visit(SemiNode n);
 }

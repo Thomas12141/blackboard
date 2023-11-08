@@ -1,10 +1,20 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
 
 /**
  * Exp operation node
  */
-public class ExpNode extends UnaryOperationNode{
+public class ExpNode extends UnaryOperationNode {
+
+    /**
+     * Constructor for exp nodes.
+     * @param child Node
+     */
     ExpNode(AST<?> child) {
         super(UnaryOperation.EXP, child);
     }

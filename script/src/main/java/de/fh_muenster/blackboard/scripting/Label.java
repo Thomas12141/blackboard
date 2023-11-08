@@ -23,10 +23,21 @@ package de.fh_muenster.blackboard.scripting;
  * String as AST label.
  */
 public class Label extends AstNode<String> {
+
+	/**
+	 * Constructor for a label node.
+	 *
+	 * @param s String for the label
+	 */
 	Label(String s) {
 		this(null, s);
 	}
 
+	/**
+	 * Constructor for a label node.
+	 *
+	 * @param s String for the label
+	 */
 	Label(AST<?> p, String s) {
 		super(p, s);
 	}

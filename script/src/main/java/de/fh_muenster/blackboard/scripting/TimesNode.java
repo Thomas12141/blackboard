@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * Times operation node
  */
 public class TimesNode extends OperationNode {
+
+    /**
+     * The constructor for the times node "*".
+     *
+     * @param left left child
+     * @param right right child
+     */
     TimesNode(AST<?> left, AST<?> right) {
         super(left, Operation.TIMES, right);
     }

@@ -40,8 +40,10 @@ abstract class AstNode<T> implements AST<T> {
 		childs = new ArrayList<>();
 		parent = p;
 		data = Objects.requireNonNull(d, "data is null");
-		if (null != p)
+
+		if (null != p) {
 			p.childs().add(this);
+		}
 	}
 
 	/**
@@ -104,20 +106,27 @@ abstract class AstNode<T> implements AST<T> {
 		if(obj==null||this.hashCode()!=obj.hashCode()||getClass() != obj.getClass()){
 			return false;
 		}
+
 		if(obj==this){
 			return true;
 		}
+
 		boolean ret = false;
 		AstNode<?> that = (AstNode<?>) obj;
 		ret = this.data.equals(that.data);
+
 		if(!ret){
 			return false;
 		}
+
 		ret &= childsEquals((AstNode) this, that);
+
 		if(!ret){
 			return false;
 		}
+
 		ret &= Objects.equals(parent, that.parent);
+
 		return ret;
 	}
 	private boolean childsEquals(AstNode a, AstNode b){
@@ -125,30 +134,30 @@ abstract class AstNode<T> implements AST<T> {
 		AstNode iterator2 = b;
 		Stack<AstNode> stack1 = new Stack<AstNode>();
 		Stack<AstNode> stack2 = new Stack<AstNode>();
+
 		for (Object toPush:
 			 iterator1.childs) {
-			stack1.push((AstNode)toPush);
+			stack1.push((AstNode) toPush);
 		}
 		for (Object toPush:
 				iterator2.childs) {
-			stack1.push((AstNode)toPush);
+			stack1.push((AstNode) toPush);
 		}
-		while (!stack1.empty()&&!stack2.empty()){
+		while (!stack1.empty() && !stack2.empty()) {
 			iterator1 = stack1.pop();
 			iterator2 = stack2.pop();
-			for (Object toPush:
-					iterator1.childs) {
-				stack1.push((AstNode)toPush);
+
+			for (Object toPush : iterator1.childs) {
+				stack1.push((AstNode) toPush);
 			}
-			for (Object toPush:
-					iterator2.childs) {
-				stack1.push((AstNode)toPush);
+			for (Object toPush : iterator2.childs) {
+				stack1.push((AstNode) toPush);
 			}
-			if(!iterator1.data().equals(iterator2.data())){
+			if(!iterator1.data().equals(iterator2.data())) {
 				return false;
 			}
 		}
-		if (!stack1.empty()||!stack2.empty()){
+		if (!stack1.empty()||!stack2.empty()) {
 			return false;
 		}else {
 			return true;

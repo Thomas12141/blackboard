@@ -27,7 +27,13 @@ import java.util.Objects;
 public enum Operation {
 
 	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**"), POWERCARET("^"), SEMI(";"), POWERFUNCTION("pow");
+	private String op;
 
+	/**
+	 * Constructor for the enum class Operation.
+	 *
+	 * @param s a String
+	 */
 	Operation(String s) {
 		op = Objects.requireNonNull(s, "op is null");
 	}
@@ -42,13 +48,18 @@ public enum Operation {
 		return op;
 	}
 
+	/**
+	 * Checks whether the operation actually is an operation.
+	 *
+	 * @param op the operation to check
+	 * @return return the operation
+	 */
 	public static Operation of(String op) {
 		for (Operation o : values()) {
-			if (o.op.equals(op))
+			if (o.op.equals(op)) {
 				return o;
+			}
 		}
 		throw new IllegalArgumentException("no operation: " + op);
 	}
-
-	private String op;
 }

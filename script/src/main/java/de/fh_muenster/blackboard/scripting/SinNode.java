@@ -1,3 +1,8 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
 
@@ -5,6 +10,12 @@ package de.fh_muenster.blackboard.scripting;
  * Sin operation node
  */
 public class SinNode extends UnaryOperationNode{
+
+    /**
+     * The constructor for sinus nodes "sin(...)"
+     *
+     * @param child child node
+     */
     SinNode(AST<?> child) {
         super(UnaryOperation.SIN, child);
     }

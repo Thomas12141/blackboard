@@ -22,7 +22,7 @@ package de.fh_muenster.blackboard.scripting;
 import de.fh_muenster.blackboard.Blackboard;
 
 /**
- *
+ *	A value visitor for ast.
  */
 public class ValueVisitor extends AbstractAstVisitor<Double> {
 
@@ -33,7 +33,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(LongValue n) {
-		return n.data().doubleValue();
+		return (n.data().doubleValue());
 	}
 
 	/**
@@ -57,6 +57,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		double ls = n.left().accept(this);
 		double rs = n.right().accept(this);
 		Operation op = n.data();
+
 		switch (op) {
 			case PLUS:
 				ret = ls + rs;
@@ -68,7 +69,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				ret = ls * rs;
 				break;
 			case DIVIDE:
-				if(rs==0){
+				if(rs == 0){
 					throw new IllegalArgumentException("division by zero");
 				}
 				ret = ls / rs;
@@ -93,6 +94,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	@Override
 	public Double visit(AssignNode n) {
 		Blackboard blackboard = Blackboard.getInstance();
+
 		return blackboard.answer(Double.class, n.expr());
 	}
 
@@ -100,6 +102,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	public Double visit(UnaryOperationNode n) {
 		double ret = 0;
 		double childValue = n.child().accept(this);
+
 		switch (n.data()){
 			case SIN:
 				ret = Math.sin(childValue);
@@ -135,6 +138,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	@Override
 	public Double visit(SemiNode n) {
 		double rs = n.right().accept(this);
+
 		return rs;
 	}
 
@@ -149,37 +153,42 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		Blackboard blackboard = Blackboard.getInstance();
 
 		if(n.parent() instanceof AssignNode){
-			return blackboard.answer(Double.class, ((AssignNode)n.parent()).expr());
+			return blackboard.answer(Double.class, ((AssignNode) n.parent()).expr());
 		}
 		return blackboard.answer(Double.class, needleInHaystack(n));
 	}
 
 
-	private AssignNode needleInHaystack(Label needle){
+	private AssignNode needleInHaystack(Label needle) {
+
 		/*	iteration till the assign node of the needle.
 		 */
 		AST<?> parentAssignNode = needle;
+
 		while (!(parentAssignNode.parent() instanceof SemiNode)){
 			parentAssignNode = parentAssignNode.parent();
 		}
 
 		AST<?> iterator = needle.parent();
-		while (iterator!=null){
+
+		while (iterator != null){
 			if (iterator instanceof SemiNode) {
 				iterator = ((SemiNode) iterator).left();
-				if(( iterator) instanceof AssignNode){
+
+				if((iterator) instanceof AssignNode){
 					iterator = ((AssignNode) iterator).left();
+
 					if(iterator.data().equals(needle.data())){
 						iterator = iterator.parent();
-						return  (AssignNode)iterator;
+
+						return  ((AssignNode) iterator);
 					}
 					iterator = iterator.parent();
 				}
 				iterator = iterator.parent();
 			}
 			iterator = iterator.parent();
-			if(iterator instanceof SemiNode&&((SemiNode) iterator).left().equals(parentAssignNode)){
-
+			if(iterator instanceof SemiNode && ((SemiNode) iterator).left().equals(parentAssignNode)){
 				iterator = iterator.parent();
 			}
 		}

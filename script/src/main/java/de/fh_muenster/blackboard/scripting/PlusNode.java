@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * Plus operation node
  */
 public class PlusNode extends OperationNode {
+
+	/**
+	 * The constructor for plus nodes.
+	 *
+	 * @param left left child
+	 * @param right right child
+	 */
 	PlusNode(AST<?> left, AST<?> right) {
 		super(left, Operation.PLUS, right);
 	}

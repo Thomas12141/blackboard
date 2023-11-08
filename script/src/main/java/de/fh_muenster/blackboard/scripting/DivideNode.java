@@ -23,6 +23,13 @@ package de.fh_muenster.blackboard.scripting;
  * Divide operation node
  */
 public class DivideNode extends OperationNode {
+
+    /**
+     * Constructor for divide nodes.
+     *
+     * @param left left child
+     * @param right right child
+     */
     DivideNode(AST<?> left, AST<?> right) {
         super(left, Operation.DIVIDE, right);
     }

@@ -23,10 +23,19 @@ package de.fh_muenster.blackboard.scripting;
  * Double as AST label.
  */
 public final class DoubleValue extends Value<Double> {
+
+	/**
+	 * Constructor for DoubleValue
+	 * @param v Double value
+	 */
 	DoubleValue(Double v) {
 		this(null, v);
 	}
 
+	/**
+	 * Constructor for DoubleValue
+	 * @param v Double value
+	 */
 	DoubleValue(AST<?> p, Double v) {
 		super(p, v);
 	}

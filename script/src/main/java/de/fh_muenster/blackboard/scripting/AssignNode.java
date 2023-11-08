@@ -25,6 +25,8 @@ package de.fh_muenster.blackboard.scripting;
 public class AssignNode extends AbstractBinaryNode<String> {
 
 	/**
+	 * Constructor for assigne nodes.
+	 *
 	 * @param id   of the variable to the left
 	 * @param expr expression of the right side
 	 */
@@ -45,7 +47,7 @@ public class AssignNode extends AbstractBinaryNode<String> {
 	/**
 	 * Get the left identifier AST.
 	 * 
-	 * @return
+	 * @return left child of an assign node
 	 */
 	@SuppressWarnings("unchecked")
 	public final AST<String> id() {

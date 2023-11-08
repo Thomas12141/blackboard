@@ -1,6 +1,20 @@
+/*
+ * Project: Blackboard
+ *
+ * @author: Thomas Fidorin and Djordy v. Rönn
+ */
 package de.fh_muenster.blackboard.scripting;
 
-public class ASinNode extends UnaryOperationNode{
+/**
+ * An implementation for arcsine, which extends unary operation node.
+ */
+public class ASinNode extends UnaryOperationNode {
+
+    /**
+     * Contructor for asin nodes.
+     *
+     * @param child Node
+     */
     ASinNode(AST<?> child) {
         super(UnaryOperation.ASIN, child);
     }

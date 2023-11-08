@@ -54,30 +54,54 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 		return n.toString();
 	}
 
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
 	@Override
 	public String visit(OperationNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
+
 		return left + n.data() + right;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
 	@Override
 	public String visit(AssignNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
+
 		return left + n.data() + right;
 	}
 
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
 	@Override
 	public String visit(UnaryOperationNode n) {
 		String child = n.child().accept(this);
-		return n.data() + "(" + child + ")";
+
+		return (n.data() + "(" + child + ")");
 	}
 
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
 	@Override
 	public String visit(SemiNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
-		return right + n.data() + left;
+
+		return (right + n.data() + left);
 	}
 }
