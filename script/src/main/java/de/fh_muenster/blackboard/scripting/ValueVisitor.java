@@ -153,6 +153,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 
 	private AssignNode needleInHaystack(Label needle){
+		/*	iteration till the assign node of the needle.
+		 */
+		AST<?> parentAssignNode = needle;
+		while (!(parentAssignNode.parent() instanceof SemiNode)){
+			parentAssignNode = parentAssignNode.parent();
+		}
+
 		AST<?> iterator = needle.parent();
 		while (iterator!=null){
 			if (iterator instanceof SemiNode) {
@@ -167,18 +174,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				}
 				iterator = iterator.parent();
 			}
-			while (!(iterator instanceof SemiNode)){
-				iterator = iterator.parent();
-			}
-			if (iterator!=null){
-				if(((SemiNode) iterator).left() instanceof AssignNode){
-					iterator=((SemiNode) iterator).left();
-					if (((AssignNode) iterator).id().data().equals(needle.data())){
-						return (AssignNode) iterator;
-					}else {
-						iterator = iterator.parent();
-					}
-				}
+			iterator = iterator.parent();
+			if(iterator instanceof SemiNode&&((SemiNode) iterator).left().equals(parentAssignNode)){
+
 				iterator = iterator.parent();
 			}
 		}
