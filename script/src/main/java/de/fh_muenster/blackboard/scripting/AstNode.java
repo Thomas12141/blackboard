@@ -98,38 +98,18 @@ abstract class AstNode<T> implements AST<T> {
 		return data.hashCode() + 31 * childs.hashCode();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public final boolean equals(final Object obj) {
-		if(this.hashCode()!=obj.hashCode()){
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		boolean ret = false;
-        AstNode<?> that = (AstNode<?>) obj;
-        ret = this.data.equals(that.data);
-        if(!ret){
-            return false;
-        }
-        ret &= this.childs.equals(that.childs);
-        if(!ret){
-            return false;
-        }
-        ret &= Objects.equals(parent, that.parent);
-        return ret;
+		return this.hashCode()==obj.hashCode();
 	}
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
+
+
+		/**
+         * (non-Javadoc)
+         *
+         * @see java.lang.Object#toString()
+         */
 	@Override
 	public String toString() {
 		return String.format("%s", data);
