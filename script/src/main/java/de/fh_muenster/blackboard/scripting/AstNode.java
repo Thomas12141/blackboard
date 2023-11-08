@@ -22,6 +22,7 @@ package de.fh_muenster.blackboard.scripting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 /**
  * Basic AST implementation.
@@ -45,7 +46,7 @@ abstract class AstNode<T> implements AST<T> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AST#setParent(de.fh_muenster.blackboard.scripting.AST)
 	 */
 	@Override
@@ -60,7 +61,7 @@ abstract class AstNode<T> implements AST<T> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AST#data()
 	 */
 	@Override
@@ -70,7 +71,7 @@ abstract class AstNode<T> implements AST<T> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AST#parent()
 	 */
 	@Override
@@ -80,7 +81,7 @@ abstract class AstNode<T> implements AST<T> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see de.fh_muenster.blackboard.scripting.AST#childs()
 	 */
 	@Override
@@ -90,7 +91,7 @@ abstract class AstNode<T> implements AST<T> {
 
 	/**
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -100,33 +101,67 @@ abstract class AstNode<T> implements AST<T> {
 
 	@Override
 	public final boolean equals(final Object obj) {
-		if(this.hashCode()!=obj.hashCode()){
+		if(obj==null||this.hashCode()!=obj.hashCode()||getClass() != obj.getClass()){
 			return false;
 		}
-		if (getClass() != obj.getClass()) {
-			return false;
+		if(obj==this){
+			return true;
 		}
 		boolean ret = false;
-        AstNode<?> that = (AstNode<?>) obj;
-        ret = this.data.equals(that.data);
-        if(!ret){
-            return false;
-        }
-        ret &= this.childs.equals(that.childs);
-        if(!ret){
-            return false;
-        }
-        ret &= Objects.equals(parent, that.parent);
-        return ret;
+		AstNode<?> that = (AstNode<?>) obj;
+		ret = this.data.equals(that.data);
+		if(!ret){
+			return false;
+		}
+		ret &= childsEquals((AstNode) this, that);
+		if(!ret){
+			return false;
+		}
+		ret &= Objects.equals(parent, that.parent);
+		return ret;
+	}
+	private boolean childsEquals(AstNode a, AstNode b){
+		AstNode iterator1 = a;
+		AstNode iterator2 = b;
+		Stack<AstNode> stack1 = new Stack<AstNode>();
+		Stack<AstNode> stack2 = new Stack<AstNode>();
+		for (Object toPush:
+			 iterator1.childs) {
+			stack1.push((AstNode)toPush);
+		}
+		for (Object toPush:
+				iterator2.childs) {
+			stack1.push((AstNode)toPush);
+		}
+		while (!stack1.empty()&&!stack2.empty()){
+			iterator1 = stack1.pop();
+			iterator2 = stack2.pop();
+			for (Object toPush:
+					iterator1.childs) {
+				stack1.push((AstNode)toPush);
+			}
+			for (Object toPush:
+					iterator2.childs) {
+				stack1.push((AstNode)toPush);
+			}
+			if(!iterator1.data().equals(iterator2.data())){
+				return false;
+			}
+		}
+		if (!stack1.empty()||!stack2.empty()){
+			return false;
+		}else {
+			return true;
+		}
 	}
 
 
 
-		/**
-         * (non-Javadoc)
-         *
-         * @see java.lang.Object#toString()
-         */
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return String.format("%s", data);
