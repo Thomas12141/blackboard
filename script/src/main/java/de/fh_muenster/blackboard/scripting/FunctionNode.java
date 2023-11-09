@@ -17,8 +17,10 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     FunctionNode(String function, String variables,AST<?> child) {
         super(null, function);
         this.variables = new ArrayList<String>(Arrays.asList(variables.split(",")));
-        super.childs().add(child);
-        child.setParent(this);
+        if(child!=null){
+            super.childs().add(child);
+            child.setParent(this);
+        }
     }
     //TODO Write visitor for the function.
     @Override

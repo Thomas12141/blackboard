@@ -147,7 +147,6 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	/**
 	 * Factory method to create an function AST.
 	 *
-	 * @param id   the left side of the assignment
 	 * @param expr the right side of the assignment
 	 * @return AST
 	 */
