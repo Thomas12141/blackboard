@@ -11,9 +11,9 @@ import java.util.function.Function;
 
 //TODO Write the function.
 public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double> {
-    ArrayList<String> variables;
+    private ArrayList<String> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
-    ArrayList<AST<?>> variablesOperations;
+    private ArrayList<AST<?>> variablesOperations;
     FunctionNode(String function, String variables,AST<?> child) {
         super(null, function);
         this.variables = new ArrayList<String>(Arrays.asList(variables.split(",")));
@@ -51,8 +51,8 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     }
 
     @Override
-    public Object accept(AstVisitor visitor) {
-        return null;
+    public <V> V accept(AstVisitor<V> visitor) {
+        return visitor.visit(this);
     }
 
     @Override
@@ -63,5 +63,9 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     @Override
     public boolean isLeaf() {
         return super.isLeaf();
+    }
+
+    public ArrayList<String> getVariables() {
+        return new ArrayList<String>(variables);
     }
 }

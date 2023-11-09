@@ -142,6 +142,11 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return rs;
 	}
 
+	@Override
+	public Double visit(FunctionNode n) {
+		return null;
+	}
+
 
 	/**
 	 * (non-Javadoc)

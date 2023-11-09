@@ -114,6 +114,8 @@ TOKEN : {  < ASIN : "asin" > }
 TOKEN : {  < LN : "ln" > }
 TOKEN : {  < LB : "lb" > }
 TOKEN : {  < FUNCTIONPOW : "pow" > }
+TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+ "(" ["a"-"z","A"-"Z"] ("," <LETTER>)*")">}
+
 TOKEN : /* IDENTIFIERS */
 {
   < IDENTIFIER: (<LETTER> (<LETTER>|<DIGIT>)*) >
@@ -122,7 +124,6 @@ TOKEN : /* IDENTIFIERS */
 |
   < #DIGIT: ["0"-"9"] >
 }
-TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+ "(" ["a"-"z","A"-"Z"] ("," <LETTER>)*")">}
 
 
 /** statement. */
@@ -310,8 +311,8 @@ protected AST<?> leaf(): {
   | n= log2Expr()
   | n = integer()
   | n = floating()
+  |LOOKAHEAD(10) n=function()
   | n = id()
-  | n=function()
 
   )
    {

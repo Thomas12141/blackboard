@@ -80,4 +80,12 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
 	 * @return V value
 	 */
     V visit(SemiNode n);
+
+	/**
+	 * visit a semi node.
+	 *
+	 * @param n node to visit
+	 * @return V value
+	 */
+	V visit(FunctionNode n);
 }

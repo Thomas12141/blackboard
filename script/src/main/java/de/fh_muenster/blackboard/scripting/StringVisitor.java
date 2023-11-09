@@ -19,6 +19,8 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import java.util.ArrayList;
+
 /**
  * A Visitor iterating over an AST providing a String representation.
  */
@@ -105,5 +107,32 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 		String right = n.right().accept(this);
 
 		return left + n.data() + right;
+	}
+
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
+	@Override
+	public String visit(FunctionNode n) {
+		StringBuilder result = new StringBuilder(n.data() + "(");
+		ArrayList<String> variables= n.getVariables();
+		if(!variables.isEmpty()){
+			result.append(variables.get(0));
+		}
+		for (int i = 1; i < variables.size(); i++) {
+			result.append(",");
+			result.append(variables.get(i));
+		}
+		result.append(")");
+		if(!n.childs().isEmpty()){
+			AST<?> child = n.childs().get(0);
+			result.append("=");
+			result.append(child.toString());
+		}
+
+		return result.toString();
 	}
 }

@@ -191,4 +191,14 @@ class StringVisitorTest {
 		String expected = "pow(2,4)";
 		assertEquals(expected, returned);
 	}
+
+
+	@Test
+	@Timeout(2)
+	void testFunction() throws Exception {
+		String task = " f(x)=2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = "f(x)=2";
+		assertEquals(expected, returned);
+	}
 }
