@@ -145,6 +145,17 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	}
 
 	/**
+	 * Factory method to create an function AST.
+	 *
+	 * @param id   the left side of the assignment
+	 * @param expr the right side of the assignment
+	 * @return AST
+	 */
+	protected AST<?> node(String function, String variables,AST<?> expr) {
+		return new FunctionNode(function, variables, expr);
+	}
+
+	/**
 	 * Factory method to create an arithmetic operation AST.
 	 * 
 	 * @param s value
@@ -169,7 +180,7 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 			case SEMI:
 				return new SemiNode(ls, rs);
 			case POWERFUNCTION:
-				return new PowerCaretNode(ls, rs);
+				return new PowerFunctionNode(ls, rs);
 		default:
 			throw new IllegalArgumentException("unknown operation: " + s);
 		}

@@ -14,8 +14,8 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     ArrayList<String> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
     ArrayList<AST<?>> variablesOperations;
-    FunctionNode(AST<?> child, String variables) {
-        super(null, "function");
+    FunctionNode(String function, String variables,AST<?> child) {
+        super(null, function);
         this.variables = new ArrayList<String>(Arrays.asList(variables.split(",")));
         super.childs().add(child);
         child.setParent(this);

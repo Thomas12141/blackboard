@@ -63,7 +63,9 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 	public String visit(OperationNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
-
+		if(n instanceof PowerFunctionNode){
+			return "pow(" + left + "," +  right + ")";
+		}
 		return left + n.data() + right;
 	}
 
@@ -102,6 +104,6 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
 
-		return (right + n.data() + left);
+		return left + n.data() + right;
 	}
 }

@@ -131,11 +131,10 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
-	/////// besprechen
 	void testSemi() throws Exception {
 		String task = " 4 ; 2";
 		String returned = blackboard.answer(String.class, task);
-		String expected = "2;4";
+		String expected = "4;2";
 		assertEquals(expected, returned);
 	}
 
@@ -186,11 +185,10 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
-	/////// besprechen
 	void testPow3() throws Exception {
 		String task = " pow( 2, 4  )";
 		String returned = blackboard.answer(String.class, task);
-		String expected = "2^4";
+		String expected = "pow(2,4)";
 		assertEquals(expected, returned);
 	}
 }

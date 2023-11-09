@@ -74,7 +74,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				}
 				ret = ls / rs;
 				break;
-			case POWER, POWERCARET:
+			case POWER, POWERCARET, POWERFUNCTION:
 				ret = Math.pow(ls, rs);
 				if(Double.isNaN(ret)){
 					throw new IllegalArgumentException("complex number");

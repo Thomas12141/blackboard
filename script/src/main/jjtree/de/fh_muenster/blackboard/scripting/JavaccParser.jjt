@@ -114,7 +114,6 @@ TOKEN : {  < ASIN : "asin" > }
 TOKEN : {  < LN : "ln" > }
 TOKEN : {  < LB : "lb" > }
 TOKEN : {  < FUNCTIONPOW : "pow" > }
-
 TOKEN : /* IDENTIFIERS */
 {
   < IDENTIFIER: (<LETTER> (<LETTER>|<DIGIT>)*) >
@@ -123,8 +122,7 @@ TOKEN : /* IDENTIFIERS */
 |
   < #DIGIT: ["0"-"9"] >
 }
-
-
+TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+ "(" ["a"-"z","A"-"Z"] ("," <LETTER>)*")">}
 
 
 /** statement. */
@@ -292,6 +290,11 @@ protected AST<?> functionPowExpr(): {
    	return n;
       }
 }
+
+
+
+
+
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
@@ -307,7 +310,8 @@ protected AST<?> leaf(): {
   | n= log2Expr()
   | n = integer()
   | n = floating()
-   | n = id()
+  | n = id()
+  | n=function()
 
   )
    {
@@ -339,4 +343,19 @@ protected AST<Double> floating(): {
   {
 	return node(Double.valueOf(t.image));
   }
+}
+
+//TODO: Funktion wird erkannt, es muss noch die Möglichkeit die Funktion ohne Zuweisung zu nutzen geschrieben. Das geht f(x)=2*x, das nicht y=f(x).
+protected AST<?> function(): {
+
+  AST<?> n=null;
+  Token function=null;}
+{
+
+   function =<FUNCTIONDECLERATION>  <ASSIGN> n=expr()
+   {
+    String temp = function.image;
+    n=node(temp.substring(0, temp.indexOf("(")), temp.substring(temp.indexOf("(")+1, temp.length()-1), n);
+   	return n;
+      }
 }
