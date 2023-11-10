@@ -196,9 +196,9 @@ class StringVisitorTest {
 	@Test
 	@Timeout(2)
 	void testFunction() throws Exception {
-		String task = "f(x)=2";
+		String task = "f( x , y )=2";
 		String returned = blackboard.answer(String.class, task);
-		String expected = "f(x)=2";
+		String expected = "f(x,y)=2";
 		assertEquals(expected, returned);
 	}
 }

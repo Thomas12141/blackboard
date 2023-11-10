@@ -114,7 +114,7 @@ TOKEN : {  < ASIN : "asin" > }
 TOKEN : {  < LN : "ln" > }
 TOKEN : {  < LB : "lb" > }
 TOKEN : {  < FUNCTIONPOW : "pow" > }
-TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+ "(" ["a"-"z","A"-"Z"] ("," <LETTER>)*")">}
+TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+  "(" (" ")* ["a"-"z","A"-"Z"] ( (" ")*"," (" ")* <LETTER>)* (" ")*")">}
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -356,6 +356,7 @@ protected AST<?> function(): {
    function =<FUNCTIONDECLERATION>  (<ASSIGN> n=expr())?
    {
     String temp = function.image;
+    temp = temp.replace(" ","");
     n=node(temp.substring(0, temp.indexOf("(")), temp.substring(temp.indexOf("(")+1, temp.length()-1), n);
    	return n;
       }
