@@ -196,7 +196,6 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
-	@Disabled
 	void testFunction() throws Exception {
 		String task = "x=2;y=3;f( x , y )=2";
 		String returned = blackboard.answer(String.class, task);
