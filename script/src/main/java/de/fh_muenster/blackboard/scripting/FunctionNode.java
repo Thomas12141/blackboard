@@ -126,11 +126,15 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         for (int i = 1; i < variables.size(); i++) {
             myStr += ","+ variables.get(i);
         }
-        if(this.childs().get(0)!=null){
-            return String.format("\"%s\"{%s}", data()+"("+ myStr+")", this.childs().get(0));
-        }
-        else {
-            return String.format("\"%s\"{%s}", data()+"("+ myStr+")");
+        try {
+            if(this.childs().get(0)!=null){
+                return String.format("\"%s\"{%s}", data()+"("+ myStr+")", this.childs().get(0));
+            }
+            else {
+                return String.format("\"%s\"{%s}", data()+"("+ myStr+")");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("unknown function");
         }
     }
 }
