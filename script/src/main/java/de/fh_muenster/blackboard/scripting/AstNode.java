@@ -134,7 +134,9 @@ abstract class AstNode<T> implements AST<T> {
 		AstNode iterator2 = b;
 		Stack<AstNode> stack1 = new Stack<AstNode>();
 		Stack<AstNode> stack2 = new Stack<AstNode>();
-
+		if(a.childs.size()!=b.childs.size()){
+			return false;
+		}
 		for (Object toPush:
 			 iterator1.childs) {
 			stack1.push((AstNode) toPush);
@@ -146,7 +148,9 @@ abstract class AstNode<T> implements AST<T> {
 		while (!stack1.empty() && !stack2.empty()) {
 			iterator1 = stack1.pop();
 			iterator2 = stack2.pop();
-
+			if(a.childs.size()!=b.childs.size()){
+				return false;
+			}
 			for (Object toPush : iterator1.childs) {
 				stack1.push((AstNode) toPush);
 			}
