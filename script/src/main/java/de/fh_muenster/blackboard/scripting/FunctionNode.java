@@ -5,16 +5,22 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import de.fh_muenster.blackboard.Blackboard;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Stack;
 import java.util.function.Function;
 
+import static java.lang.Double.valueOf;
+
 //TODO Write the function.
-public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double> {
+public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double>, Cloneable {
     private ArrayList<String> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
     private ArrayList<AST<?>> variablesOperations;
-    FunctionNode(String function, String variables,AST<?> child) {
+    FunctionNode(String function, String variables, AST<?> child) {
         super(null, function);
         this.variables = new ArrayList<String>(Arrays.asList(variables.split(",")));
         if(child!=null){
@@ -25,18 +31,47 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     //TODO Write visitor for the function.
     @Override
     public Double apply(double[] doubles) {
-        variablesOperations = new ArrayList<AST<?>>();
+        FunctionNode myClone = (FunctionNode) this.clone();
+        myClone.variablesOperations = new ArrayList<AST<?>>();
+
         for (double iterator:doubles) {
-            variablesOperations.add(new DoubleValue(iterator));
+            myClone.variablesOperations.add(new DoubleValue(iterator));
         }
-        if(variables.size()!=variablesOperations.size()){
+        if(variables.size() != myClone.variablesOperations.size()){
             throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
         }
 
-        return null;
+        treeIteration(myClone, doubles);
+        return myClone.childs().get(0).accept(new ValueVisitor());
+
+
     }
     //TODO Write the tree iterator. My thought was iterating the and changing the labels to vriable operations.
-    private void treeIteration(){
+    private void treeIteration(FunctionNode noodleNode, double[] doubles){
+
+        AstNode<?> iterator = (AstNode<?>) noodleNode.childs().get(0);
+        Stack<AstNode<?>> stag = new Stack<AstNode<?>>();
+        stag.push(iterator);
+
+        while(!(stag.isEmpty())) {
+            iterator = stag.pop();
+            for (AST<?> toPush : iterator.childs()) {
+                stag.push((AstNode<?>) toPush);
+            }
+            if (iterator instanceof Label) {
+                int index = noodleNode.variables.lastIndexOf(iterator.toString());
+                if (index != -1) {
+                    DoubleValue dv = new DoubleValue(doubles[index]);
+                    AstNode<?> parent = (AstNode<?>) iterator.parent();
+                    for (int i = 0; i < parent.childs().size(); i++) {
+                        if (parent.childs().get(i).equals(iterator)) {
+                            parent.childs().set(i, dv);
+                            dv.setParent(parent);
+                        }
+                    }
+                }
+            }
+        }
 
     }
 
@@ -68,4 +103,18 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     public ArrayList<String> getVariables() {
         return new ArrayList<String>(variables);
     }
+
+    @Override
+    public Object clone() {
+        variables = this.getVariables();
+        String myStr = variables.get(0);
+        for (int i = 1; i < variables.size(); i++) {
+            myStr += ","+ variables.get(i);
+        }
+        AstNode<String> s = (AstNode<String>) this.childs().get(0);
+        FunctionNode myClone = new FunctionNode(this.data(), myStr, s);
+        return myClone;
+    }
+
+
 }

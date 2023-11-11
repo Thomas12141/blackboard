@@ -21,6 +21,9 @@ package de.fh_muenster.blackboard.scripting;
 
 import de.fh_muenster.blackboard.Blackboard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  *	A value visitor for ast.
  */
@@ -144,7 +147,23 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(FunctionNode n) {
-		return null;
+		ArrayList<Double> myDoubles = new ArrayList<Double>();
+
+        ValueVisitor vis = new ValueVisitor();
+        Blackboard blackboard = Blackboard.getInstance();
+
+        for(int i = 0; i < n.getVariables().size(); i++) {
+            Label myLabel = new Label(n.getVariables().get(i));
+            Double myDouble = myLabel.accept(vis);
+            myDoubles.add(myDouble);
+        }
+
+		double[] myDArray = new double[myDoubles.size()];
+		for ( int i = 0; i < myDoubles.size(); i++) {
+			myDArray[i] = myDoubles.get(i);
+		}
+
+		return n.apply(myDArray);
 	}
 
 
