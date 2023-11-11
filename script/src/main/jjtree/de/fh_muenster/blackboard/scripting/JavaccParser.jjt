@@ -311,7 +311,7 @@ protected AST<?> leaf(): {
   | n= log2Expr()
   | n = integer()
   | n = floating()
-  |LOOKAHEAD(10) n=function()
+  | n=function()
   | n = id()
 
   )

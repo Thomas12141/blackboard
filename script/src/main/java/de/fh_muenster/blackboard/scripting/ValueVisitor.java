@@ -147,13 +147,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(FunctionNode n) {
+		if(n.childs().get(0)==null){
+
+		}
 		ArrayList<Double> myDoubles = new ArrayList<Double>();
 
         ValueVisitor vis = new ValueVisitor();
         Blackboard blackboard = Blackboard.getInstance();
 
         for(int i = 0; i < n.getVariables().size(); i++) {
-            Label myLabel = new Label(n.getVariables().get(i));
+            Label myLabel = hayInNeedleStack(n.getVariables().get(i), n);
             Double myDouble = myLabel.accept(vis);
             myDoubles.add(myDouble);
         }
@@ -166,7 +169,30 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return n.apply(myDArray);
 	}
 
+	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
+		AST<?> iterator = functionNode;
+		iterator = (AstNode<?>)iterator.parent();
+		while (iterator != null){
+			if (iterator instanceof SemiNode) {
+				iterator = ((SemiNode) iterator).left();
+				iterator = ((AssignNode) iterator).left();
+				if(iterator instanceof Label){
 
+                    if(iterator.data().equals(hay.data())){
+						return  ((Label) iterator);
+					}
+					iterator = iterator.parent();
+				}
+				iterator = iterator.parent();
+			}
+			iterator = iterator.parent();
+			if(iterator instanceof SemiNode){
+				iterator = iterator.parent();
+			}
+		}
+		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
+
+	}
 	/**
 	 * (non-Javadoc)
 	 *

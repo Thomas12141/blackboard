@@ -118,13 +118,13 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 	@Override
 	public String visit(FunctionNode n) {
 		StringBuilder result = new StringBuilder(n.data() + "(");
-		ArrayList<String> variables= n.getVariables();
+		ArrayList<Label> variables= n.getVariables();
 		if(!variables.isEmpty()){
-			result.append(variables.get(0));
+			result.append(variables.get(0).data());
 		}
 		for (int i = 1; i < variables.size(); i++) {
 			result.append(",");
-			result.append(variables.get(i));
+			result.append(variables.get(i).data());
 		}
 		result.append(")");
 		if(!n.childs().isEmpty()){

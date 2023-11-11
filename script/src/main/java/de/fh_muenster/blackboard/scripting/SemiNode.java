@@ -52,4 +52,15 @@ public class SemiNode extends AbstractBinaryNode<Operation> {
     public boolean isLeaf() {
         return super.isLeaf();
     }
+
+
+    /**
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return String.format("\"%s\"{%s,%s}", data(), left(), right());
+    }
 }

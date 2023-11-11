@@ -17,12 +17,16 @@ import static java.lang.Double.valueOf;
 
 //TODO Write the function.
 public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double>, Cloneable {
-    private ArrayList<String> variables;
+    private ArrayList<Label> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
     private ArrayList<AST<?>> variablesOperations;
     FunctionNode(String function, String variables, AST<?> child) {
         super(null, function);
-        this.variables = new ArrayList<String>(Arrays.asList(variables.split(",")));
+        ArrayList<String> temp = new ArrayList<String>(Arrays.asList(variables.split(",")));
+        this.variables = new ArrayList<Label>();
+        for (String i:temp) {
+            this.variables.add(new Label(i));
+        }
         if(child!=null){
             super.childs().add(child);
             child.setParent(this);
@@ -31,18 +35,17 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     //TODO Write visitor for the function.
     @Override
     public Double apply(double[] doubles) {
-        FunctionNode myClone = (FunctionNode) this.clone();
-        myClone.variablesOperations = new ArrayList<AST<?>>();
+        this.variablesOperations = new ArrayList<AST<?>>();
 
         for (double iterator:doubles) {
-            myClone.variablesOperations.add(new DoubleValue(iterator));
+            this.variablesOperations.add(new DoubleValue(iterator));
         }
-        if(variables.size() != myClone.variablesOperations.size()){
+        if(variables.size() != this.variablesOperations.size()){
             throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
         }
 
-        treeIteration(myClone, doubles);
-        return myClone.childs().get(0).accept(new ValueVisitor());
+        treeIteration(this, doubles);
+        return this.childs().get(0).accept(new ValueVisitor());
 
 
     }
@@ -100,14 +103,14 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         return super.isLeaf();
     }
 
-    public ArrayList<String> getVariables() {
-        return new ArrayList<String>(variables);
+    public ArrayList<Label> getVariables() {
+        return new ArrayList<Label>(variables);
     }
 
     @Override
     public Object clone() {
         variables = this.getVariables();
-        String myStr = variables.get(0);
+        String myStr = variables.get(0).data();
         for (int i = 1; i < variables.size(); i++) {
             myStr += ","+ variables.get(i);
         }
@@ -116,5 +119,18 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         return myClone;
     }
 
+    @Override
+    public String toString() {
 
+        String myStr = variables.get(0).data();
+        for (int i = 1; i < variables.size(); i++) {
+            myStr += ","+ variables.get(i);
+        }
+        if(this.childs().get(0)!=null){
+            return String.format("\"%s\"{%s}", data()+"("+ myStr+")", this.childs().get(0));
+        }
+        else {
+            return String.format("\"%s\"{%s}", data()+"("+ myStr+")");
+        }
+    }
 }

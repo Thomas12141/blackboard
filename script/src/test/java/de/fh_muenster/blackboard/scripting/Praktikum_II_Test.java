@@ -318,4 +318,12 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 		}
 	}
 
+	@Test
+	@Timeout(2)
+	void testFunction() throws Exception {
+		String task = "x=2;f( x  )=2*x";
+		returned = blackboard.answer(Double.class, task);
+		expected = 4;
+		assertEquals(expected, returned);
+	}
 }
