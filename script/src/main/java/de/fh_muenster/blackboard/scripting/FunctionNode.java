@@ -134,7 +134,7 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
                 return String.format("\"%s\"{%s}", data()+"("+ myStr+")");
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("unknown function");
+            throw new IllegalArgumentException("unknown function or too few #args");
         }
     }
 }
