@@ -136,22 +136,26 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 	/**
 	 * Factory method to create an assignment AST.
 	 * 
-	 * @param id   the left side of the assignment
+	 * @param left   the left side of the assignment
 	 * @param expr the right side of the assignment
 	 * @return AST
 	 */
-	protected AST<?> node(AST<String> id, AST<?> expr) {
-		return new AssignNode(id, expr);
+	protected AST<?> node(AST<?> left, AST<?> expr) {
+		if(left instanceof FunctionNode){
+			return new FunctionAssignNode(left, expr);
+		}else {
+			return new AssignNode((AST<String>) left, expr);
+		}
 	}
 
 	/**
 	 * Factory method to create an function AST.
 	 *
-	 * @param expr the right side of the assignment
+	 * @param function the right side of the assignment
 	 * @return AST
 	 */
-	protected AST<?> node(String function, String variables,AST<?> expr) {
-		return new FunctionNode(function, variables, expr);
+	protected AST<?> node(String function, AST<?> variables) {
+		return new FunctionNode(function, variables);
 	}
 
 	/**
@@ -164,6 +168,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		Operation op = Operation.of(s);
 
 		switch (op) {
+			case KOMMA:
+				return new VariableNode(ls, rs);
 			case PLUS:
 				return new PlusNode(ls, rs);
 			case MINUS:

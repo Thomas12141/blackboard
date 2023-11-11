@@ -135,4 +135,14 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 
 		return result.toString();
 	}
+
+	@Override
+	public String visit(FunctionAssignNode functionAssignNode) {
+		return null;
+	}
+
+	@Override
+	public String visit(VariableNode variableNode) {
+		return null;
+	}
 }

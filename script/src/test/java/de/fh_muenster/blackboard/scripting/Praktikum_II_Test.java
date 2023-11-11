@@ -238,7 +238,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testCalculatedArguments() throws Exception {
 		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x/3-1)",x1);
 		expected = x1-1;
@@ -269,7 +268,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	@Disabled
 	public void testSinConvolution() throws Exception {
 		task = "f(x)= asin(sin(x))";
 		Object ref = blackboard.answer(Function.class, task);
@@ -303,7 +301,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	@Disabled
 	public void testExpConvolution() throws Exception {
 		task = "f(x)= ln(exp(x))";
 		Object ref = blackboard.answer(Function.class, task);

@@ -168,6 +168,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return n.apply(myDArray);
 	}
 
+	@Override
+	public Double visit(FunctionAssignNode functionAssignNode) {
+		return null;
+	}
+
+	@Override
+	public Double visit(VariableNode variableNode) {
+		return null;
+	}
+
 	/*private FunctionNode functionDeclarationSearch(FunctionNode functionNode){
 		AST<?> iterator = functionNode;
 		iterator = (AstNode<?>)iterator.parent();
@@ -212,7 +222,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				iterator = iterator.parent();
 			}
 		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
+		throw new IllegalArgumentException("function reference is null");
 
 	}
 	/**
@@ -233,12 +243,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	private AssignNode needleInHaystack(Label needle) {
 
+
 		/*	iteration till the assign node of the needle.
 		 */
 		AST<?> parentAssignNode = needle;
 
 		while (!(parentAssignNode.parent() instanceof SemiNode)){
 			parentAssignNode = parentAssignNode.parent();
+			if(parentAssignNode==null){
+				throw new IllegalArgumentException("function reference is null");
+			}
 		}
 
 		AST<?> iterator = needle.parent();

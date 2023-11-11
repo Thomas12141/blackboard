@@ -88,4 +88,8 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
 	 * @return V value
 	 */
 	V visit(FunctionNode n);
+
+    V visit(FunctionAssignNode functionAssignNode);
+
+	V visit(VariableNode variableNode);
 }

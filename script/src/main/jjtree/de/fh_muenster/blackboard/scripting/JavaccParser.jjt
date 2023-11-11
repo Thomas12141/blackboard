@@ -35,14 +35,14 @@ import de.fh_muenster.blackboard.scripting.Parser;
 import static de.fh_muenster.blackboard.scripting.AST.*;
 /**
  * Concrete JavaCC based part of the abstract Parser.
- * TODO: extend  the grammar 
+ * TODO: extend  the grammar
  * @author nwulff
  * @since 03.07.2023
  *
  */
 public class JavaccParser extends Parser {
     public final static String ENCODING = "utf-8";
-  
+
     public JavaccParser() {
       this(new StringReader(""));
     }
@@ -60,7 +60,7 @@ public class JavaccParser extends Parser {
             throw new IllegalArgumentException(stm);
 		}
 		return ret;
-	}  
+	}
 }
 
 PARSER_END(JavaccParser)
@@ -78,7 +78,7 @@ SKIP :
 
 // Token, welche im Parser verwendet werden
 TOKEN : /* LITERALS */
-{  
+{
   < INTEGER_LITERAL:  (
         <DECIMAL_LITERAL> (["l","L"])?
       | <HEX_LITERAL> (["l","L"])?
@@ -106,15 +106,6 @@ TOKEN : {  < DIVIDE: "/" > }
 TOKEN : {  < POWER : "^" | "**" > }
 TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
-TOKEN : {  < SIN : "sin" > }
-TOKEN : {  < COS : "cos" > }
-TOKEN : {  < ACOS : "acos" > }
-TOKEN : {  < EXP : "exp" > }
-TOKEN : {  < ASIN : "asin" > }
-TOKEN : {  < LN : "ln" > }
-TOKEN : {  < LB : "lb" > }
-TOKEN : {  < FUNCTIONPOW : "pow" > }
-TOKEN : {  < FUNCTIONDECLERATION : (<LETTER>)+  "(" (" ")* ["a"-"z","A"-"Z"] ( (" ")*"," (" ")* <LETTER>)* (" ")*")">}
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -125,13 +116,12 @@ TOKEN : /* IDENTIFIERS */
   < #DIGIT: ["0"-"9"] >
 }
 
-
 /** statement. */
 protected AST<?> statement(): {
   AST<?> n=null; AST<?> m=null;}
 {
-  ( LOOKAHEAD(3) n = assignment()
-       | LOOKAHEAD(2) n = expr())
+  ( LOOKAHEAD(2) n = expr()
+       | LOOKAHEAD(3) n = assignment())
   (<SEMI>
          m = statement() {n=node(n, ";",m);})*<EOF>
   {
@@ -144,9 +134,22 @@ protected AST<?> statement(): {
 protected AST<?> assignment(): {
   AST<?> n=null, m = null;  AST<String> id;}
 {
-  ( id = id() < ASSIGN > m = expr() {n = node(id,m);  return n; }) 
+  ( n = assignmentId() | LOOKAHEAD(3) n = assignmentFunction() )
+  { return n; }
+}
+protected AST<?> assignmentId(): {
+  AST<?> n=null, m = null;  AST<String> id;}
+{
+  ( id = id() < ASSIGN > m = expr() )
+  {n = node(id,m);  return n; }
 }
 
+protected AST<?> assignmentFunction(): {
+  AST<?> n=null, m = null;  AST<?> function;}
+{
+  ( function = function() < ASSIGN > m = expr() )
+  {n = node(function,m);  return n; }
+}
 
 /** additive expression. */
 protected AST<?> expr(): {
@@ -158,8 +161,8 @@ protected AST<?> expr(): {
           {
               n = node(n,op.image,m);
           }
-      )* 
-  ) 
+      )*
+  )
    {
 	return n;
    }
@@ -200,7 +203,8 @@ protected AST<?> thirdLevelExpr(): {
 protected AST<?> fourthLevelExpr():{
     AST<?> n = null;}{
    (n = bracketExpr()
-      | n = leaf())
+      |LOOKAHEAD(3) n = function()
+      | n = leaf() )
   {return n;}
 }
 protected AST<?> bracketExpr(): {
@@ -213,62 +217,8 @@ protected AST<?> bracketExpr(): {
    }
 }
 
-protected AST<?> sinExpr(): {
-  AST<?> n=null;}
-{
-   <SIN> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "sin");
-   }
-}
 
-protected AST<?> aSinExpr(): {
-  AST<?> n=null;}
-{
-   <ASIN> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "asin");
-   }
-}
 
-protected AST<?> cosExpr(): {
-  AST<?> n=null;}
-{
-   <COS> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "cos");}
-}
-protected AST<?> aCosExpr(): {
-  AST<?> n=null;}
-{
-   <ACOS> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "acos");}
-}
-protected AST<?> logExpr(): {
-  AST<?> n=null;}
-{
-   <LN> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "ln");}
-}
-
-protected AST<?> log2Expr(): {
-  AST<?> n=null;}
-{
-   <LB> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "lb");}
-}
-
-protected AST<?> expExpr(): {
-  AST<?> n=null;}
-{
-   <EXP> <LPARA> n = expr() <RPARA>
-   {
-	return node(n, "exp");
-   }
-}
 
 protected AST<?> minusExpr(): {
   AST<?> n=null;}
@@ -278,42 +228,38 @@ protected AST<?> minusExpr(): {
 	return node(n, "-");
    }
 }
+//TODO: Funktion wird erkannt, es muss noch die Möglichkeit die Funktion ohne Zuweisung zu nutzen geschrieben. Das geht f(x)=2*x, das nicht y=f(x).
+protected AST<?> function(): {
 
-protected AST<?> functionPowExpr(): {
-
-  AST<?> n=null, m = null;
-  Token op=null;}
+  AST<?> n=null, m=null;
+  Token function=null;}
 {
 
-   <FUNCTIONPOW> <LPARA> n = expr() "," m=expr() <RPARA>
+   (function =<IDENTIFIER> ) <LPARA> (n=variable() ) <RPARA>
    {
-    n=node(n,"pow",m);
-   	return n;
+   	return node(function.image, n);
       }
 }
 
+protected AST<?> variable(): {
+ AST<?> n = null, m = null;
+}
+{
+    (n=expr() ) ("," m =variable())*
 
-
-
+   {
+   	return node(n, ",", m);
+      }
+}
 
 protected AST<?> leaf(): {
   AST<?> n=null, m = null;
   Token op=null;}
 {
-  ( n=sinExpr()
-  | n=aSinExpr()
-  | n=functionPowExpr()
-  | n= aCosExpr()
-  | n=cosExpr()
-  | n=minusExpr()
-  | n = expExpr()
-  | n= logExpr()
-  | n= log2Expr()
+  ( n=minusExpr()
   | n = integer()
   | n = floating()
-  | n=function()
-  | n = id()
-
+  | n=id()
   )
    {
 	return n;
@@ -344,20 +290,4 @@ protected AST<Double> floating(): {
   {
 	return node(Double.valueOf(t.image));
   }
-}
-
-//TODO: Funktion wird erkannt, es muss noch die Möglichkeit die Funktion ohne Zuweisung zu nutzen geschrieben. Das geht f(x)=2*x, das nicht y=f(x).
-protected AST<?> function(): {
-
-  AST<?> n=null;
-  Token function=null;}
-{
-
-   function =<FUNCTIONDECLERATION>  (<ASSIGN> n=expr())?
-   {
-    String temp = function.image;
-    temp = temp.replace(" ","");
-    n=node(temp.substring(0, temp.indexOf("(")), temp.substring(temp.indexOf("(")+1, temp.length()-1), n);
-   	return n;
-      }
 }

@@ -19,47 +19,58 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import java.util.Objects;
-
 /**
- * Enumeration of mathematical operations.
+ * Node for an assignment id = expr.
  */
-public enum Operation {
-
-	PLUS("+"), MINUS("-"), TIMES("*"), DIVIDE("/"), POWER("**"), POWERCARET("^"), SEMI(";"), POWERFUNCTION("pow"), KOMMA(",");
-	private String op;
+public class FunctionAssignNode extends AbstractBinaryNode<String> {
 
 	/**
-	 * Constructor for the enum class Operation.
+	 * Constructor for assigne nodes.
 	 *
-	 * @param s a String
+	 * @param function   of the variable to the left
+	 * @param expr expression of the right side
 	 */
-	Operation(String s) {
-		op = Objects.requireNonNull(s, "op is null");
+	FunctionAssignNode(AST<?> function, AST<?> expr) {
+		super(function, "=", expr);
 	}
 
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see @see java.lang.Enum#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return op;
+		return String.format("%s%s%s", id(), data(), expr());
 	}
 
 	/**
-	 * Checks whether the operation actually is an operation.
-	 *
-	 * @param op the operation to check
-	 * @return return the operation
+	 * Get the left identifier AST.
+	 * 
+	 * @return left child of an assign node
 	 */
-	public static Operation of(String op) {
-		for (Operation o : values()) {
-			if (o.op.equals(op)) {
-				return o;
-			}
-		}
-		throw new IllegalArgumentException("no operation: " + op);
+	@SuppressWarnings("unchecked")
+	public final AST<String> id() {
+		return (AST<String>) left();
 	}
+
+	/**
+	 * Get the right AST with the assignment expression.
+	 * 
+	 * @return expression AST
+	 */
+	public final AST<?> expr() {
+		return right();
+	}
+
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see AST#accept(AstVisitor)
+	 */
+	@Override
+	public <V> V accept(AstVisitor<V> visitor) {
+		return visitor.visit(this);
+	}
+
 }

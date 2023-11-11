@@ -20,17 +20,8 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     private ArrayList<Label> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
     private ArrayList<AST<?>> variablesOperations;
-    FunctionNode(String function, String variables, AST<?> child) {
+    FunctionNode(String function, AST<?> variables) {
         super(null, function);
-        ArrayList<String> temp = new ArrayList<String>(Arrays.asList(variables.split(",")));
-        this.variables = new ArrayList<Label>();
-        for (String i:temp) {
-            this.variables.add(new Label(i));
-        }
-        if(child!=null){
-            super.childs().add(child);
-            child.setParent(this);
-        }
     }
     //TODO Write visitor for the function.
     @Override
@@ -108,18 +99,6 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     }
 
     @Override
-    public Object clone() {
-        variables = this.getVariables();
-        String myStr = variables.get(0).data();
-        for (int i = 1; i < variables.size(); i++) {
-            myStr += ","+ variables.get(i);
-        }
-        AstNode<String> s = (AstNode<String>) this.childs().get(0);
-        FunctionNode myClone = new FunctionNode(this.data(), myStr, s);
-        return myClone;
-    }
-
-    @Override
     public String toString() {
 
         String myStr = variables.get(0).data();
@@ -128,10 +107,10 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         }
         try {
             if(this.childs().get(0)!=null){
-                return String.format("\"%s\"{%s}", data()+"("+ myStr+")", this.childs().get(0));
+                return String.format("\"%s\"{%s}", this.data()+"("+ myStr+")", this.childs().get(0));
             }
             else {
-                return String.format("\"%s\"{%s}", data()+"("+ myStr+")");
+                return String.format("\"%s\"{%s}", this.data()+"("+ myStr+")");
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("unknown function or too few #args");
