@@ -29,19 +29,17 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     //TODO Write visitor for the function.
     @Override
     public Double apply(double[] doubles) {
-        /*this.variablesOperations = new ArrayList<AST<?>>();
+        this.variablesOperations = new ArrayList<AST<?>>();
 
         for (double iterator:doubles) {
             this.variablesOperations.add(new DoubleValue(iterator));
         }
-        if(variables.size() != this.variablesOperations.size()){
+        /*if(variables.size() != this.variablesOperations.size()){
             throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
-        }
+        }*/
 
         treeIteration(this, doubles);
         return this.childs().get(0).accept(new ValueVisitor());
-        */
-        return 0.0;
 
     }
     //TODO Write the tree iterator. My thought was iterating the and changing the labels to vriable operations.

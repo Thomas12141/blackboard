@@ -214,11 +214,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
 		AST<?> function = searchFunctionDeclaration(n);
-		if(!(n.parent() instanceof FunctionAssignNode)){
+		if(!(n.parent() instanceof FunctionAssignNode)&&!n.equals(function)){
 			ArrayList<Double> variableValues = new ArrayList<Double>();
-
-			for (AST<?> iterator:n.childs()) {
-				variableValues.add(iterator.accept(this));
+			AstNode<?> iterator = (AstNode<?>) n.childs().get(0);
+			while (iterator!=null){
+				if(iterator instanceof Label){
+					variableValues.add(iterator.accept(this));
+					break;
+				}
+				variableValues.add(iterator.childs().get(0).accept(this));
+				iterator = (AstNode<?>) iterator.childs().get(1);
 			}
 			double [] values = new double[variableValues.size()];
 			for (int i = 0; i<values.length; i++){
