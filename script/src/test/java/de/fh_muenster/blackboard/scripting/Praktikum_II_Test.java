@@ -88,7 +88,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 			returned = resultOf(task,7);
 			fail("wrong function argumtens not recognized");
 		} catch(IllegalArgumentException e) {
-			//log("e: %s",e.getMessage());
+			log("e: %s",e.getMessage());
 			assertTrue(e.getMessage().contains("#args"));
 		}
 	}
@@ -205,6 +205,16 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	public void testDirectPow() throws Exception {
 		task = define("pow(%.8f,%.8f)",x1,x2);
 		expected = Math.pow(x1,x2);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	// new
+	@Test
+	@Timeout(1)
+	public void testDirectExp() throws Exception {
+		task = define("exp(%.8f)",x1);
+		expected = Math.exp(x1);
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}

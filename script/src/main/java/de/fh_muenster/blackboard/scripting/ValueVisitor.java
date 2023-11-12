@@ -133,7 +133,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				ret = Math.log(childValue)/Math.log(2);
 				break;
 			default:
-				throw new IllegalArgumentException("unkown operation: " + n.data());
+				throw new IllegalArgumentException("unknown operation: " + n.data());
 		}
 
 		return ret;
@@ -153,15 +153,23 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		double rs;
 		if(n.data().equals("lb")){
 			if(n.childs().get(0)instanceof VariableNode){
-				throw new RuntimeException("Lb kann nur ein Argument bekommen.");
+				throw new IllegalArgumentException("Lb kann nur ein Argument bekommen.");
 			}
 			childValue = n.childs().get(0).accept(this);
 			return Math.log(childValue)/Math.log(2);
 		}
+		if(n.data().equals("ln")){
+			if(n.childs().get(0)instanceof VariableNode){
+				throw new IllegalArgumentException("Ln kann nur ein Argument bekommen.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.log(childValue);
+		}
+
 		if(n.data().equals("pow")){
 			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
 			if(variables.childs().size()!=2){
-				throw new RuntimeException("pow braucht zwei Argumente.");
+				throw new IllegalArgumentException("pow braucht zwei Argumente  #args.");
 			}
 			ls = variables.childs().get(0).accept(this);
 			rs = variables.childs().get(1).accept(this);
@@ -169,15 +177,46 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		if(n.data().equals("sin")){
 			if(n.childs().size()!=1){
-				throw new RuntimeException("sin braucht ein Argumente.");
+				throw new IllegalArgumentException("sin braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
 			return Math.sin(childValue);
+		}
+		if(n.data().equals("cos")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("cos braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.cos(childValue);
+		}
+		if(n.data().equals("acos")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("acos braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.acos(childValue);
+		}
+		if(n.data().equals("asin")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("asin braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.asin(childValue);
+		}
+		if(n.data().equals("exp")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("exp braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.exp(childValue);
 		}
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
 		AST<?> function = searchFunctionDeclaration(n);
+		if (!(AstNode.childsEquals(n, (AstNode) function))) {
+			throw new IllegalArgumentException("wrong arguments for script function #args");
+		}
 		return function.accept(this);
 	}
 	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
@@ -206,7 +245,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				iterator = iterator.parent();
 			}
 		}
-		throw new IllegalArgumentException("function reference is null");
+		throw new IllegalArgumentException("unknown function");
 	}
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
