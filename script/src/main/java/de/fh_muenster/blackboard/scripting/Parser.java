@@ -184,8 +184,6 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 				return new PowerCaretNode(ls, rs);
 			case SEMI:
 				return new SemiNode(ls, rs);
-			case POWERFUNCTION:
-				return new PowerFunctionNode(ls, rs);
 		default:
 			throw new IllegalArgumentException("unknown operation: " + s);
 		}
@@ -202,18 +200,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		UnaryOperation op = UnaryOperation.of(s);
 
 		switch (op) {
-			case EXP:
-				return new ExpNode(child);
 			case MINUS:
 				return new MinusUnaryNode(child);
-			case ASIN:
-				return new ASinNode(child);
-			case LN:
-				return new LogNode(child);
-			case ACOS:
-				return new ACosNode(child);
-			case LB:
-				return new Log2Node(child);
 			default:
 				throw new IllegalArgumentException("unknown operation: " + s);
 		}

@@ -19,7 +19,6 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import java.util.ArrayList;
 
 /**
  * A Visitor iterating over an AST providing a String representation.
@@ -65,9 +64,6 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 	public String visit(OperationNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
-		if(n instanceof PowerFunctionNode){
-			return "pow(" + left + "," +  right + ")";
-		}
 		return left + n.data() + right;
 	}
 
