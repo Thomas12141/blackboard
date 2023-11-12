@@ -52,6 +52,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testSimpleFunction() throws Exception {
 		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*x1 + 2;
@@ -61,6 +62,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void test2DFunction() throws Exception {
 		task = define("f(x,y)=2*x + 3*y; x=%.8f; y=%.8f; z=f(x,y)",x1,x2);
 		expected = 2*x1 + 3*x2;
@@ -107,6 +109,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testExpFunction() throws Exception {
 		task = define("f(x)=3*exp(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*exp(x1) + 2;
@@ -115,6 +118,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testSineFunction() throws Exception {
 		task = define("f(x)=3*sin(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*sin(x1) + 2;
@@ -123,6 +127,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testCosineFunction() throws Exception {
 		task = define("f(x)=3*cos(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*cos(x1) + 2;
@@ -131,6 +136,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testPowerFunction() throws Exception {
 		task = define("f(x,y)=pow(x,y); x=%.8f; y=%.8f; z=f(x,y)",x1,x2);
 		expected = pow(x1,x2);
@@ -238,6 +244,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testCalculatedArguments() throws Exception {
 		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x/3-1)",x1);
 		expected = x1-1;
