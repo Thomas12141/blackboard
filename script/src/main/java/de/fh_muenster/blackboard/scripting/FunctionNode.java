@@ -52,8 +52,15 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         /*if(variables.size() != this.variablesOperations.size()){
             throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
         }*/
-        treeIteration(clone, doubles, variable);
-        return clone.childs().get(0).accept(new ValueVisitor());
+        String functionString = clone.parent().childs().get(1).accept(new StringVisitor());
+        for (int i = 0; i < functionString.length(); i++) {
+            if(variable.contains(Character. toString(functionString.charAt(i)))){
+                functionString = functionString.substring(0,i) + Double.toString(doubles[variable.lastIndexOf(iterator.toString())]) + functionString.substring(i+1);
+            }
+        }
+        Blackboard blackboard = Blackboard.getInstance();
+        //treeIteration(clone, doubles, variable);
+        return blackboard.answer(Double.class, functionString);
 
     }
 
