@@ -117,32 +117,24 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 	 */
 	@Override
 	public String visit(FunctionNode n) {
-		StringBuilder result = new StringBuilder(n.data() + "(");
-		ArrayList<Label> variables= n.getVariables();
-		if(!variables.isEmpty()){
-			result.append(variables.get(0).data());
-		}
-		for (int i = 1; i < variables.size(); i++) {
-			result.append(",");
-			result.append(variables.get(i).data());
-		}
-		result.append(")");
-		if(!n.childs().isEmpty()){
-			AST<?> child = n.childs().get(0);
-			result.append("=");
-			result.append(child.toString());
-		}
-
-		return result.toString();
+		String result = n.data() + "(";
+		result += n.childs().get(0).accept(this)+")";
+		return result;
 	}
 
 	@Override
 	public String visit(FunctionAssignNode functionAssignNode) {
-		return null;
+		String left = functionAssignNode.left().accept(this);
+		String right = functionAssignNode.right().accept(this);
+
+		return left + functionAssignNode.data() + right;
 	}
 
 	@Override
 	public String visit(VariableNode variableNode) {
-		return null;
+		String left = variableNode.left().accept(this);
+		String right = variableNode.right().accept(this);
+
+		return left + variableNode.data() + right;
 	}
 }

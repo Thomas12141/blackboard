@@ -17,16 +17,19 @@ import static java.lang.Double.valueOf;
 
 //TODO Write the function.
 public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double>, Cloneable {
-    private ArrayList<Label> variables;
+    private AST<?> variables;
     //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
     private ArrayList<AST<?>> variablesOperations;
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
+        this.variables = variables;
+        this.childs().add(variables);
+        variables.setParent(this);
     }
     //TODO Write visitor for the function.
     @Override
     public Double apply(double[] doubles) {
-        this.variablesOperations = new ArrayList<AST<?>>();
+        /*this.variablesOperations = new ArrayList<AST<?>>();
 
         for (double iterator:doubles) {
             this.variablesOperations.add(new DoubleValue(iterator));
@@ -37,12 +40,13 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
 
         treeIteration(this, doubles);
         return this.childs().get(0).accept(new ValueVisitor());
-
+        */
+        return 0.0;
 
     }
     //TODO Write the tree iterator. My thought was iterating the and changing the labels to vriable operations.
     private void treeIteration(FunctionNode noodleNode, double[] doubles){
-
+        /*
         AstNode<?> iterator = (AstNode<?>) noodleNode.childs().get(0);
         Stack<AstNode<?>> stag = new Stack<AstNode<?>>();
         stag.push(iterator);
@@ -66,7 +70,7 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
                 }
             }
         }
-
+        */
     }
 
     @Override
@@ -94,13 +98,15 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         return super.isLeaf();
     }
 
-    public ArrayList<Label> getVariables() {
-        return new ArrayList<Label>(variables);
-    }
+
 
     @Override
     public String toString() {
-
+        return String.format("\"%s\"{%s}", data(), variables);
+        /*
+        if(variables==null){
+            return "";
+        }
         String myStr = variables.get(0).data();
         for (int i = 1; i < variables.size(); i++) {
             myStr += ","+ variables.get(i);
@@ -114,6 +120,6 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
             }
         } catch (Exception e) {
             throw new IllegalArgumentException("unknown function or too few #args");
-        }
+        }*/
     }
 }

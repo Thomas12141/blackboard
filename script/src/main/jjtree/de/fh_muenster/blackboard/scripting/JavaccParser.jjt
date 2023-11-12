@@ -120,8 +120,8 @@ TOKEN : /* IDENTIFIERS */
 protected AST<?> statement(): {
   AST<?> n=null; AST<?> m=null;}
 {
-  ( LOOKAHEAD(2) n = expr()
-       | LOOKAHEAD(3) n = assignment())
+  (  LOOKAHEAD(10) n = assignment()|LOOKAHEAD(3) n = expr()
+       )
   (<SEMI>
          m = statement() {n=node(n, ";",m);})*<EOF>
   {
@@ -134,13 +134,13 @@ protected AST<?> statement(): {
 protected AST<?> assignment(): {
   AST<?> n=null, m = null;  AST<String> id;}
 {
-  ( n = assignmentId() | LOOKAHEAD(3) n = assignmentFunction() )
+  (  LOOKAHEAD(3) n = assignmentFunction() |n = assignmentId() )
   { return n; }
 }
 protected AST<?> assignmentId(): {
   AST<?> n=null, m = null;  AST<String> id;}
 {
-  ( id = id() < ASSIGN > m = expr() )
+   id = id() < ASSIGN > m = expr()
   {n = node(id,m);  return n; }
 }
 
@@ -241,15 +241,21 @@ protected AST<?> function(): {
       }
 }
 
+
+
 protected AST<?> variable(): {
  AST<?> n = null, m = null;
 }
 {
     (n=expr() ) ("," m =variable())*
 
-   {
-   	return node(n, ",", m);
-      }
+    {
+        if(m!=null){
+            return node(n, ",", m);
+        }else {
+            return n;
+            }
+    }
 }
 
 protected AST<?> leaf(): {

@@ -23,6 +23,7 @@ import de.fh_muenster.blackboard.Blackboard;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  *	A value visitor for ast.
@@ -77,7 +78,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				}
 				ret = ls / rs;
 				break;
-			case POWER, POWERCARET, POWERFUNCTION:
+			case POWER, POWERCARET:
 				ret = Math.pow(ls, rs);
 				if(Double.isNaN(ret)){
 					throw new IllegalArgumentException("complex number");
@@ -147,25 +148,35 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(FunctionNode n) {
-		if(n.childs().get(0)==null){
-
+		double ret = 0;
+		double childValue;
+		double ls;
+		double rs;
+		if(n.data().equals("lb")){
+			if(n.childs().get(0)instanceof VariableNode){
+				throw new RuntimeException("Lb kann nur ein Argument bekommen.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.log(childValue)/Math.log(2);
 		}
-		ArrayList<Double> myDoubles = new ArrayList<Double>();
-
-        ValueVisitor vis = new ValueVisitor();
-
-        for(int i = 0; i < n.getVariables().size(); i++) {
-            Label myLabel = hayInNeedleStack(n.getVariables().get(i), n);
-            Double myDouble = myLabel.accept(vis);
-            myDoubles.add(myDouble);
-        }
-
-		double[] myDArray = new double[myDoubles.size()];
-		for ( int i = 0; i < myDoubles.size(); i++) {
-			myDArray[i] = myDoubles.get(i);
+		if(n.data().equals("pow")){
+			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
+			if(variables.childs().size()!=2){
+				throw new RuntimeException("pow braucht zwei Argumente.");
+			}
+			ls = variables.childs().get(0).accept(this);
+			rs = variables.childs().get(1).accept(this);
+			return Math.pow(ls, rs);
 		}
-
-		return n.apply(myDArray);
+		if(n.data().equals("sin")){
+			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
+			if(variables.childs().size()!=1){
+				throw new RuntimeException("sin braucht ein Argumente.");
+			}
+			childValue = variables.childs().get(0).accept(this);
+			return Math.sin(childValue);
+		}
+		 return ret;
 	}
 
 	@Override
