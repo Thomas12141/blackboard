@@ -30,22 +30,41 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     @Override
     public Double apply(double[] doubles) {
         this.variablesOperations = new ArrayList<AST<?>>();
-
+        ArrayList<String> variable = new ArrayList<>();
         for (double iterator:doubles) {
             this.variablesOperations.add(new DoubleValue(iterator));
+        }
+        FunctionNode clone;
+        try {
+            clone = (FunctionNode) this.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        AST<?> iterator = clone.childs().get(0);
+        while (iterator!=null){
+            if(iterator instanceof Label){
+                variable.add((String) iterator.data());
+                break;
+            }
+            variable.add((String)iterator.childs().get(0).data());
+            iterator = iterator.childs().get(1);
         }
         /*if(variables.size() != this.variablesOperations.size()){
             throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
         }*/
-
-        treeIteration(this, doubles);
-        return this.childs().get(0).accept(new ValueVisitor());
+        treeIteration(clone, doubles, variable);
+        return clone.childs().get(0).accept(new ValueVisitor());
 
     }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
     //TODO Write the tree iterator. My thought was iterating the and changing the labels to vriable operations.
-    private void treeIteration(FunctionNode noodleNode, double[] doubles){
-        /*
-        AstNode<?> iterator = (AstNode<?>) noodleNode.childs().get(0);
+    private void treeIteration(FunctionNode noodleNode, double[] doubles, ArrayList<String> variables){
+        AstNode<?> iterator = (AstNode<?>) noodleNode.parent().childs().get(1);
         Stack<AstNode<?>> stag = new Stack<AstNode<?>>();
         stag.push(iterator);
 
@@ -55,7 +74,7 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
                 stag.push((AstNode<?>) toPush);
             }
             if (iterator instanceof Label) {
-                int index = noodleNode.variables.lastIndexOf(iterator.toString());
+                int index = variables.lastIndexOf(iterator.toString());
                 if (index != -1) {
                     DoubleValue dv = new DoubleValue(doubles[index]);
                     AstNode<?> parent = (AstNode<?>) iterator.parent();
@@ -68,7 +87,6 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
                 }
             }
         }
-        */
     }
 
     @Override
@@ -101,23 +119,5 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     @Override
     public String toString() {
         return String.format("\"%s\"{%s}", data(), variables);
-        /*
-        if(variables==null){
-            return "";
-        }
-        String myStr = variables.get(0).data();
-        for (int i = 1; i < variables.size(); i++) {
-            myStr += ","+ variables.get(i);
-        }
-        try {
-            if(this.childs().get(0)!=null){
-                return String.format("\"%s\"{%s}", this.data()+"("+ myStr+")", this.childs().get(0));
-            }
-            else {
-                return String.format("\"%s\"{%s}", this.data()+"("+ myStr+")");
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("unknown function or too few #args");
-        }*/
     }
 }
