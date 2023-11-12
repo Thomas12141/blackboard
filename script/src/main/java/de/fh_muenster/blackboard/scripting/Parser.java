@@ -202,10 +202,6 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		UnaryOperation op = UnaryOperation.of(s);
 
 		switch (op) {
-			case SIN:
-				return new SinNode(child);
-			case COS:
-				return new CosNode(child);
 			case EXP:
 				return new ExpNode(child);
 			case MINUS:

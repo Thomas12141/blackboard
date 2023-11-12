@@ -176,7 +176,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			childValue = variables.childs().get(0).accept(this);
 			return Math.sin(childValue);
 		}
-		 return ret;
+		throw new IllegalArgumentException("unkown operation: " + n.data());
 	}
 
 	@Override
