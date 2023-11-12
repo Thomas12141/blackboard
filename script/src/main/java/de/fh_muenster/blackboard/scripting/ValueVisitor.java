@@ -214,6 +214,18 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
 		AST<?> function = searchFunctionDeclaration(n);
+		if(!(n.parent() instanceof FunctionAssignNode)){
+			ArrayList<Double> variableValues = new ArrayList<Double>();
+
+			for (AST<?> iterator:n.childs()) {
+				variableValues.add(iterator.accept(this));
+			}
+			double [] values = new double[variableValues.size()];
+			for (int i = 0; i<values.length; i++){
+				values[i]=variableValues.get(i);
+			}
+			return ((FunctionNode) function).apply(values);
+		}
 		if (!(AstNode.childsEquals(n, (AstNode) function))) {
 			throw new IllegalArgumentException("wrong arguments for script function #args");
 		}

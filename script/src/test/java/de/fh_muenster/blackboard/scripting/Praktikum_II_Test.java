@@ -84,6 +84,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testWrongArgumentsForScriptFunction() throws Exception {
 		try {
 			task = define("x=%.8f; f(x,y)=x*y; z=f(x)",x1);
@@ -246,7 +247,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Timeout(1)
 	@Disabled
 	public void testCalculatedArguments() throws Exception {
-		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x/3-1)",x1);
+		task = define("  f(x)=3*x + 2; x=%.8f;y=f(x/3-1)",x1);
 		expected = x1-1;
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);

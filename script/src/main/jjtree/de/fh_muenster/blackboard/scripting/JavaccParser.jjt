@@ -86,11 +86,11 @@ TOKEN : /* LITERALS */
     )
   >
 |
-  < #DECIMAL_LITERAL: ("-"|"+")? ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: ("+")? ["1"-"9"] (["0"-"9"])* >
 |
-  < #HEX_LITERAL: ("-"|"+")?  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+  < #HEX_LITERAL:  ("+")? "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
 |
-  < #OCTAL_LITERAL: ("-"|"+")? "0" (["0"-"7"])* >
+  < #OCTAL_LITERAL: ("+")? "0" (["0"-"7"])* >
 }
 
 TOKEN : /* FLOATING POINT */
@@ -120,7 +120,7 @@ TOKEN : /* IDENTIFIERS */
 protected AST<?> statement(): {
   AST<?> n=null; AST<?> m=null;}
 {
-  (  LOOKAHEAD(10) n = assignment()|LOOKAHEAD(3) n = expr()
+  (  LOOKAHEAD(20) n = assignment()|LOOKAHEAD(20) n = expr()
        )
   (<SEMI>
          m = statement() {n=node(n, ";",m);})*<EOF>
@@ -157,7 +157,7 @@ protected AST<?> expr(): {
   Token op=null;}
 {  // TODO more arithmetic operations are missing with appropriate  rang.
   ( n = secondLevelExpr()
-      (   (op=< PLUS > |op=< MINUS > ) m=secondLevelExpr()
+      (   (op=< PLUS > | op=< MINUS > ) m=secondLevelExpr()
           {
               n = node(n,op.image,m);
           }
@@ -173,7 +173,7 @@ protected AST<?> secondLevelExpr(): {
   Token op=null;}
 {
   ( n = thirdLevelExpr()
-      (   (op=< TIMES > |op=< DIVIDE >) m=thirdLevelExpr()
+      (   (op=< TIMES > | op=< DIVIDE >) m=thirdLevelExpr()
           {
               n = node(n,op.image,m);
           }
