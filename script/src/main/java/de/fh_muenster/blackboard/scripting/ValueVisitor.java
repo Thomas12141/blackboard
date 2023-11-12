@@ -97,9 +97,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(AssignNode n) {
-		Blackboard blackboard = Blackboard.getInstance();
+		double rs = n.right().accept(this);
 
-		return blackboard.answer(Double.class, n.expr());
+		return rs;
 	}
 
 	@Override
@@ -148,7 +148,6 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(FunctionNode n) {
-		double ret = 0;
 		double childValue;
 		double ls;
 		double rs;
@@ -169,37 +168,34 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			return Math.pow(ls, rs);
 		}
 		if(n.data().equals("sin")){
-			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
-			if(variables.childs().size()!=1){
+			if(n.childs().size()!=1){
 				throw new RuntimeException("sin braucht ein Argumente.");
 			}
-			childValue = variables.childs().get(0).accept(this);
+			childValue = n.childs().get(0).accept(this);
 			return Math.sin(childValue);
 		}
-		throw new IllegalArgumentException("unkown operation: " + n.data());
+		if(n.parent() instanceof FunctionAssignNode){
+			return ((FunctionAssignNode) n.parent()).right().accept(this);
+		}
+		AST<?> function = searchFunctionDeclaration(n);
+		return function.accept(this);
 	}
-
-	@Override
-	public Double visit(FunctionAssignNode functionAssignNode) {
-		return null;
-	}
-
-	@Override
-	public Double visit(VariableNode variableNode) {
-		return null;
-	}
-
-	/*private FunctionNode functionDeclarationSearch(FunctionNode functionNode){
-		AST<?> iterator = functionNode;
-		iterator = (AstNode<?>)iterator.parent();
+	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
+		AST<?> parentAssignNode = toFind;
+		while (!(parentAssignNode.parent() instanceof SemiNode)){
+			parentAssignNode = parentAssignNode.parent();
+			if(parentAssignNode==null){
+				throw new IllegalArgumentException("function reference is null");
+			}
+		}
+		AST<?> iterator = parentAssignNode.parent();
 		while (iterator != null){
 			if (iterator instanceof SemiNode) {
 				iterator = ((SemiNode) iterator).left();
-				iterator = ((AssignNode) iterator).left();
-				if(iterator instanceof Label){
-
-					if(iterator.data().equals(hay.data())){
-						return  ((Label) iterator);
+				iterator = iterator.childs().get(0);
+				if(iterator instanceof FunctionNode){
+					if(iterator.data().equals(toFind.data())&&iterator.parent() instanceof FunctionAssignNode){
+						return  ((FunctionNode) iterator);
 					}
 					iterator = iterator.parent();
 				}
@@ -210,8 +206,19 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				iterator = iterator.parent();
 			}
 		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
-	}*/
+		throw new IllegalArgumentException("function reference is null");
+	}
+	@Override
+	public Double visit(FunctionAssignNode functionAssignNode) {
+		double rs = functionAssignNode.expr().accept(this);
+		return rs;
+	}
+
+	@Override
+	public Double visit(VariableNode variableNode) {
+		return null;
+	}
+
 
 	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
 		AST<?> iterator = functionNode;
