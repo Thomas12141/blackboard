@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -131,11 +132,10 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
-	/////// besprechen
 	void testSemi() throws Exception {
 		String task = " 4 ; 2";
 		String returned = blackboard.answer(String.class, task);
-		String expected = "2;4";
+		String expected = "4;2";
 		assertEquals(expected, returned);
 	}
 
@@ -186,11 +186,20 @@ class StringVisitorTest {
 
 	@Test
 	@Timeout(2)
-	/////// besprechen
 	void testPow3() throws Exception {
 		String task = " pow( 2, 4  )";
 		String returned = blackboard.answer(String.class, task);
-		String expected = "2^4";
+		String expected = "pow(2,4)";
+		assertEquals(expected, returned);
+	}
+
+
+	@Test
+	@Timeout(2)
+	void testFunction() throws Exception {
+		String task = "x=2;y=3;f( x , y )=2";
+		String returned = blackboard.answer(String.class, task);
+		String expected = "x=2;y=3;f(x,y)=2";
 		assertEquals(expected, returned);
 	}
 }

@@ -19,6 +19,8 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import java.util.ArrayList;
+
 /**
  * A Visitor iterating over an AST providing a String representation.
  */
@@ -63,7 +65,9 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 	public String visit(OperationNode n) {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
-
+		if(n instanceof PowerFunctionNode){
+			return "pow(" + left + "," +  right + ")";
+		}
 		return left + n.data() + right;
 	}
 
@@ -102,6 +106,35 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 		String left = n.left().accept(this);
 		String right = n.right().accept(this);
 
-		return (right + n.data() + left);
+		return left + n.data() + right;
+	}
+
+
+	/**
+	 * (non-Javadoc)
+	 *
+	 * @see de.fh_muenster.blackboard.scripting.AST#accept(de.fh_muenster.blackboard.scripting.AstVisitor)
+	 */
+	@Override
+	public String visit(FunctionNode n) {
+		String result = n.data() + "(";
+		result += n.childs().get(0).accept(this)+")";
+		return result;
+	}
+
+	@Override
+	public String visit(FunctionAssignNode functionAssignNode) {
+		String left = functionAssignNode.left().accept(this);
+		String right = functionAssignNode.right().accept(this);
+
+		return left + functionAssignNode.data() + right;
+	}
+
+	@Override
+	public String visit(VariableNode variableNode) {
+		String left = variableNode.left().accept(this);
+		String right = variableNode.right().accept(this);
+
+		return left + variableNode.data() + right;
 	}
 }

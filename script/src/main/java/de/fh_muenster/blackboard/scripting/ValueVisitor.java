@@ -21,6 +21,10 @@ package de.fh_muenster.blackboard.scripting;
 
 import de.fh_muenster.blackboard.Blackboard;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  *	A value visitor for ast.
  */
@@ -93,9 +97,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(AssignNode n) {
-		Blackboard blackboard = Blackboard.getInstance();
+		double rs = n.right().accept(this);
 
-		return blackboard.answer(Double.class, n.expr());
+		return rs;
 	}
 
 	@Override
@@ -129,7 +133,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				ret = Math.log(childValue)/Math.log(2);
 				break;
 			default:
-				throw new IllegalArgumentException("unkown operation: " + n.data());
+				throw new IllegalArgumentException("unknown operation: " + n.data());
 		}
 
 		return ret;
@@ -142,7 +146,142 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return rs;
 	}
 
+	@Override
+	public Double visit(FunctionNode n) {
+		double childValue;
+		double ls;
+		double rs;
+		if(n.data().equals("lb")){
+			if(n.childs().get(0)instanceof VariableNode){
+				throw new IllegalArgumentException("Lb kann nur ein Argument bekommen.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.log(childValue)/Math.log(2);
+		}
+		if(n.data().equals("ln")){
+			if(n.childs().get(0)instanceof VariableNode){
+				throw new IllegalArgumentException("Ln kann nur ein Argument bekommen.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.log(childValue);
+		}
 
+		if(n.data().equals("pow")){
+			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
+			if(variables.childs().size()!=2){
+				throw new IllegalArgumentException("pow braucht zwei Argumente  #args.");
+			}
+			ls = variables.childs().get(0).accept(this);
+			rs = variables.childs().get(1).accept(this);
+			return Math.pow(ls, rs);
+		}
+		if(n.data().equals("sin")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("sin braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.sin(childValue);
+		}
+		if(n.data().equals("cos")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("cos braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.cos(childValue);
+		}
+		if(n.data().equals("acos")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("acos braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.acos(childValue);
+		}
+		if(n.data().equals("asin")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("asin braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.asin(childValue);
+		}
+		if(n.data().equals("exp")){
+			if(n.childs().size()!=1){
+				throw new IllegalArgumentException("exp braucht ein Argumente.");
+			}
+			childValue = n.childs().get(0).accept(this);
+			return Math.exp(childValue);
+		}
+		if(n.parent() instanceof FunctionAssignNode){
+			return ((FunctionAssignNode) n.parent()).right().accept(this);
+		}
+		AST<?> function = searchFunctionDeclaration(n);
+		if (!(AstNode.childsEquals(n, (AstNode) function))) {
+			throw new IllegalArgumentException("wrong arguments for script function #args");
+		}
+		return function.accept(this);
+	}
+	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
+		AST<?> parentAssignNode = toFind;
+		while (!(parentAssignNode.parent() instanceof SemiNode)){
+			parentAssignNode = parentAssignNode.parent();
+			if(parentAssignNode==null){
+				throw new IllegalArgumentException("function reference is null");
+			}
+		}
+		AST<?> iterator = parentAssignNode.parent();
+		while (iterator != null){
+			if (iterator instanceof SemiNode) {
+				iterator = ((SemiNode) iterator).left();
+				iterator = iterator.childs().get(0);
+				if(iterator instanceof FunctionNode){
+					if(iterator.data().equals(toFind.data())&&iterator.parent() instanceof FunctionAssignNode){
+						return  ((FunctionNode) iterator);
+					}
+					iterator = iterator.parent();
+				}
+				iterator = iterator.parent();
+			}
+			iterator = iterator.parent();
+			if(iterator instanceof SemiNode){
+				iterator = iterator.parent();
+			}
+		}
+		throw new IllegalArgumentException("unknown function");
+	}
+	@Override
+	public Double visit(FunctionAssignNode functionAssignNode) {
+		double rs = functionAssignNode.expr().accept(this);
+		return rs;
+	}
+
+	@Override
+	public Double visit(VariableNode variableNode) {
+		return null;
+	}
+
+
+	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
+		AST<?> iterator = functionNode;
+		iterator = (AstNode<?>)iterator.parent();
+		while (iterator != null){
+			if (iterator instanceof SemiNode) {
+				iterator = ((SemiNode) iterator).left();
+				iterator = ((AssignNode) iterator).left();
+				if(iterator instanceof Label){
+
+                    if(iterator.data().equals(hay.data())){
+						return  ((Label) iterator);
+					}
+					iterator = iterator.parent();
+				}
+				iterator = iterator.parent();
+			}
+			if(iterator instanceof SemiNode){
+				iterator = iterator.parent();
+			}
+		}
+		throw new IllegalArgumentException("function reference is null");
+
+	}
 	/**
 	 * (non-Javadoc)
 	 *
@@ -161,12 +300,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	private AssignNode needleInHaystack(Label needle) {
 
+
 		/*	iteration till the assign node of the needle.
 		 */
 		AST<?> parentAssignNode = needle;
 
 		while (!(parentAssignNode.parent() instanceof SemiNode)){
 			parentAssignNode = parentAssignNode.parent();
+			if(parentAssignNode==null){
+				throw new IllegalArgumentException("function reference is null");
+			}
 		}
 
 		AST<?> iterator = needle.parent();

@@ -72,7 +72,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testUnknownFunction() throws Exception {
 		try {
 			task = define("x=%.8f;  y=foo(x)",x1);
@@ -85,20 +84,18 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testWrongArgumentsForScriptFunction() throws Exception {
 		try {
 			task = define("x=%.8f; f(x,y)=x*y; z=f(x)",x1);
 			returned = resultOf(task,7);
 			fail("wrong function argumtens not recognized");
 		} catch(IllegalArgumentException e) {
-			//log("e: %s",e.getMessage());
+			log("e: %s",e.getMessage());
 			assertTrue(e.getMessage().contains("#args"));
 		}
 	}
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testWrongArgumentsForMathFunction() throws Exception {
 		try {
 			task = define("x=%.8f; z=pow(x)",x1);
@@ -148,7 +145,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
-	@Disabled
 	public void testDirectPower() throws Exception {
 		task = define("x=%.8f; y=%.8f; z=pow(x,y)",x1,x2);
 		expected = pow(x1,x2);
@@ -215,6 +211,16 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	public void testDirectPow() throws Exception {
 		task = define("pow(%.8f,%.8f)",x1,x2);
 		expected = Math.pow(x1,x2);
+		returned = resultOf(task,7);
+		assertEquals(expected,returned, delta);
+	}
+
+	// new
+	@Test
+	@Timeout(1)
+	public void testDirectExp() throws Exception {
+		task = define("exp(%.8f)",x1);
+		expected = Math.exp(x1);
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
@@ -318,4 +324,12 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 		}
 	}
 
+	@Test
+	@Timeout(2)
+	void testFunction() throws Exception {
+		String task = "x=2;f( x  )=2*x";
+		returned = blackboard.answer(Double.class, task);
+		expected = 4;
+		assertEquals(expected, returned);
+	}
 }
