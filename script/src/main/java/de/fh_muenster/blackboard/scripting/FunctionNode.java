@@ -55,7 +55,7 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         String functionString = clone.parent().childs().get(1).accept(new StringVisitor());
         for (int i = 0; i < functionString.length(); i++) {
             if(variable.contains(Character. toString(functionString.charAt(i)))){
-                functionString = functionString.substring(0,i) + Double.toString(doubles[variable.lastIndexOf(iterator.toString())]) + functionString.substring(i+1);
+                functionString = functionString.substring(0,i) + Double.toString(doubles[variable.lastIndexOf(Character. toString(functionString.charAt(i)))]) + functionString.substring(i+1);
             }
         }
         Blackboard blackboard = Blackboard.getInstance();
