@@ -29,39 +29,7 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
     //TODO Write visitor for the function.
     @Override
     public Double apply(double[] doubles) {
-        this.variablesOperations = new ArrayList<AST<?>>();
-        ArrayList<String> variable = new ArrayList<>();
-        for (double iterator:doubles) {
-            this.variablesOperations.add(new DoubleValue(iterator));
-        }
-        FunctionNode clone;
-        try {
-            clone = (FunctionNode) this.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        AST<?> iterator = clone.childs().get(0);
-        while (iterator!=null){
-            if(iterator instanceof Label){
-                variable.add((String) iterator.data());
-                break;
-            }
-            variable.add((String)iterator.childs().get(0).data());
-            iterator = iterator.childs().get(1);
-        }
-        /*if(variables.size() != this.variablesOperations.size()){
-            throw new IllegalArgumentException("Diese Funktion braucht andere Anzahl an Werten.");
-        }*/
-        String functionString = clone.parent().childs().get(1).accept(new StringVisitor());
-        for (int i = 0; i < functionString.length(); i++) {
-            if(variable.contains(Character. toString(functionString.charAt(i)))){
-                functionString = functionString.substring(0,i) + Double.toString(doubles[variable.lastIndexOf(Character. toString(functionString.charAt(i)))]) + functionString.substring(i+1);
-            }
-        }
-        Blackboard blackboard = Blackboard.getInstance();
-        //treeIteration(clone, doubles, variable);
-        return blackboard.answer(Double.class, functionString);
-
+        return this.accept(new FunctionVisitor()).apply(doubles);
     }
 
     @Override

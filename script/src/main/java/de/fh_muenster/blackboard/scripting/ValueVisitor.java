@@ -306,12 +306,10 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(Label n) {
-		Blackboard blackboard = Blackboard.getInstance();
-
 		if(n.parent() instanceof AssignNode){
-			return blackboard.answer(Double.class, ((AssignNode) n.parent()).expr());
+			return ((AssignNode)n.parent()).expr().accept(this);
 		}
-		return blackboard.answer(Double.class, needleInHaystack(n));
+		return needleInHaystack(n).accept(this);
 	}
 
 
