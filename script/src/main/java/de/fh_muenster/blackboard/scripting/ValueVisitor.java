@@ -97,9 +97,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(AssignNode n) {
-		double rs = n.right().accept(this);
+		VariablesMap.variables.put(((Label)n.left()).data(), n.left().accept(this));
 
-		return rs;
+		return VariablesMap.variables.get(((Label)n.left()).data());
 	}
 
 	@Override
@@ -210,6 +210,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			childValue = n.childs().get(0).accept(this);
 			return Math.exp(childValue);
 		}
+		if(!VariablesMap.variables.containsKey(n.data())){
+			throw new IllegalArgumentException("unknown function");
+		}
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
@@ -275,6 +278,15 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return null;
 	}
 
+	@Override
+	public Double visit(MasterNode masterNode) {
+		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
+		for (int i = 0; i < trees.size()-1; i++) {
+			trees.get(i).accept(this);
+		}
+		return trees.get(trees.size()-1).accept(this);
+	}
+
 
 	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
 		AST<?> iterator = functionNode;
@@ -306,10 +318,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	 */
 	@Override
 	public Double visit(Label n) {
-		if(n.parent() instanceof AssignNode){
-			return ((AssignNode)n.parent()).expr().accept(this);
+		if(VariablesMap.variables.containsKey(n.data())&&!(n.parent() instanceof AssignNode)){
+			return VariablesMap.variables.get(n.data());
+		}else if(n.parent() instanceof AssignNode){
+			return ((AssignNode) n.parent()).expr().accept(this);
+		}else {
+			throw new IllegalArgumentException("Dieser Label wurde vorher nicht defeniert.");
 		}
-		return needleInHaystack(n).accept(this);
 	}
 
 

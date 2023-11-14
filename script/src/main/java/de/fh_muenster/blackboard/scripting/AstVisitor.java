@@ -92,4 +92,6 @@ public interface AstVisitor<V> extends KnowledgeSource<AST<?>, V> {
     V visit(FunctionAssignNode functionAssignNode);
 
 	V visit(VariableNode variableNode);
+
+	V visit(MasterNode masterNode);
 }

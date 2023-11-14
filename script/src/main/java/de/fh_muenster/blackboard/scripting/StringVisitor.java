@@ -133,4 +133,16 @@ public class StringVisitor extends AbstractAstVisitor<String> {
 
 		return left + variableNode.data() + right;
 	}
+
+	public String visit(MasterNode master){
+		StringBuffer result = new StringBuffer();
+		for (int i = 0; i < master.childs().size()-1; i++) {
+			result.append(((AST) master.childs().get(i)).accept(this));
+			result.append(";");
+		}
+		if(!master.childs().isEmpty()){
+			result.append(((AST)master.childs().get(master.childs().size()-1)).accept(this));
+		}
+		return result.toString();
+	}
 }
