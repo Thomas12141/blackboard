@@ -275,6 +275,11 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		return null;
 	}
 
+	@Override
+	public Double visit(MasterNode masterNode) {
+		return null;
+	}
+
 
 	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
 		AST<?> iterator = functionNode;

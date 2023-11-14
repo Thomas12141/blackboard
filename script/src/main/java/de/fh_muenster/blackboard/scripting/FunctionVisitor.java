@@ -244,6 +244,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		return null;
 	}
 
+	@Override
+	public Function<double[], Double> visit(MasterNode masterNode) {
+		return null;
+	}
+
 	/**
 	 * (non-Javadoc)
 	 *

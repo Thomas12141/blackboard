@@ -118,16 +118,23 @@ TOKEN : /* IDENTIFIERS */
 
 /** statement. */
 protected AST<?> statement(): {
-  AST<?> n=null; AST<?> m=null;}
+ AST<?> a = null;
+  AST<?> n = MasterNode.getInstance();}
 {
-  (  LOOKAHEAD(20) n = assignment()|LOOKAHEAD(20) n = expr()
-       )
+  (  LOOKAHEAD(20) a = assignment()|LOOKAHEAD(20) a = expr()
+       ){n.childs().add(a);}
   (<SEMI>
-         m = statement() {n=node(n, ";",m);})*<EOF>
+         secondStatement(n) )*<EOF>
   {
-
     return n;
     }
+}
+
+protected void secondStatement(AST<?> master): {
+ AST<?> a = null;}
+{
+  (LOOKAHEAD(20) a = assignment()|LOOKAHEAD(20) a = expr()){master.childs().add(a);}
+
 }
 
 /** assignment. */
