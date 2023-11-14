@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import de.fh_muenster.blackboard.Blackboard;
 import de.fh_muenster.blackboard.KnowledgeSource;
@@ -103,7 +104,7 @@ public final class BasicBlackboard implements Blackboard {
 					Object answer = ks.solve(this, task);
 					log("%s: %s => %s", ks.getClass().getSimpleName(), task, answer);
 					future.solutions.add(answer);
-					if (!(answer instanceof Number || answer instanceof String)) {
+					if (!(answer instanceof Number || answer instanceof String || answer instanceof Function<?,?>)) {
 						write(future, answer);
 					}
 				} catch (RuntimeException e) {

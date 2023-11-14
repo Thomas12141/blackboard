@@ -198,6 +198,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return  Math.exp(a[0]);
 			};
 		}
+		n.setFunctionCall((FunctionCall) n.accept(new FunctionVisitor()));
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
@@ -246,7 +247,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 	@Override
 	public Function<double[], Double> visit(MasterNode masterNode) {
-		return null;
+		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
+		for (int i = 0; i < trees.size()-1; i++) {
+			trees.get(i).accept(this);
+		}
+		return trees.get(trees.size()-1).accept(this);
 	}
 
 	/**

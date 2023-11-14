@@ -190,6 +190,7 @@ public abstract class AbstractScriptTester {
 		// within their constructors ...
 		new ValueVisitor();
 		new JavaccParser();
+		new FunctionVisitor();
 	}
     /**
      * Utility method to get an answer as double

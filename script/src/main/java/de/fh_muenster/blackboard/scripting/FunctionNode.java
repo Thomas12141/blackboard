@@ -16,20 +16,19 @@ import java.util.function.Function;
 import static java.lang.Double.valueOf;
 
 //TODO Write the function.
-public class FunctionNode extends AstNode<String> implements java.util.function.Function<double[],Double>, Cloneable {
+public class FunctionNode extends AstNode<String>{
     private AST<?> variables;
-    //Operations for future implementation of andThen and compose methods. When using normal doubles the list will save the values.
-    private ArrayList<AST<?>> variablesOperations;
+
+    private FunctionCall functionCall;
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
         this.variables = variables;
         this.childs().add(variables);
         variables.setParent(this);
     }
-    //TODO Write visitor for the function.
-    @Override
-    public Double apply(double[] doubles) {
-        return this.accept(new FunctionVisitor()).apply(doubles);
+
+    public void setFunctionCall(FunctionCall functionCall) {
+        this.functionCall = functionCall;
     }
 
     @Override
@@ -64,15 +63,6 @@ public class FunctionNode extends AstNode<String> implements java.util.function.
         }
     }
 
-    @Override
-    public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
-    }
-
-    @Override
-    public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
-    }
 
     @Override
     public <V> V accept(AstVisitor<V> visitor) {
