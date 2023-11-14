@@ -57,6 +57,7 @@ class ParserTest {
 		Future<?> ref = blackboard.write(task);
 		assertNotNull(ref, "ref is null");
 		AST<?> ast = blackboard.answer(AST.class, task);
+		ast = ast.childs().get(0);
 		assertTrue(ast instanceof PlusNode);
 		if (ast instanceof PlusNode pn) {
 			AST<?> lhs = pn.left();
@@ -74,6 +75,7 @@ class ParserTest {
 		assertNotNull(blackboard, "blackboar is NP");
 		String task = "3 + 4 + 5";
 		AST<?> ast = blackboard.answer(AST.class, task);
+		ast = ast.childs().get(0);
 		assertTrue(ast instanceof PlusNode);
 	}
 
@@ -82,6 +84,7 @@ class ParserTest {
 	void testPlus() throws Exception {
 		String task = "4 +  3.2";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof PlusNode);
 		if (ast instanceof PlusNode pn) {
@@ -95,6 +98,7 @@ class ParserTest {
 	void testAssignment() throws Exception {
 		String task = " x  = 3.25";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof AssignNode);
 		if (ast instanceof AssignNode an) {
@@ -108,6 +112,7 @@ class ParserTest {
 	void testThreePlus() throws Exception {
 		String task = "4 +  3.2 + 5";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		System.out.printf("ast: %s %n", ast);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof PlusNode);
@@ -127,6 +132,7 @@ class ParserTest {
 	void testMinus() throws Exception {
 		String task = "4.3 - 3.2";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof MinusNode);
 		if (ast instanceof MinusNode mn) {
@@ -140,6 +146,7 @@ class ParserTest {
 	void testTimes() throws Exception {
 		String task = "3.0 * 5";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof TimesNode);
 	}
@@ -149,6 +156,7 @@ class ParserTest {
 	void testDivide() throws Exception {
 		String task = "3 / 4.0";
 		AST<?> ast = parser.solve(blackboard, task);
+		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof DivideNode);
 	}
