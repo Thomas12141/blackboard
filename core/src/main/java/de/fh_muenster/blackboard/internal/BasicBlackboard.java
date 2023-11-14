@@ -104,7 +104,7 @@ public final class BasicBlackboard implements Blackboard {
 					Object answer = ks.solve(this, task);
 					log("%s: %s => %s", ks.getClass().getSimpleName(), task, answer);
 					future.solutions.add(answer);
-					if (!(answer instanceof Number || answer instanceof String || answer instanceof Function<?,?>)) {
+					if (!(answer instanceof Number || answer instanceof String || answer instanceof Function<?, ?>)) {
 						write(future, answer);
 					}
 				} catch (RuntimeException e) {

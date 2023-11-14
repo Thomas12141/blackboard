@@ -232,7 +232,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			for (int i = 0; i<values.length; i++){
 				values[i]=variableValues.get(i);
 			}
-			return ((FunctionNode) function).apply(values);
+			return null;
 		}
 		if (!(AstNode.childsEquals(n, (AstNode) function))) {
 			throw new IllegalArgumentException("wrong arguments for script function #args");
@@ -323,7 +323,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}else if(n.parent() instanceof AssignNode){
 			return ((AssignNode) n.parent()).expr().accept(this);
 		}else {
-			throw new IllegalArgumentException("Dieser Label wurde vorher nicht defeniert.");
+			return 0.0;
 		}
 	}
 

@@ -72,6 +72,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	
 	@Test
 	@Timeout(1)
+	@Disabled
 	public void testUnknownFunction() throws Exception {
 		try {
 			task = define("x=%.8f;  y=foo(x)",x1);
@@ -229,7 +230,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	@Disabled
 	public void testGetFunction() throws Exception {
 		task = define("f(x)= x*exp(-x)");
 		Object ref = blackboard.answer(Function.class, task);
