@@ -195,7 +195,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return   Math.exp(n.childs().get(0).accept(this).apply(a));
 			};
 		}
-		n.setFunctionCall((FunctionCall) n.accept(new FunctionVisitor()));
+		n.setFunctionCall(new FunctionCall(n.parent().childs().get(1).accept(new FunctionVisitor())));
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
