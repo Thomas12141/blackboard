@@ -269,8 +269,8 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	}
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
-		double rs = functionAssignNode.expr().accept(this);
-		return rs;
+		functionAssignNode.accept(new FunctionVisitor());
+		return 0.0;
 	}
 
 	@Override

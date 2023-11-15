@@ -192,7 +192,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a.length!=1){
 					throw new IllegalArgumentException("exp braucht ein Argument.");
 				}
-				return  Math.exp(n.childs().get(0).accept(this).apply(a));
+				return   Math.exp(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 		n.setFunctionCall((FunctionCall) n.accept(new FunctionVisitor()));
@@ -234,6 +234,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
+		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
+		FunctionCall functionCall = new FunctionCall(functionAssignNode.id().accept(this));
+		((FunctionNode) functionAssignNode.id()).setFunctionCall( functionCall);
 		return functionAssignNode.expr().accept(this);
 	}
 

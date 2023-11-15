@@ -20,6 +20,11 @@ public class FunctionNode extends AstNode<String>{
     private AST<?> variables;
 
     private FunctionCall functionCall;
+
+    public FunctionCall getFunctionCall() {
+        return functionCall;
+    }
+
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
         this.variables = variables;
