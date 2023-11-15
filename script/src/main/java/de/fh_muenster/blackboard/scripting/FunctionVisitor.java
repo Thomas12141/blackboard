@@ -128,7 +128,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a[0]<0){
 					throw new IllegalArgumentException("Lb kann nur Werten größer gleich 0 bekommen.");
 				}
-				return Math.log(a[0])/Math.log(2);
+				return Math.log(n.childs().get(0).accept(this).apply(a))/Math.log(2);
 			};
 		}
 		if(n.data().equals("ln")){
@@ -140,7 +140,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a[0]<0){
 					throw new IllegalArgumentException("Ln kann nur Werten größer gleich 0 bekommen.");
 				}
-				return Math.log(a[0]);
+				return Math.log(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 
@@ -152,7 +152,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(Double.isNaN(Math.pow(a[0], a[1]))){
 					throw new IllegalArgumentException("complex number");
 				}
-				return  Math.pow(a[0], a[1]);
+				return  Math.pow(n.childs().get(0).accept(this).apply(a), n.childs().get(1).accept(this).apply(a));
 			};
 		}
 		if(n.data().equals("sin")){
@@ -160,7 +160,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a.length!=1){
 					throw new IllegalArgumentException("sin braucht ein Argument.");
 				}
-				return  Math.sin(a[0]);
+				return  Math.sin(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 		if(n.data().equals("cos")){
@@ -168,7 +168,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a.length!=1){
 					throw new IllegalArgumentException("cos braucht ein Argument.");
 				}
-				return  Math.cos(a[0]);
+				return  Math.cos(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 		if(n.data().equals("acos")){
@@ -176,7 +176,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a.length!=1){
 					throw new IllegalArgumentException("acos braucht ein Argument.");
 				}
-				return  Math.acos(a[0]);
+				return  Math.acos(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 		if(n.data().equals("asin")){
@@ -184,7 +184,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				if(a.length!=1){
 					throw new IllegalArgumentException("asin braucht ein Argument.");
 				}
-				return  Math.asin(a[0]);
+				return  Math.asin(n.childs().get(0).accept(this).apply(a));
 			};
 		}
 		if(n.data().equals("exp")){
@@ -195,12 +195,10 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return   Math.exp(n.childs().get(0).accept(this).apply(a));
 			};
 		}
-		n.setFunctionCall(new FunctionCall(n.parent().childs().get(1).accept(new FunctionVisitor())));
-		if(n.parent() instanceof FunctionAssignNode){
-			return ((FunctionAssignNode) n.parent()).right().accept(this);
+		if(n.getFunctionCall()==null){
+			n.setFunctionCall(new FunctionCall(n.parent().childs().get(1).accept(this)));
 		}
-		AST<?> function = searchFunctionDeclaration(n);
-		return function.accept(this);
+		return n.getFunctionCall();
 	}
 
 

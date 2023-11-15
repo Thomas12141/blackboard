@@ -269,6 +269,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	}
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
+		FunctionMap.functions.put(functionAssignNode.id().data(),(FunctionNode) functionAssignNode.expr());
 		return functionAssignNode.expr().accept(this);
 	}
 
