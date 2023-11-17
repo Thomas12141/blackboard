@@ -19,8 +19,6 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import de.fh_muenster.blackboard.Blackboard;
-
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -81,10 +79,10 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 					return a[0] / a[1];};
 			case POWER, POWERCARET:
 				return (a) -> {
-					if(Double.isNaN(Math.pow(a[0], a[1]))){
+					if(Double.isNaN(Math.pow(ls.apply(a), rs.apply(a)))){
 						throw new IllegalArgumentException("complex number");
 					}
-					return  Math.pow(a[0], a[1]);
+					return  Math.pow(ls.apply(a), rs.apply(a));
 				};
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
@@ -97,6 +95,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double[], Double> visit(AssignNode n) {
+		VariablesMap.variables.put(n.id().data(), n.expr().accept(new ValueVisitor()));
 		return n.right().accept(this);
 	}
 
@@ -195,10 +194,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return   Math.exp(n.childs().get(0).accept(this).apply(a));
 			};
 		}
-		if(n.getFunctionCall()==null){
-			n.setFunctionCall(new FunctionCall(n.parent().childs().get(1).accept(this)));
-		}
-		return n.getFunctionCall();
+		return null;
 	}
 
 
@@ -232,10 +228,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
-		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
-		FunctionCall functionCall = new FunctionCall(functionAssignNode.id().accept(this));
-		((FunctionNode) functionAssignNode.id()).setFunctionCall( functionCall);
-		return functionAssignNode.expr().accept(this);
+		return null;
 	}
 
 	@Override

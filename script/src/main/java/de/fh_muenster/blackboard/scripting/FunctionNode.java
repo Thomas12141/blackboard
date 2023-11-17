@@ -19,11 +19,8 @@ import static java.lang.Double.valueOf;
 public class FunctionNode extends AstNode<String>{
     private AST<?> variables;
 
-    private FunctionCall functionCall;
+    private Function<double [], Double> functionCall;
 
-    public FunctionCall getFunctionCall() {
-        return functionCall;
-    }
 
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
@@ -32,8 +29,12 @@ public class FunctionNode extends AstNode<String>{
         variables.setParent(this);
     }
 
-    public void setFunctionCall(FunctionCall functionCall) {
+    public void setFunctionCall(Function<double [], Double> functionCall) {
         this.functionCall = functionCall;
+    }
+
+    public Function<double[], Double> getFunctionCall() {
+        return functionCall;
     }
 
     @Override
@@ -68,6 +69,14 @@ public class FunctionNode extends AstNode<String>{
         }
     }
 
+
+    public AST<?> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(AST<?> variables) {
+        this.variables = variables;
+    }
 
     @Override
     public <V> V accept(AstVisitor<V> visitor) {

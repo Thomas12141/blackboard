@@ -210,13 +210,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			childValue = n.childs().get(0).accept(this);
 			return Math.exp(childValue);
 		}
-		if(!VariablesMap.variables.containsKey(n.data())){
+		if(!FunctionMap.functions.containsKey(n.data())){
 			throw new IllegalArgumentException("unknown function");
 		}
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
-		AST<?> function = searchFunctionDeclaration(n);
+		FunctionNode function = FunctionMap.functions.get(n.data());
 		if(!(n.parent() instanceof FunctionAssignNode)&&!n.equals(function)){
 			ArrayList<Double> variableValues = new ArrayList<Double>();
 			AstNode<?> iterator = (AstNode<?>) n.childs().get(0);
@@ -232,7 +232,8 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			for (int i = 0; i<values.length; i++){
 				values[i]=variableValues.get(i);
 			}
-			return null;
+			function.setFunctionCall(function.accept(new FunctionVisitor()));
+			return function.accept(new FunctionVisitor()).apply(values);
 		}
 		if (!(AstNode.childsEquals(n, (AstNode) function))) {
 			throw new IllegalArgumentException("wrong arguments for script function #args");
@@ -269,7 +270,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	}
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
-		FunctionMap.functions.put(functionAssignNode.id().data(),(FunctionNode) functionAssignNode.expr());
+		FunctionMap.functions.put(functionAssignNode.id().data(),(FunctionNode) functionAssignNode.id());
 		return functionAssignNode.expr().accept(this);
 	}
 

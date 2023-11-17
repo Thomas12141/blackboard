@@ -2,12 +2,17 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionCall implements Function<double [], Double> {
+public class FunctionPlus implements Function<double [], Double> {
 
     private FunctionNode function;
 
-    public FunctionCall(Function<double[], Double> exp) {
-        super();
+    private Function<double [], Double> left;
+
+    private Function<double [], Double> right;
+
+    public FunctionPlus(Function<double[], Double> left, Function<double[], Double> right) {
+        this.left = left;
+        this.right = right;
     }
 
     public FunctionNode getFunction() {
@@ -20,7 +25,7 @@ public class FunctionCall implements Function<double [], Double> {
 
     @Override
     public Double apply(double[] doubles) {
-        return null;
+        return left.apply(doubles) + right.apply(doubles);
     }
 
     @Override

@@ -188,7 +188,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 				return   Math.exp(n.childs().get(0).accept(this).apply(a));
 			};
 		}
-		n.setFunctionCall((FunctionCall) n.accept(new DerivativeVisitor()));
+		n.setFunctionCall((FunctionPlus) n.accept(new DerivativeVisitor()));
 		if(n.parent() instanceof FunctionAssignNode){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
@@ -227,10 +227,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
-		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
-		FunctionCall functionCall = new FunctionCall(functionAssignNode.id().accept(this));
-		((FunctionNode) functionAssignNode.id()).setFunctionCall( functionCall);
-		return functionAssignNode.expr().accept(this);
+		return null;
 	}
 
 	@Override
