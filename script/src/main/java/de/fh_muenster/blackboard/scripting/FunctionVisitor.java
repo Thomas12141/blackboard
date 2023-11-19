@@ -130,7 +130,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(n.data().equals("exp")){
 			return new FunctionExp(n.childs().get(0).accept(this));
 		}
-		return n.childs().get(0).accept(this);
+		return n.parent().childs().get(1).accept(this);
 	}
 
 
@@ -192,46 +192,5 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		return (a)->{
 			return a[0];
 		};
-	}
-
-
-	private AssignNode needleInHaystack(Label needle) {
-
-
-		/*	iteration till the assign node of the needle.
-		 */
-		AST<?> parentAssignNode = needle;
-
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-
-		AST<?> iterator = needle.parent();
-
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-
-				if((iterator) instanceof AssignNode){
-					iterator = ((AssignNode) iterator).left();
-
-					if(iterator.data().equals(needle.data())){
-						iterator = iterator.parent();
-
-						return  ((AssignNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode && ((SemiNode) iterator).left().equals(parentAssignNode)){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
 	}
 }
