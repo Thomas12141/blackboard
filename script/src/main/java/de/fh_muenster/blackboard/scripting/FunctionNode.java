@@ -17,17 +17,35 @@ import static java.lang.Double.valueOf;
 
 //TODO Write the function.
 public class FunctionNode extends AstNode<String>{
-    private AST<?> variables;
+    private ArrayList<String> variableList;
 
     private Function<double [], Double> functionCall;
 
 
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
-        this.variables = variables;
+
+        if (variables instanceof VariableNode) {
+            variableList = new ArrayList<>();
+            AST<?> iterator = variables;
+            while (iterator != null) {
+                if (iterator instanceof Label) {
+                    variableList.add((String) iterator.data());
+                    iterator = null;
+                    break;
+                }
+                if (iterator.childs().isEmpty()) break;
+                if (iterator.childs().get(0) instanceof Label) {
+                    variableList.add((String) iterator.childs().get(0).data());
+                }
+                iterator = iterator.childs().get(1);
+            }
+        }
         this.childs().add(variables);
         variables.setParent(this);
     }
+
+
 
     public void setFunctionCall(Function<double [], Double> functionCall) {
         this.functionCall = functionCall;
@@ -42,40 +60,8 @@ public class FunctionNode extends AstNode<String>{
         return super.clone();
     }
 
-    //TODO Write the tree iterator. My thought was iterating the and changing the labels to vriable operations.
-    private void treeIteration(FunctionNode noodleNode, double[] doubles, ArrayList<String> variables){
-        AstNode<?> iterator = (AstNode<?>) noodleNode.parent().childs().get(1);
-        Stack<AstNode<?>> stag = new Stack<AstNode<?>>();
-        stag.push(iterator);
-
-        while(!(stag.isEmpty())) {
-            iterator = stag.pop();
-            for (AST<?> toPush : iterator.childs()) {
-                stag.push((AstNode<?>) toPush);
-            }
-            if (iterator instanceof Label) {
-                int index = variables.lastIndexOf(iterator.toString());
-                if (index != -1) {
-                    DoubleValue dv = new DoubleValue(doubles[index]);
-                    AstNode<?> parent = (AstNode<?>) iterator.parent();
-                    for (int i = 0; i < parent.childs().size(); i++) {
-                        if (parent.childs().get(i).equals(iterator)) {
-                            parent.childs().set(i, dv);
-                            dv.setParent(parent);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
-    public AST<?> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(AST<?> variables) {
-        this.variables = variables;
+    public ArrayList<String> getVariables() {
+        return variableList;
     }
 
     @Override
@@ -97,6 +83,6 @@ public class FunctionNode extends AstNode<String>{
 
     @Override
     public String toString() {
-        return String.format("\"%s\"{%s}", data(), variables);
+        return String.format("\"%s\"{%s}", data(), this.childs().get(0).toString());
     }
 }
