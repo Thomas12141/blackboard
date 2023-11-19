@@ -130,7 +130,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(n.data().equals("exp")){
 			return new FunctionExp(n.childs().get(0).accept(this));
 		}
-		return n.parent().childs().get(1).accept(this);
+		if(n.equals(n.parent().childs().get(1))){
+			return n.getFunctionCall();
+		}else {
+			return n.parent().childs().get(1).accept(this);
+		}
 	}
 
 

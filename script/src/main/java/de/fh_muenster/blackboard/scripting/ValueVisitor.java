@@ -233,7 +233,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				values[i]=variableValues.get(i);
 			}
 			function.setFunctionCall(function.accept(new FunctionVisitor()));
-			return function.accept(new FunctionVisitor()).apply(values);
+			return function.getFunctionCall().apply(values);
 		}
 		if (!(AstNode.childsEquals(n, (AstNode) function))) {
 			throw new IllegalArgumentException("wrong arguments for script function #args");
