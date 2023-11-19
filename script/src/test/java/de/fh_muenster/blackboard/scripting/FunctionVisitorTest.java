@@ -59,7 +59,7 @@ class FunctionVisitorTest extends AbstractScriptTester{
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
 	public void testGetFunction() throws Exception {
-		task = define("f(x)= 3+2");
+		task = define("f(x)= 3+ 2");
 		Object ref = blackboard.answer(Function.class, task);
 		assertNotNull(ref,"function reference is null");
 		assertTrue(ref instanceof Function);

@@ -65,7 +65,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 		switch (op) {
 			case PLUS:
-				return (a) -> {return ls.apply(a) + rs.apply(a);};
+				return new FunctionPlus(ls, rs);
 			case MINUS:
 				return (a) -> {return ls.apply(a) - rs.apply(a);};
 			case TIMES:
@@ -228,7 +228,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
-		return null;
+		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
+		return functionAssignNode.expr().accept(this);
 	}
 
 	@Override
