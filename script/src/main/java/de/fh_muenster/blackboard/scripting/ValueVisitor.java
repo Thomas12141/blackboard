@@ -225,8 +225,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 					variableValues.add(iterator.accept(this));
 					break;
 				}
-				variableValues.add(iterator.childs().get(0).accept(this));
-				iterator = (AstNode<?>) iterator.childs().get(1);
+				else if(iterator instanceof VariableNode){
+					variableValues.add(iterator.childs().get(0).accept(this));
+					iterator = (AstNode<?>) iterator.childs().get(1);
+				}else {
+					variableValues.add(iterator.accept(this));
+					break;
+				}
 			}
 			double [] values = new double[variableValues.size()];
 			for (int i = 0; i<values.length; i++){
