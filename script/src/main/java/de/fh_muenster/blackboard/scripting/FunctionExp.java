@@ -6,8 +6,6 @@ public class FunctionExp implements Function<double [], Double> {
 
     private FunctionNode function;
 
-    private Function<double [], Double> left;
-
     private Function<double [], Double> right;
 
     public FunctionExp(Function<double[], Double> right) {
