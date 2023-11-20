@@ -213,7 +213,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		if(!FunctionMap.functions.containsKey(n.data())){
 			throw new IllegalArgumentException("unknown function");
 		}
-		if(n.parent() instanceof FunctionAssignNode){
+		if(n.parent() instanceof FunctionAssignNode&&((FunctionAssignNode) n.parent()).left().equals(n)){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
 		}
 		FunctionNode function = FunctionMap.functions.get(n.data());
@@ -245,34 +245,6 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		return function.accept(this);
 	}
-	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
-		AST<?> parentAssignNode = toFind;
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-		AST<?> iterator = parentAssignNode.parent();
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-				iterator = iterator.childs().get(0);
-				if(iterator instanceof FunctionNode){
-					if(iterator.data().equals(toFind.data())&&iterator.parent() instanceof FunctionAssignNode){
-						return  ((FunctionNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("unknown function");
-	}
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
 		FunctionMap.functions.put(functionAssignNode.id().data(),(FunctionNode) functionAssignNode.id());
@@ -294,29 +266,6 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	}
 
 
-	private Label hayInNeedleStack(Label hay, FunctionNode functionNode){
-		AST<?> iterator = functionNode;
-		iterator = (AstNode<?>)iterator.parent();
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-				iterator = ((AssignNode) iterator).left();
-				if(iterator instanceof Label){
-
-                    if(iterator.data().equals(hay.data())){
-						return  ((Label) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			if(iterator instanceof SemiNode){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("function reference is null");
-
-	}
 	/**
 	 * (non-Javadoc)
 	 *
@@ -329,7 +278,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}else if(n.parent() instanceof AssignNode){
 			return ((AssignNode) n.parent()).expr().accept(this);
 		}else {
-			return 0.0;
+			throw new IllegalArgumentException("ValueVisitor in visit Label, this label wasn't declared.");
 		}
 	}
 

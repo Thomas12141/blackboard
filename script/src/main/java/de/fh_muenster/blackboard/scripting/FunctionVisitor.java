@@ -193,8 +193,13 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double[], Double> visit(Label n) {
-		return (a)->{
-			return a[0];
-		};
+		AST<?> iterator =n.parent();
+		while (iterator != null&&!(iterator instanceof FunctionNode)){
+			iterator = iterator.parent();
+		}
+		if (iterator ==null|| ((FunctionNode) iterator).getVariables()==null){
+			return (a)->{return a[0];};
+		}
+		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()));
 	}
 }
