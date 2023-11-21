@@ -77,4 +77,13 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
         returned = resultOf(task,7);
         assertEquals(expected,returned, delta);
     }
+
+    @Test
+    @Timeout(2)
+    void testPow3() throws Exception {
+        String task = " sin'( 2, 4  )";
+        String returned = blackboard.answer(String.class, task);
+        String expected = "sin'(2,4)";
+        assertEquals(expected, returned);
+    }
 }
