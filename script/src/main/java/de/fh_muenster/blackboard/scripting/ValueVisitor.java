@@ -233,6 +233,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 					break;
 				}
 			}
+			if(function.getVariables()!=null&&variableValues.size()!=function.getVariables().size()){
+				throw new IllegalArgumentException("The number of the arguments given by the function call is wrong.#args");
+			}
 			double [] values = new double[variableValues.size()];
 			for (int i = 0; i<values.length; i++){
 				values[i]=variableValues.get(i);
