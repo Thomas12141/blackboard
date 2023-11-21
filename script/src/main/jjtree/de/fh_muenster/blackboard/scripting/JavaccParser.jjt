@@ -106,6 +106,7 @@ TOKEN : {  < DIVIDE: "/" > }
 TOKEN : {  < POWER : "^" | "**" > }
 TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
+TOKEN : {  < DERI : "'" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -141,7 +142,7 @@ protected void secondStatement(AST<?> master): {
 protected AST<?> assignment(): {
   AST<?> n=null, m = null;  AST<String> id;}
 {
-  (  LOOKAHEAD(3) n = assignmentFunction() |n = assignmentId() )
+  (  LOOKAHEAD(3) n = assignmentFunction() |n = assignmentId())
   { return n; }
 }
 protected AST<?> assignmentId(): {
@@ -157,6 +158,9 @@ protected AST<?> assignmentFunction(): {
   ( function = function() < ASSIGN > m = expr() )
   {n = node(function,m);  return n; }
 }
+
+
+
 
 /** additive expression. */
 protected AST<?> expr(): {
@@ -239,13 +243,18 @@ protected AST<?> minusExpr(): {
 protected AST<?> function(): {
 
   AST<?> n=null, m=null;
-  Token function=null;}
+  Token function=null; int grade=0;}
 {
 
-   (function =<IDENTIFIER> ) <LPARA> (n=variable() ) <RPARA>
+   (function =<IDENTIFIER> ) (<DERI>{grade++;})* <LPARA> (n=variable() ) <RPARA>
    {
+    if(grade==0){
    	return node(function.image, n);
       }
+    else{
+        return node(function.image, n, grade);
+    }
+    }
 }
 
 

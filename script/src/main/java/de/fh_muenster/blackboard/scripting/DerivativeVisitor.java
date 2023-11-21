@@ -75,13 +75,13 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 					if(n.right().accept(this).apply(a) == 0){
 						throw new IllegalArgumentException("division by zero");
 					}
-					return ( rs.apply(a) *n.left().accept(functionVisitor).apply(a) - ls.apply(a)*n.right().accept(functionVisitor).apply(a)) / Math.pow(n.right().accept(this).apply(a), 2);};
+					return (  ls.apply(a)*n.right().accept(functionVisitor).apply(a)-rs.apply(a) *n.left().accept(functionVisitor).apply(a) ) / Math.pow(n.right().accept(functionVisitor).apply(a), 2);};
 			case POWER, POWERCARET:
 				return (a) -> {
 					if(n.left().accept(functionVisitor).apply(a)<0){
 						throw new IllegalArgumentException("complex number");
 					}
-					return  Math.pow(ls.apply(a), rs.apply(a));
+					return  rs.apply(a)*Math.pow(ls.apply(a), rs.apply(a)-1);
 				};
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
