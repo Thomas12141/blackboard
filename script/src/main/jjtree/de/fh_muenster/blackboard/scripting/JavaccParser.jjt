@@ -234,7 +234,7 @@ protected AST<?> bracketExpr(): {
 protected AST<?> minusExpr(): {
   AST<?> n=null;}
 {
-   <MINUS>  n = expr()
+   <MINUS>  n = fourthLevelExpr()
    {
 	return node(n, "-");
    }
@@ -242,7 +242,7 @@ protected AST<?> minusExpr(): {
 protected AST<?> plusExpr(): {
   AST<?> n=null;}
 {
-   <PLUS>  n = expr()
+   <PLUS>  n = fourthLevelExpr()
    {
 	return node(n, "+");
    }
