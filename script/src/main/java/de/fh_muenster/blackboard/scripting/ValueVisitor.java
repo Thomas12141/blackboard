@@ -123,6 +123,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			case MINUS:
 				ret = -childValue;
 				break;
+			case PLUS:
+				ret = childValue;
+				break;
 			case LN:
 				ret = Math.log(childValue);
 				break;

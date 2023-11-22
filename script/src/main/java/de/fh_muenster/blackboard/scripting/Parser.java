@@ -209,6 +209,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		UnaryOperation op = UnaryOperation.of(s);
 
 		switch (op) {
+			case PLUS:
+				return new PlusUnaryNode(child);
 			case MINUS:
 				return new MinusUnaryNode(child);
 			default:

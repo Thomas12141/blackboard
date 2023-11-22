@@ -96,6 +96,10 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			case MINUS:
 				return new FunctionMinusUnary(n.childs().get(0).accept(this));
 		}
+		switch (n.data()){
+			case PLUS:
+				return new FunctionPlusUnary(n.childs().get(0).accept(this));
+		}
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
 

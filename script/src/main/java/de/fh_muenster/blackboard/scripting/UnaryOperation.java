@@ -17,7 +17,7 @@ public enum UnaryOperation {
 
 
 
-    SIN("sin"), COS("cos"), MINUS("-"), EXP("exp"), ASIN("asin"), LN("ln"), ACOS("acos"), POW("pow"), LB("lb");
+    SIN("sin"), COS("cos"), PLUS("+"), MINUS("-"), EXP("exp"), ASIN("asin"), LN("ln"), ACOS("acos"), POW("pow"), LB("lb");
 
     private String op;
 
