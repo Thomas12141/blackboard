@@ -35,7 +35,7 @@ import de.fh_muenster.blackboard.KnowledgeSource;
  */
 public final class BasicBlackboard implements Blackboard {
 	private static final BasicBlackboard INSTANCE = new BasicBlackboard();
-	private static final Set<KnowledgeSource<?, ?>> SOLVERS = new HashSet<>();
+	private static final LinkedHashSet<KnowledgeSource<?, ?>> SOLVERS = new LinkedHashSet<>();
 	private static final Map<Object, CompletingFuture> TASKS = new HashMap<>();
 
 	public static Type answerType;
