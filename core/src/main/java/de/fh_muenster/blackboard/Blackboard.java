@@ -19,6 +19,9 @@
  */
 package de.fh_muenster.blackboard;
 
+import de.fh_muenster.blackboard.internal.BasicBlackboard;
+
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.concurrent.Future;
@@ -27,6 +30,8 @@ import java.util.concurrent.Future;
  * Interface of the blackboard abstraction.
  */
 public interface Blackboard {
+
+
 	/**
 	 * Very simple logging utility method.
 	 * 
@@ -80,6 +85,7 @@ public interface Blackboard {
 	 * @return found answer of given type
 	 */
 	default <T> T answer(Class<T> type, Object task) {
+		BasicBlackboard.answerType = type;
 		Collection<?> answers = answers(task);
 		log("task answers:%s  => %s", task, answers);
 		for (Object answer : answers) {

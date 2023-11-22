@@ -21,13 +21,8 @@ package de.fh_muenster.blackboard.internal;
 
 import static de.fh_muenster.blackboard.Blackboard.log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
@@ -42,6 +37,8 @@ public final class BasicBlackboard implements Blackboard {
 	private static final BasicBlackboard INSTANCE = new BasicBlackboard();
 	private static final Set<KnowledgeSource<?, ?>> SOLVERS = new HashSet<>();
 	private static final Map<Object, CompletingFuture> TASKS = new HashMap<>();
+
+	public static Type answerType;
 
 	/**
 	 * Static provider method for the ServiceLoader.
