@@ -149,22 +149,12 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 			};
 		}
 		if(n.data().equals("sin")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("sin braucht ein Argument.");
-				}
-				return  Math.cos(n.childs().get(0).accept(this).apply(a));
-			};
+			return new FunctionCos(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("cos")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("cos braucht ein Argument.");
-				}
-				return  -Math.sin(n.childs().get(0).accept(this).apply(a));
-			};
+			return new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(this)));
 		}
-		if(n.data().equals("acos")){
+		if(n.data().equals("acos")) {
 			return (a)->{
 				if(a.length!=1){
 					throw new IllegalArgumentException("acos braucht ein Argument.");
@@ -181,12 +171,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 			};
 		}
 		if(n.data().equals("exp")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("exp braucht ein Argument.");
-				}
-				return   Math.exp(n.childs().get(0).accept(this).apply(a));
-			};
+			return new FunctionExp(n.childs().get(0).accept(this));
 		}
 		n.setFunctionCall((FunctionPlus) n.accept(new DerivativeVisitor()));
 		if(n.parent() instanceof FunctionAssignNode){
