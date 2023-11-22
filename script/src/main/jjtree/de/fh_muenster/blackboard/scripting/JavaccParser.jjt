@@ -86,16 +86,16 @@ TOKEN : /* LITERALS */
     )
   >
 |
-  < #DECIMAL_LITERAL: ("+")? ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
 |
-  < #HEX_LITERAL:  ("+")? "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+  < #HEX_LITERAL:  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
 |
-  < #OCTAL_LITERAL: ("+")? "0" (["0"-"7"])* >
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
 }
 
 TOKEN : /* FLOATING POINT */
 {
-  < FLOATING_LITERAL: ("-"|"+")?  (<DIGIT>)* "." (<DIGIT >)* >
+  < FLOATING_LITERAL: (<DIGIT>)* "." (<DIGIT >)* >
 }
 TOKEN : {  < ASSIGN: "=" > }
 TOKEN : {  < SEMI  : ";" > }
@@ -239,6 +239,14 @@ protected AST<?> minusExpr(): {
 	return node(n, "-");
    }
 }
+protected AST<?> plusExpr(): {
+  AST<?> n=null;}
+{
+   <PLUS>  n = expr()
+   {
+	return node(n, "+");
+   }
+}
 //TODO: Funktion wird erkannt, es muss noch die Möglichkeit die Funktion ohne Zuweisung zu nutzen geschrieben. Das geht f(x)=2*x, das nicht y=f(x).
 protected AST<?> function(): {
 
@@ -279,6 +287,7 @@ protected AST<?> leaf(): {
   Token op=null;}
 {
   ( n=minusExpr()
+  | n = plusExpr()
   | n = integer()
   | n = floating()
   | n=id()
