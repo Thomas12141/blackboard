@@ -35,7 +35,7 @@ class ValueVisitorTest {
 	double delta = 1.E-14;
 	Blackboard blackboard;
 	Parser parser;
-	ValueVisitor visitor;
+	ExpertenKoordinator visitor;
 
 	/**
 	 * @throws java.lang.Exception
@@ -43,7 +43,7 @@ class ValueVisitorTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		blackboard = Blackboard.getInstance();
-		visitor = new ValueVisitor();
+		visitor = new ExpertenKoordinator();
 		parser = new JavaccParser();
 	}
 
@@ -53,7 +53,7 @@ class ValueVisitorTest {
 		String task = "  4    +  3.2";
 		AST<?> ast = parser.solve(blackboard, task);
 		assertNotNull(ast, "ast is null");
-		double returned = ast.accept(visitor);
+		double returned = (double) ast.accept(visitor);
 		double expected = 4 + 3.2;
 		assertEquals(expected, returned, delta);
 	}

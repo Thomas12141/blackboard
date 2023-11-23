@@ -43,4 +43,9 @@ public class DivideNode extends OperationNode {
     public <V> V accept(AstVisitor<V> visitor) {
         return visitor.visit(this);
     }
+
+    @Override
+    public <V> V accept(SecondLayerASTVisitor<V> visitor) {
+        return visitor.visit(this);
+    }
 }

@@ -147,7 +147,16 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 			return new AssignNode((AST<String>) left, expr);
 		}
 	}
-
+	/*
+	*
+	 * Factory method to create an function AST.
+	 *
+	 * @param function the right side of the assignment
+	 * @return AST
+	 */
+	protected AST<?> node(String function, AST<?> variables, int grade) {
+		return new DerivativeNode(function, variables, grade);
+	}
 	/**
 	 * Factory method to create an function AST.
 	 *
@@ -200,6 +209,8 @@ public abstract class Parser implements KnowledgeSource<String, AST<?>> {
 		UnaryOperation op = UnaryOperation.of(s);
 
 		switch (op) {
+			case PLUS:
+				return new PlusUnaryNode(child);
 			case MINUS:
 				return new MinusUnaryNode(child);
 			default:

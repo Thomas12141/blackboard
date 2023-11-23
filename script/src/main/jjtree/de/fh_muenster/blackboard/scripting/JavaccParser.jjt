@@ -86,16 +86,16 @@ TOKEN : /* LITERALS */
     )
   >
 |
-  < #DECIMAL_LITERAL: ("+")? ["1"-"9"] (["0"-"9"])* >
+  < #DECIMAL_LITERAL: ["1"-"9"] (["0"-"9"])* >
 |
-  < #HEX_LITERAL:  ("+")? "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+  < #HEX_LITERAL:  "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
 |
-  < #OCTAL_LITERAL: ("+")? "0" (["0"-"7"])* >
+  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
 }
 
 TOKEN : /* FLOATING POINT */
 {
-  < FLOATING_LITERAL: ("-"|"+")?  (<DIGIT>)* "." (<DIGIT >)* >
+  < FLOATING_LITERAL: (<DIGIT>)* "." (<DIGIT >)* >
 }
 TOKEN : {  < ASSIGN: "=" > }
 TOKEN : {  < SEMI  : ";" > }
@@ -106,6 +106,7 @@ TOKEN : {  < DIVIDE: "/" > }
 TOKEN : {  < POWER : "^" | "**" > }
 TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
+TOKEN : {  < DERI : "'" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -141,7 +142,7 @@ protected void secondStatement(AST<?> master): {
 protected AST<?> assignment(): {
   AST<?> n=null, m = null;  AST<String> id;}
 {
-  (  LOOKAHEAD(3) n = assignmentFunction() |n = assignmentId() )
+  (  LOOKAHEAD(3) n = assignmentFunction() |n = assignmentId())
   { return n; }
 }
 protected AST<?> assignmentId(): {
@@ -157,6 +158,9 @@ protected AST<?> assignmentFunction(): {
   ( function = function() < ASSIGN > m = expr() )
   {n = node(function,m);  return n; }
 }
+
+
+
 
 /** additive expression. */
 protected AST<?> expr(): {
@@ -230,22 +234,35 @@ protected AST<?> bracketExpr(): {
 protected AST<?> minusExpr(): {
   AST<?> n=null;}
 {
-   <MINUS>  n = expr()
+   <MINUS>  n = fourthLevelExpr()
    {
 	return node(n, "-");
+   }
+}
+protected AST<?> plusExpr(): {
+  AST<?> n=null;}
+{
+   <PLUS>  n = fourthLevelExpr()
+   {
+	return node(n, "+");
    }
 }
 //TODO: Funktion wird erkannt, es muss noch die Möglichkeit die Funktion ohne Zuweisung zu nutzen geschrieben. Das geht f(x)=2*x, das nicht y=f(x).
 protected AST<?> function(): {
 
   AST<?> n=null, m=null;
-  Token function=null;}
+  Token function=null; int grade=0;}
 {
 
-   (function =<IDENTIFIER> ) <LPARA> (n=variable() ) <RPARA>
+   (function =<IDENTIFIER> ) (<DERI>{grade++;})* <LPARA> (n=variable() ) <RPARA>
    {
+    if(grade==0){
    	return node(function.image, n);
       }
+    else{
+        return node(function.image, n, grade);
+    }
+    }
 }
 
 
@@ -270,6 +287,7 @@ protected AST<?> leaf(): {
   Token op=null;}
 {
   ( n=minusExpr()
+  | n = plusExpr()
   | n = integer()
   | n = floating()
   | n=id()

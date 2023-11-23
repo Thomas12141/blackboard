@@ -19,8 +19,6 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
-import de.fh_muenster.blackboard.Blackboard;
-
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -67,25 +65,15 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 		switch (op) {
 			case PLUS:
-				return (a) -> {return ls.apply(a) + rs.apply(a);};
+				return new FunctionPlus(ls, rs);
 			case MINUS:
-				return (a) -> {return ls.apply(a) - rs.apply(a);};
+				return new FunctionMinusBinary(ls, rs);
 			case TIMES:
-				return (a) -> {return ls.apply(a) * rs.apply(a);};
+				return new FunctionTimes(ls, rs);
 			case DIVIDE:
-
-				return (a) -> {
-					if(a[0] == 0){
-						throw new IllegalArgumentException("division by zero");
-					}
-					return a[0] / a[1];};
+				return new FunctionDivide(ls, rs);
 			case POWER, POWERCARET:
-				return (a) -> {
-					if(Double.isNaN(Math.pow(a[0], a[1]))){
-						throw new IllegalArgumentException("complex number");
-					}
-					return  Math.pow(a[0], a[1]);
-				};
+				return new FunctionPow(ls, rs);
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
 	}
@@ -97,6 +85,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double[], Double> visit(AssignNode n) {
+		VariablesMap.variables.put(n.id().data(), n.expr().accept(new ValueVisitor()));
 		return n.right().accept(this);
 	}
 
@@ -105,7 +94,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 		switch (n.data()){
 			case MINUS:
-				return (a)->{return -n.childs().get(0).accept(this).apply(a);};
+				return new FunctionMinusUnary(n.childs().get(0).accept(this));
+		}
+		switch (n.data()){
+			case PLUS:
+				return new FunctionPlusUnary(n.childs().get(0).accept(this));
 		}
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
@@ -117,92 +110,35 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 	@Override
 	public Function<double[], Double> visit(FunctionNode n) {
-		double childValue;
-		double ls;
-		double rs;
 		if(n.data().equals("lb")){
-			return (a)->{
-				if (a.length!=1){
-					throw new IllegalArgumentException("Lb kann nur ein Argument bekommen.");
-				}
-				if(a[0]<0){
-					throw new IllegalArgumentException("Lb kann nur Werten größer gleich 0 bekommen.");
-				}
-				return Math.log(a[0])/Math.log(2);
-			};
+			return new FunctionLogB(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("ln")){
-			return (a)->{
-
-				if (a.length!=1){
-					throw new IllegalArgumentException("Ln kann nur ein Argument bekommen.");
-				}
-				if(a[0]<0){
-					throw new IllegalArgumentException("Ln kann nur Werten größer gleich 0 bekommen.");
-				}
-				return Math.log(a[0]);
-			};
+			return new FunctionLog(n.childs().get(0).accept(this));
 		}
-
 		if(n.data().equals("pow")){
-			return (a)->{
-				if(a.length!=2){
-					throw new IllegalArgumentException("pow braucht zwei Argumente  #args.");
-				}
-				if(Double.isNaN(Math.pow(a[0], a[1]))){
-					throw new IllegalArgumentException("complex number");
-				}
-				return  Math.pow(a[0], a[1]);
-			};
+			return new FunctionPow(n.childs().get(0).childs().get(0).accept(this), n.childs().get(0).childs().get(1).accept(this));
 		}
 		if(n.data().equals("sin")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("sin braucht ein Argument.");
-				}
-				return  Math.sin(a[0]);
-			};
+			return new FunctionSin(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("cos")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("cos braucht ein Argument.");
-				}
-				return  Math.cos(a[0]);
-			};
+			return new FunctionCos(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("acos")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("acos braucht ein Argument.");
-				}
-				return  Math.acos(a[0]);
-			};
+			return new FunctionAcos(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("asin")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("asin braucht ein Argument.");
-				}
-				return  Math.asin(a[0]);
-			};
+			return new FunctionAsin(n.childs().get(0).accept(this));
 		}
 		if(n.data().equals("exp")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("exp braucht ein Argument.");
-				}
-				if(a[0]<1){
-					throw new IllegalArgumentException("complex number");
-				}
-				return  Math.exp(a[0]);
-			};
+			return new FunctionExp(n.childs().get(0).accept(this));
 		}
-		if(n.parent() instanceof FunctionAssignNode){
-			return ((FunctionAssignNode) n.parent()).right().accept(this);
+		if(n.equals(n.parent().childs().get(1))){
+			return n.getFunctionCall();
+		}else {
+			return n.parent().childs().get(1).accept(this);
 		}
-		AST<?> function = searchFunctionDeclaration(n);
-		return function.accept(this);
 	}
 
 
@@ -236,6 +172,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
+		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
 		return functionAssignNode.expr().accept(this);
 	}
 
@@ -246,7 +183,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 	@Override
 	public Function<double[], Double> visit(MasterNode masterNode) {
-		return null;
+		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
+		for (int i = 0; i < trees.size()-1; i++) {
+			trees.get(i).accept(this);
+		}
+		return trees.get(trees.size()-1).accept(this);
 	}
 
 	/**
@@ -256,55 +197,13 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double[], Double> visit(Label n) {
-		return (a)->{
-
-			Blackboard blackboard = Blackboard.getInstance();
-
-			if(n.parent() instanceof AssignNode){
-				return blackboard.answer(Double.class, ((AssignNode) n.parent()).expr());
-			}
-			return blackboard.answer(Double.class, needleInHaystack(n));
-		};
-	}
-
-
-	private AssignNode needleInHaystack(Label needle) {
-
-
-		/*	iteration till the assign node of the needle.
-		 */
-		AST<?> parentAssignNode = needle;
-
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-
-		AST<?> iterator = needle.parent();
-
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-
-				if((iterator) instanceof AssignNode){
-					iterator = ((AssignNode) iterator).left();
-
-					if(iterator.data().equals(needle.data())){
-						iterator = iterator.parent();
-
-						return  ((AssignNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
+		AST<?> iterator =n.parent();
+		while (iterator != null&&!(iterator instanceof FunctionNode)){
 			iterator = iterator.parent();
-			if(iterator instanceof SemiNode && ((SemiNode) iterator).left().equals(parentAssignNode)){
-				iterator = iterator.parent();
-			}
 		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
+		if (iterator ==null|| ((FunctionNode) iterator).getVariables()==null){
+			return (a)->{return a[0];};
+		}
+		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()));
 	}
 }
