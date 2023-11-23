@@ -27,6 +27,7 @@ import java.util.List;
 public interface AST<T> {
 	<V> V accept(AstVisitor<V> visitor);
 
+	<V> V accept(SecondLayerASTVisitor<V> visitor);
 	/**
 	 * The data value of the node instance.
 	 * 

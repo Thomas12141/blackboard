@@ -25,14 +25,13 @@ import java.util.function.Function;
 /**
  *	A value visitor for ast.
  */
-public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Double>> {
+public class DerivativeVisitor implements SecondLayerASTVisitor<Function<double [], Double>> {
 	FunctionVisitor functionVisitor = new FunctionVisitor();
 	/**
 	 * (non-Javadoc)
 	 *
 	 * @see AstVisitor#visit(LongValue)
 	 */
-	@Override
 	public Function<double [], Double> visit(LongValue n) {
 		return (a) ->{
 			return 0.0;
@@ -44,7 +43,6 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 	 *
 	 * @see AstVisitor#visit(DoubleValue)
 	 */
-	@Override
 	public Function<double [], Double> visit(DoubleValue n) {
 		return (a) ->{
 			return 0.0;
@@ -56,7 +54,6 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 	 *
 	 * @see AstVisitor#visit(OperationNode)
 	 */
-	@Override
 	public Function<double[], Double> visit(OperationNode n) {
 		Function<double[], Double> ls = n.left().accept(this);
 		Function<double[], Double> rs = n.right().accept(this);
@@ -92,12 +89,10 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 	 *
 	 * @see AstVisitor#visit(AssignNode)
 	 */
-	@Override
 	public Function<double[], Double> visit(AssignNode n) {
 		return n.right().accept(this);
 	}
 
-	@Override
 	public Function<double[], Double> visit(UnaryOperationNode n) {
 
 		switch (n.data()){
@@ -107,12 +102,10 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
 
-	@Override
 	public Function<double[], Double> visit(SemiNode n) {
 		return n.right().accept(this);
 	}
 
-	@Override
 	public Function<double[], Double> visit(FunctionNode n) {
 		if(n.data().equals("lb")){
 			return (a)->{
@@ -210,17 +203,15 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 		}
 		throw new IllegalArgumentException("unknown function");
 	}
-	@Override
+
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
 		return null;
 	}
 
-	@Override
 	public Function<double[], Double> visit(VariableNode variableNode) {
 		return null;
 	}
 
-	@Override
 	public Function<double[], Double> visit(MasterNode masterNode) {
 		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
 		for (int i = 0; i < trees.size()-1; i++) {
@@ -234,7 +225,6 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double [], Do
 	 *
 	 * @see AstVisitor#visit(Label)
 	 */
-	@Override
 	public Function<double[], Double> visit(Label n) {
 		return (a)->{
 			return a[0];
