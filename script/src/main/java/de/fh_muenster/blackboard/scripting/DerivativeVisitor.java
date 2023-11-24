@@ -108,38 +108,16 @@ public class DerivativeVisitor implements SecondLayerASTVisitor<Function<double 
 
 	public Function<double[], Double> visit(FunctionNode n) {
 		if(n.data().equals("lb")){
-			return (a)->{
-				if (a.length!=1){
-					throw new IllegalArgumentException("Lb kann nur ein Argument bekommen.");
-				}
-				if(n.childs().get(0).accept(functionVisitor).apply(a)<0){
-					throw new IllegalArgumentException("Lb kann nur Werten größer gleich 0 bekommen.");
-				}
-				return 1/Math.log(n.childs().get(0).accept(functionVisitor).apply(a))*Math.log(2);
-			};
+			return new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionTimes(n.childs().get(0).accept(this), new FunctionLog(new FunctionDoubleValue(2.0))));
+
 		}
 		if(n.data().equals("ln")){
-			return (a)->{
-				if (a.length!=1){
-					throw new IllegalArgumentException("Ln kann nur ein Argument bekommen.");
-				}
-				if(n.childs().get(0).accept(functionVisitor).apply(a)<0){
-					throw new IllegalArgumentException("Ln kann nur Werten größer gleich 0 bekommen.");
-				}
-				return 1/n.childs().get(0).accept(functionVisitor).apply(a);
-			};
+			return new FunctionDivide(new FunctionDoubleValue(1.0), n.childs().get(0).accept(this));
 		}
 
 		if(n.data().equals("pow")){
-			return (a)->{
-				if(a.length!=2){
-					throw new IllegalArgumentException("pow braucht zwei Argumente  #args.");
-				}
-				if(n.childs().get(0).accept(functionVisitor).apply(a)<0&&n.childs().get(1).accept(functionVisitor).apply(a)%1!=0){
-					throw new IllegalArgumentException("complex number");
-				}
-				return  Math.pow(n.childs().get(0).accept(this).apply(a), n.childs().get(1).accept(this).apply(a)-1);
-			};
+			return new FunctionTimes(n.childs().get(1).accept(this), new FunctionPow(n.childs().get(0).accept(this),
+					new FunctionMinusBinary(n.childs().get(1).accept(this), new FunctionDoubleValue(1.0))));
 		}
 		if(n.data().equals("sin")){
 			return new FunctionCos(n.childs().get(0).accept(this));
@@ -147,21 +125,13 @@ public class DerivativeVisitor implements SecondLayerASTVisitor<Function<double 
 		if(n.data().equals("cos")){
 			return new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(this)));
 		}
-		if(n.data().equals("acos")) {
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("acos braucht ein Argument.");
-				}
-				return  Math.acos(a[0]);
-			};
+		if(n.data().equals("acos")) { // −(1 − x^2)^(−1/2)
+			return new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(n.childs().get(0).accept(this),
+					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5))));
 		}
-		if(n.data().equals("asin")){
-			return (a)->{
-				if(a.length!=1){
-					throw new IllegalArgumentException("asin braucht ein Argument.");
-				}
-				return  Math.asin(a[0]);
-			};
+		if(n.data().equals("asin")){ // 1/(1-(x^2))
+			return new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionMinusBinary(new FunctionDoubleValue(1.0),
+					new FunctionPow(n.childs().get(0).accept(this), new FunctionDoubleValue(2.0))));
 		}
 		if(n.data().equals("exp")){
 			return new FunctionExp(n.childs().get(0).accept(this));
