@@ -38,7 +38,6 @@ public final class BasicBlackboard implements Blackboard {
 	private static final LinkedHashSet<KnowledgeSource<?, ?>> SOLVERS = new LinkedHashSet<>();
 	private static final Map<Object, CompletingFuture> TASKS = new HashMap<>();
 
-	public static Type answerType;
 
 	/**
 	 * Static provider method for the ServiceLoader.

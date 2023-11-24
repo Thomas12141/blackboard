@@ -20,7 +20,6 @@
 package de.fh_muenster.blackboard.scripting;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -35,25 +34,36 @@ class ValueVisitorTest {
 	double delta = 1.E-14;
 	Blackboard blackboard;
 	Parser parser;
-	ExpertenKoordinator visitor;
 
+	ValueVisitor valueVisitor;
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@BeforeEach
 	void setUp() throws Exception {
 		blackboard = Blackboard.getInstance();
-		visitor = new ExpertenKoordinator();
 		parser = new JavaccParser();
+		valueVisitor = new ValueVisitor();
 	}
 
 	@Test
 	@Timeout(2)
 	void testPlus() throws Exception {
-		String task = "  4    +  3.2";
+		String task = "  4    + 3.2";
 		AST<?> ast = parser.solve(blackboard, task);
 		assertNotNull(ast, "ast is null");
-		double returned = (double) ast.accept(visitor);
+		double returned = blackboard.answer(Double.class, task);
+		double expected = 4 + 3.2;
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testPlusWithoutBlank() throws Exception {
+		String task = "  4+3.2";
+		AST<?> ast = parser.solve(blackboard, task);
+		assertNotNull(ast, "ast is null");
+		double returned = blackboard.answer(Double.class, task);
 		double expected = 4 + 3.2;
 		assertEquals(expected, returned, delta);
 	}
@@ -107,6 +117,15 @@ class ValueVisitorTest {
 	@Timeout(2)
 	void testMinus() throws Exception {
 		String task = "  2 - 2";
+		double expected = 0;
+		double returned = blackboard.answer(Double.class, task);
+		assertEquals(expected, returned, delta);
+	}
+
+	@Test
+	@Timeout(2)
+	void testMinusWithoutBlank() throws Exception {
+		String task = "  2 -2";
 		double expected = 0;
 		double returned = blackboard.answer(Double.class, task);
 		assertEquals(expected, returned, delta);

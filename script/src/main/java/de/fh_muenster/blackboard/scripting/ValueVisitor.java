@@ -29,7 +29,7 @@ import java.util.Objects;
  *	A value visitor for ast.
  */
 public class ValueVisitor extends AbstractAstVisitor<Double> {
-
+	FunctionVisitor functionVisitor = new FunctionVisitor();
 	/**
 	 * (non-Javadoc)
 	 *
@@ -254,6 +254,18 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 	@Override
 	public Double visit(FunctionAssignNode functionAssignNode) {
 		FunctionMap.functions.put(functionAssignNode.id().data(),(FunctionNode) functionAssignNode.id());
+		AST<?> iterator = functionAssignNode.left().childs().get(0);
+		ArrayList<String> variables = new ArrayList<String>();
+		while (iterator!= null){
+			if(iterator instanceof Label){
+				variables.add((String) iterator.data());
+				break;
+			}
+			variables.add(iterator.childs().get(0).data().toString());
+			iterator = iterator.childs().get(1);
+		}
+		((FunctionNode) functionAssignNode.id()).setVariableList(variables);
+		((FunctionNode) functionAssignNode.id()).setFunctionCall(functionAssignNode.expr().accept(functionVisitor));
 		return functionAssignNode.expr().accept(this);
 	}
 
@@ -286,46 +298,5 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}else {
 			throw new IllegalArgumentException("ValueVisitor in visit Label, this label wasn't declared.");
 		}
-	}
-
-
-	private AssignNode needleInHaystack(Label needle) {
-
-
-		/*	iteration till the assign node of the needle.
-		 */
-		AST<?> parentAssignNode = needle;
-
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-
-		AST<?> iterator = needle.parent();
-
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-
-				if((iterator) instanceof AssignNode){
-					iterator = ((AssignNode) iterator).left();
-
-					if(iterator.data().equals(needle.data())){
-						iterator = iterator.parent();
-
-						return  ((AssignNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode && ((SemiNode) iterator).left().equals(parentAssignNode)){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
 	}
 }

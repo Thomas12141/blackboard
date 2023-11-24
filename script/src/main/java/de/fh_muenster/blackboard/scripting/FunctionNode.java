@@ -24,21 +24,22 @@ public class FunctionNode extends AstNode<String>{
 
     FunctionNode(String function, AST<?> variables) {
         super(null, function);
-
-        if (variables instanceof VariableNode) {
-            variableList = new ArrayList<>();
-            AST<?> iterator = variables;
-            while (iterator != null) {
-                if (iterator instanceof Label) {
-                    variableList.add((String) iterator.data());
-                    iterator = null;
-                    break;
+        if(isVariableTree(variables)){
+            if (variables instanceof VariableNode) {
+                variableList = new ArrayList<>();
+                AST<?> iterator = variables;
+                while (iterator != null) {
+                    if (iterator instanceof Label) {
+                        variableList.add((String) iterator.data());
+                        iterator = null;
+                        break;
+                    }
+                    if (iterator.childs().isEmpty()) break;
+                    if (iterator.childs().get(0) instanceof Label) {
+                        variableList.add((String) iterator.childs().get(0).data());
+                    }
+                    iterator = iterator.childs().get(1);
                 }
-                if (iterator.childs().isEmpty()) break;
-                if (iterator.childs().get(0) instanceof Label) {
-                    variableList.add((String) iterator.childs().get(0).data());
-                }
-                iterator = iterator.childs().get(1);
             }
         }
         this.childs().add(variables);
@@ -49,6 +50,10 @@ public class FunctionNode extends AstNode<String>{
 
     public void setFunctionCall(Function<double [], Double> functionCall) {
         this.functionCall = functionCall;
+    }
+
+    public void setVariableList(ArrayList<String> variableList) {
+        this.variableList = variableList;
     }
 
     public Function<double[], Double> getFunctionCall() {
@@ -84,5 +89,27 @@ public class FunctionNode extends AstNode<String>{
     @Override
     public String toString() {
         return String.format("\"%s\"{%s}", data(), this.childs().get(0).toString());
+    }
+
+    private boolean isVariableTree(AST<?> subTree){
+        if(subTree instanceof Label){
+            return true;
+        }
+        if(subTree instanceof Value){
+            return false;
+        }
+        Stack<AST<?>> myStack = new Stack<>();
+        AST<?> iterator = subTree;
+        do {
+            for (AST<?> toPush: iterator.childs()) {
+                myStack.push(toPush);
+            }
+            iterator = myStack.pop();
+            if(iterator instanceof Value){
+                return false;
+            }
+        }
+        while (!myStack.isEmpty());
+        return true;
     }
 }

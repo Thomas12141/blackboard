@@ -142,34 +142,6 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 
 
-	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
-		AST<?> parentAssignNode = toFind;
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-		AST<?> iterator = parentAssignNode.parent();
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-				iterator = iterator.childs().get(0);
-				if(iterator instanceof FunctionNode){
-					if(iterator.data().equals(toFind.data())&&iterator.parent() instanceof FunctionAssignNode){
-						return  ((FunctionNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("unknown function");
-	}
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
 		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
@@ -198,12 +170,17 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	@Override
 	public Function<double[], Double> visit(Label n) {
 		AST<?> iterator =n.parent();
-		while (iterator != null&&!(iterator instanceof FunctionNode)){
+		while (iterator != null&&!(iterator instanceof FunctionNode)&&!(iterator instanceof FunctionAssignNode)){
 			iterator = iterator.parent();
 		}
-		if (iterator ==null|| ((FunctionNode) iterator).getVariables()==null){
+		if (iterator ==null|| (!(iterator instanceof FunctionAssignNode) && ((FunctionNode) iterator).getVariables()==null)){
 			return (a)->{return a[0];};
+		}
+
+		if (iterator instanceof FunctionAssignNode){
+			iterator = ((FunctionAssignNode) iterator).left();
 		}
 		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()));
 	}
+
 }
