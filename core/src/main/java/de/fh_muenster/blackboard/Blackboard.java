@@ -85,7 +85,6 @@ public interface Blackboard {
 	 * @return found answer of given type
 	 */
 	default <T> T answer(Class<T> type, Object task) {
-		BasicBlackboard.answerType = type;
 		Collection<?> answers = answers(task);
 		log("task answers:%s  => %s", task, answers);
 		for (Object answer : answers) {

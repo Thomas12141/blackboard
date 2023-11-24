@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  *	A value visitor for ast.
  */
-public class DerivativeVisitor implements SecondLayerASTVisitor<Function<double [], Double>> {
+public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Double>> {
 	FunctionVisitor functionVisitor = new FunctionVisitor();
 	/**
 	 * (non-Javadoc)
