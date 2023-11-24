@@ -106,7 +106,7 @@ TOKEN : {  < DIVIDE: "/" > }
 TOKEN : {  < POWER : "^" | "**" > }
 TOKEN : {  < LPARA : "(" > }
 TOKEN : {  < RPARA : ")" > }
-TOKEN : {  < DERI : "'" > }
+TOKEN : {  < DERI  : "'" > }
 
 TOKEN : /* IDENTIFIERS */
 {
@@ -251,17 +251,13 @@ protected AST<?> plusExpr(): {
 protected AST<?> function(): {
 
   AST<?> n=null, m=null;
-  Token function=null; int grade=0;}
+  Token functionToken=null; int grade=0;
+  StringBuilder function = new StringBuilder();}
 {
 
-   (function =<IDENTIFIER> ) (<DERI>{grade++;})* <LPARA> (n=variable() ) <RPARA>
+   functionToken =<IDENTIFIER> {function.append(functionToken.image);} (<DERI>{function.append('\'');})* <LPARA> (n=variable() ) <RPARA>
    {
-    if(grade==0){
-   	return node(function.image, n);
-      }
-    else{
-        return node(function.image, n, grade);
-    }
+    return node(function.toString(), n);
     }
 }
 
