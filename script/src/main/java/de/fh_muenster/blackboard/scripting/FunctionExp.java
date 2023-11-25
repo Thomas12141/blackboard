@@ -2,14 +2,15 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionExp implements Function<double [], Double> {
+public class FunctionExp extends AbstractFunction {
 
     private FunctionNode function;
 
-    private Function<double [], Double> right;
+    private Function<double [], Double> child;
 
-    public FunctionExp(Function<double[], Double> right) {
-        this.right = right;
+    public FunctionExp(Function<double[], Double> child) {
+        this.child = child;
+        childs.add(child);
     }
 
     public FunctionNode getFunction() {
@@ -22,20 +23,20 @@ public class FunctionExp implements Function<double [], Double> {
 
     @Override
     public Double apply(double[] doubles) {
-        double rightSide = right.apply(doubles);
+        double rightSide = child.apply(doubles);
         return Math.exp(rightSide);
     }
 
     @Override
     public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
+        return super.compose(before);
     }
 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
+        return super.andThen(after);
     }
     public String toString() {
-        return ("exp(" + right.toString() + ")");
+        return ("exp(" + child.toString() + ")");
     }
 }

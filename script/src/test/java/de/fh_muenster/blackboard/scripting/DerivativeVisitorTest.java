@@ -10,7 +10,6 @@ import java.util.function.Function;
 
 import static java.lang.Math.*;
 import static org.junit.jupiter.api.Assertions.*;
-@Disabled
 public class DerivativeVisitorTest extends AbstractScriptTester {
     Blackboard blackboard;
     Parser parser;

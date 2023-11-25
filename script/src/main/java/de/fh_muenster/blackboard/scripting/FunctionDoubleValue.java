@@ -6,6 +6,14 @@ public class FunctionDoubleValue implements Function<double [], Double> {
 
     private FunctionNode function;
 
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
     private Double value;
 
     public FunctionDoubleValue(Double value) {
