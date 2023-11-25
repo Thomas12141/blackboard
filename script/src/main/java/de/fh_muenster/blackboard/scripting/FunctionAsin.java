@@ -39,4 +39,8 @@ public class FunctionAsin implements Function<double [], Double> {
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
         return Function.super.andThen(after);
     }
+
+    public String toString() {
+        return ("sin(" + right.toString() + ")");
+    }
 }

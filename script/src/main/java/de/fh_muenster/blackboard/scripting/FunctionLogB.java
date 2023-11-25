@@ -39,4 +39,8 @@ public class FunctionLogB implements Function<double [], Double> {
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
         return Function.super.andThen(after);
     }
+
+    public String toString() {
+        return ("lb(" + right.toString() + ")");
+    }
 }
