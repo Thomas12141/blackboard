@@ -54,7 +54,6 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
 
     @Test
     @Timeout(1)
-    @Disabled
     public void testLbDerivation() throws Exception {
         task = define("ln'(%.8f)", x1);
         expected = 1/x1;
