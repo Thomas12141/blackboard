@@ -266,7 +266,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		((FunctionNode) functionAssignNode.id()).setVariableList(variables);
 		((FunctionNode) functionAssignNode.id()).setFunctionCall(functionAssignNode.expr().accept(functionVisitor));
-		return functionAssignNode.expr().accept(this);
+		Double answer;
+		try{
+			answer = functionAssignNode.expr().accept(this);
+		}catch (IllegalArgumentException e){
+			return 0.0;
+		}
+		return answer;
 	}
 
 	@Override

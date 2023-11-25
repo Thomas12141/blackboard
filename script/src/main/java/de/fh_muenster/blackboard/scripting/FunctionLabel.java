@@ -5,8 +5,11 @@ import java.util.function.Function;
 public class FunctionLabel implements Function<double [], Double> {
 
     private int position;
-    public FunctionLabel(int position){
+
+    private String label;
+    public FunctionLabel(int position, String label){
         this.position = position;
+        this.label = label;
     }
     @Override
     public Double apply(double[] doubles) {
@@ -21,5 +24,10 @@ public class FunctionLabel implements Function<double [], Double> {
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
         return Function.super.andThen(after);
+    }
+
+    @Override
+    public String toString() {
+        return label;
     }
 }

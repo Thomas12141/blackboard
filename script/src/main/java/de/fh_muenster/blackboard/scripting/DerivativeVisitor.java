@@ -33,9 +33,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(LongValue)
 	 */
 	public Function<double [], Double> visit(LongValue n) {
-		return (a) ->{
-			return 0.0;
-		};
+		return new FunctionDoubleValue(0.0);
 	}
 
 	/**
@@ -44,9 +42,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(DoubleValue)
 	 */
 	public Function<double [], Double> visit(DoubleValue n) {
-		return (a) ->{
-			return 0.0;
-		};
+		return new FunctionDoubleValue(0.0);
 	}
 
 	/**
@@ -54,7 +50,6 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 *
 	 * @see AstVisitor#visit(OperationNode)
 	 */
-	//TODO: all the derivative rules.
 	public Function<double[], Double> visit(OperationNode n) {
 		Function<double[], Double> lsDerivative = n.left().accept(this);
 		Function<double[], Double> rsDerivative = n.right().accept(this);
@@ -91,6 +86,9 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 		switch (n.data()){
 			case MINUS:
 				return new FunctionMinusUnary(n.childs().get(0).accept(this));
+			case PLUS:
+
+				return new FunctionPlusUnary(n.childs().get(0).accept(this));
 		}
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
@@ -122,19 +120,19 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 			return new FunctionTimes(new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(this))), functionVariableDerivative);
 		}
 		if(n.data().equals("acos")) { // −(1 − x^2)^(−1/2)
-			return new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(n.childs().get(0).accept(this),
-					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5))));
+			return new FunctionTimes(new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(n.childs().get(0).accept(this),
+					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5)))), functionVariableDerivative);
 		}
 		if(n.data().equals("asin")){ // 1/(1-(x^2))
-			return new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionMinusBinary(new FunctionDoubleValue(1.0),
-					new FunctionPow(n.childs().get(0).accept(this), new FunctionDoubleValue(2.0))));
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionMinusBinary(new FunctionDoubleValue(1.0),
+					new FunctionPow(n.childs().get(0).accept(this), new FunctionDoubleValue(2.0)))), functionVariableDerivative);
 		}
 		if(n.data().equals("exp")){
-			return new FunctionExp(n.childs().get(0).accept(this));
+			return new FunctionTimes(new FunctionExp(n.childs().get(0).accept(this)), functionVariableDerivative);
 		}
 		n.setFunctionCall(n.accept(this));
 		AST<?> function = FunctionMap.functions.get(n.data());
-		return function.accept(this);
+		return new FunctionTimes(function.accept(this), functionVariableDerivative);
 	}
 
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
@@ -159,7 +157,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(Label)
 	 */
 	public Function<double[], Double> visit(Label n) {
-		return new FunctionDoubleValue(0.0);
+		return new FunctionDoubleValue(1.0);
 	}
 
 }

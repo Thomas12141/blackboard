@@ -34,9 +34,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double [], Double> visit(LongValue n) {
-		return (a) ->{
-			return Double.valueOf(n.data());
-		};
+		return new FunctionDoubleValue(n.data().doubleValue());
 	}
 
 	/**
@@ -46,9 +44,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double [], Double> visit(DoubleValue n) {
-		return (a) ->{
-			return n.data();
-		};
+		return new FunctionDoubleValue(n.data());
 	}
 
 	/**
@@ -135,6 +131,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			return new FunctionExp(n.childs().get(0).accept(this));
 		}
 		if(n.equals(n.parent().childs().get(1))){
+			if(n.getFunctionCall()==null){
+				return FunctionMap.functions.get(n.data()).getFunctionCall();
+			}
 			return n.getFunctionCall();
 		}else {
 			return n.parent().childs().get(1).accept(this);
@@ -174,13 +173,13 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			iterator = iterator.parent();
 		}
 		if (iterator ==null|| (!(iterator instanceof FunctionAssignNode) && ((FunctionNode) iterator).getVariables()==null)){
-			return (a)->{return a[0];};
+			return (a)-> a[0];
 		}
 
 		if (iterator instanceof FunctionAssignNode){
 			iterator = ((FunctionAssignNode) iterator).left();
 		}
-		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()));
+		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()), n.data());
 	}
 
 }
