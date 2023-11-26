@@ -184,4 +184,31 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()), n.data());
 	}
 
+	public static int iteratorDerivative(FunctionNode n) {
+		String i = n.data();
+		int end = i.indexOf("(");
+		int counter = 0;
+
+		for (int j = 0; j < end; j++) {
+			if ("'".equals(i.substring(j, j + 1))) {
+				counter++;
+			}
+		}
+
+		return counter;
+	}
+
+	public static int iteratorDerivative(String n) {
+		int end = n.indexOf("(");
+		int counter = 0;
+
+		for (int j = 0; j < end; j++) {
+			if ("'".equals(n.substring(j, j + 1))) {
+				counter++;
+			}
+		}
+
+		return counter;
+	}
+
 }
