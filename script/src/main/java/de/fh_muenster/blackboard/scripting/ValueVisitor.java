@@ -178,7 +178,8 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			}
 			ls = variables.childs().get(0).accept(this);
 			rs = variables.childs().get(1).accept(this);
-			return Math.pow(ls, rs);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{ls, rs});
 		}
 		if(n.data().startsWith("sin")){
 			if(n.childs().size()!=1){
@@ -201,21 +202,24 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				throw new IllegalArgumentException("acos braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.acos(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.data().startsWith("asin")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("asin braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.asin(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.data().startsWith("exp")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("exp braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.exp(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(!FunctionMap.functions.containsKey(n.data())){
 			throw new IllegalArgumentException("unknown function");
