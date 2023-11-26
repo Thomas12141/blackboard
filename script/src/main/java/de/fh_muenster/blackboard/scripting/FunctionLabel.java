@@ -2,7 +2,7 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionLabel implements Function<double [], Double> {
+public class FunctionLabel extends AbstractFunction {
 
     private int position;
 
@@ -18,12 +18,12 @@ public class FunctionLabel implements Function<double [], Double> {
 
     @Override
     public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
+        return super.compose(before);
     }
 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
+        return super.andThen(after);
     }
 
     @Override

@@ -9,6 +9,7 @@ public class FunctionPlusUnary extends AbstractFunction{
     private Function<double [], Double> child;
 
     public FunctionPlusUnary(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
         this.child = child;
         childs.add(child);
     }

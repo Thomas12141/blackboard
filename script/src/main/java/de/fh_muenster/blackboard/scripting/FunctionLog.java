@@ -10,6 +10,7 @@ public class FunctionLog extends AbstractFunction {
     private Function<double [], Double> child;
 
     public FunctionLog(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
         this.child = child;
     }
 

@@ -132,7 +132,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		}
 		if(n.equals(n.parent().childs().get(1))){
 			if(n.getFunctionCall()==null){
-				return FunctionMap.functions.get(n.data()).getFunctionCall();
+				AbstractFunction toSolve = ((AbstractFunction)FunctionMap.functions.get(n.data()).getFunctionCall()).clone();
+
+				return toSolve;
 			}
 			return n.getFunctionCall();
 		}else {
@@ -173,7 +175,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			iterator = iterator.parent();
 		}
 		if (iterator ==null|| (!(iterator instanceof FunctionAssignNode) && ((FunctionNode) iterator).getVariables()==null)){
-			return (a)-> a[0];
+			return new FunctionLabel(0, n.data());
 		}
 
 		if (iterator instanceof FunctionAssignNode){

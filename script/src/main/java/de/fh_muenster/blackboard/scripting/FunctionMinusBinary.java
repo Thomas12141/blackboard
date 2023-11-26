@@ -11,6 +11,8 @@ public class FunctionMinusBinary extends AbstractFunction {
     private Function<double [], Double> right;
 
     public FunctionMinusBinary(Function<double[], Double> left, Function<double[], Double> right) {
+        ((AbstractFunction)left).parent = this;
+        ((AbstractFunction)right).parent = this;
         childs.add(left);
         childs.add(right);
         this.left = left;

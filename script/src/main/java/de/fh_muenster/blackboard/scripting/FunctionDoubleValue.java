@@ -2,10 +2,17 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionDoubleValue implements Function<double [], Double> {
+public class FunctionDoubleValue extends AbstractFunction {
 
     private FunctionNode function;
 
+
+
+    private Double value;
+
+    public FunctionDoubleValue(Double value) {
+        this.value = value;
+    }
     public Double getValue() {
         return value;
     }
@@ -13,13 +20,6 @@ public class FunctionDoubleValue implements Function<double [], Double> {
     public void setValue(Double value) {
         this.value = value;
     }
-
-    private Double value;
-
-    public FunctionDoubleValue(Double value) {
-        this.value = value;
-    }
-
     public FunctionNode getFunction() {
         return function;
     }
@@ -35,12 +35,12 @@ public class FunctionDoubleValue implements Function<double [], Double> {
 
     @Override
     public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
+        return super.compose(before);
     }
 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
+        return super.andThen(after);
     }
 
     public String toString() {

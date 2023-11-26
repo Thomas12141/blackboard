@@ -10,6 +10,7 @@ public class FunctionAsin extends AbstractFunction {
     private Function<double [], Double> child;
 
     public FunctionAsin(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
         childs.add(child);
         this.child = child;
     }

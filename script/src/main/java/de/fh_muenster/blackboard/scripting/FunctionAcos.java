@@ -10,6 +10,7 @@ public class FunctionAcos extends AbstractFunction {
     private Function<double [], Double> child;
 
     public FunctionAcos(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
         this.child = child;
         childs.add(child);
     }
