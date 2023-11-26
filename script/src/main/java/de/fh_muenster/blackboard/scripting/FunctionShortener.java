@@ -4,7 +4,7 @@ import java.util.Stack;
 import java.util.function.Function;
 
 public class FunctionShortener {
-    public static void toShort(Function<double[], Double> toShort){
+    public static Function<double[], Double> toShort(Function<double[], Double> toShort){
         Stack<Function<double[], Double>> myStack = new Stack<>();
         myStack.push(toShort);
         Function<double[], Double> iterator;
@@ -19,6 +19,7 @@ public class FunctionShortener {
         if(again){
             toShort(toShort);
         }
+        return toShort;
     }
 
     private static boolean helper(Function<double[], Double> toShort){

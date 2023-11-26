@@ -28,6 +28,27 @@ import java.util.function.Function;
  */
 public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Double>> {
 
+
+
+	public FunctionVisitor(){
+		super();
+		FunctionNode functionNode = new FunctionNode("ln", new Label("x"));
+		FunctionMap.functions.put("ln", functionNode);
+		functionNode = new FunctionNode("sin", new Label("x"));
+		FunctionMap.functions.put("sin", functionNode);
+		functionNode = new FunctionNode("lb", new Label("x"));
+		FunctionMap.functions.put("lb", functionNode);
+		functionNode = new FunctionNode("pow", new VariableNode(new Label("x"), new Label("y")));
+		FunctionMap.functions.put("pow", functionNode);
+		functionNode = new FunctionNode("cos", new Label("x"));
+		FunctionMap.functions.put("cos", functionNode);
+		functionNode = new FunctionNode("acos", new Label("x"));
+		FunctionMap.functions.put("acos", functionNode);
+		functionNode = new FunctionNode("asin", new Label("x"));
+		FunctionMap.functions.put("asin", functionNode);
+		functionNode = new FunctionNode("exp", new Label("x"));
+		FunctionMap.functions.put("exp", functionNode);
+	}
 	/**
 	 * (non-Javadoc)
 	 *
@@ -107,6 +128,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 	@Override
 	public Function<double[], Double> visit(FunctionNode n) {
+		int grade = iteratorDerivative(n);
 		if(n.data().equals("lb")){
 			return new FunctionLogB(n.childs().get(0).accept(this));
 		}
@@ -131,7 +153,23 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(n.data().equals("exp")){
 			return new FunctionExp(n.childs().get(0).accept(this));
 		}
-		if(n.equals(n.parent().childs().get(1))){
+		if(grade>0){
+			if(FunctionMap.functions.containsKey(n.data())){
+				return FunctionMap.functions.get(n.data()).getFunctionCall();
+			}else {
+				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
+				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
+				JavaccParser javaccParser = new JavaccParser();
+				for (int i = 0; i < grade; i++) {
+					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
+					//FunctionShortener.toShort(temp);
+					iterator = new FunctionNode(iterator.data() + '\'', javaccParser.parse(temp.toString()).childs().get(0));
+					iterator.setFunctionCall(temp);
+					FunctionMap.functions.put(iterator.data(), iterator);
+				}
+				return iterator.accept(this);
+			}
+		}else if(n.equals(n.parent().childs().get(1))){
 			if(n.getFunctionCall()==null){
 				FunctionNode functionNode = FunctionMap.functions.get(n.data());
 				AbstractFunction toSolve = ((AbstractFunction)FunctionMap.functions.get(n.data()).getFunctionCall()).clone();
@@ -194,7 +232,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 
 	public static int iteratorDerivative(FunctionNode n) {
-		String i = n.data();
+		StringVisitor stringVisitor = new StringVisitor();
+		String i = n.accept(stringVisitor);
 		int end = i.indexOf("(");
 		int counter = 0;
 
@@ -207,18 +246,6 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		return counter;
 	}
 
-	public static int iteratorDerivative(String n) {
-		int end = n.indexOf("(");
-		int counter = 0;
-
-		for (int j = 0; j < end; j++) {
-			if ("'".equals(n.substring(j, j + 1))) {
-				counter++;
-			}
-		}
-
-		return counter;
-	}
 
 	private void replace(AbstractFunction toReplace, AbstractFunction inWhichTree, String whichLabel){
 		AbstractFunction iterator = inWhichTree;

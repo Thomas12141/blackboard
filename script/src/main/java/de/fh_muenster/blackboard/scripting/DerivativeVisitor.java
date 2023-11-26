@@ -131,7 +131,7 @@ public class DerivativeVisitor{
 
 		}
 		if(n.data().equals("ln")){
-			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), visit(n.childs().get(0))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
 
 		if(n.data().equals("pow")){
