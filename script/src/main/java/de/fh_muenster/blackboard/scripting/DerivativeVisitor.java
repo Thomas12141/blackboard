@@ -139,10 +139,10 @@ public class DerivativeVisitor{
 					new FunctionMinusBinary(visit(n.childs().get(1)), new FunctionDoubleValue(1.0)))), functionVariableDerivative);
 		}
 		if(n.data().equals("sin")){
-			return new FunctionTimes(new FunctionCos(visit(n.childs().get(0))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionCos(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
 		if(n.data().equals("cos")){
-			return new FunctionTimes(new FunctionMinusUnary(new FunctionSin(visit(n.childs().get(0)))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(functionVisitor))), functionVariableDerivative);
 		}
 		if(n.data().equals("acos")) { // −(1 − x^2)^(−1/2)
 			return new FunctionTimes(new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(visit(n.childs().get(0)),
@@ -153,7 +153,7 @@ public class DerivativeVisitor{
 					new FunctionPow(visit(n.childs().get(0)), new FunctionDoubleValue(2.0)))), functionVariableDerivative);
 		}
 		if(n.data().equals("exp")){
-			return new FunctionTimes(new FunctionExp(visit(n.childs().get(0))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionExp(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
 		n.setFunctionCall(visit(n));
 		AST<?> function = FunctionMap.functions.get(n.data());
