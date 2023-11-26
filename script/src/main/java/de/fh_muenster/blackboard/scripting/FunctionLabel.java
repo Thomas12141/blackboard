@@ -2,7 +2,7 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionLabel extends AbstractFunction {
+public class FunctionLabel extends AbstractFunctionOneVariable {
 
     private int position;
 

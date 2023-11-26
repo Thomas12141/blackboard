@@ -2,21 +2,17 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionTimes extends AbstractFunction{
+public class FunctionTimes extends AbstractFunctionTwoVariable{
 
     private FunctionNode function;
-
-    private Function<double [], Double> left;
-
-    private Function<double [], Double> right;
 
     public FunctionTimes(Function<double[], Double> left, Function<double[], Double> right) {
         ((AbstractFunction)left).parent = this;
         ((AbstractFunction)right).parent = this;
         childs.add(left);
         childs.add(right);
-        this.left = childs.get(0);
-        this.right = childs.get(1);
+        this.left = (AbstractFunction)childs.get(0);
+        this.right = (AbstractFunction)childs.get(1);
     }
 
     public FunctionNode getFunction() {
@@ -40,22 +36,6 @@ public class FunctionTimes extends AbstractFunction{
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
         return super.andThen(after);
-    }
-
-    public Function<double[], Double> getLeft() {
-        return left;
-    }
-
-    public void setLeft(Function<double[], Double> left) {
-        this.left = left;
-    }
-
-    public Function<double[], Double> getRight() {
-        return right;
-    }
-
-    public void setRight(Function<double[], Double> right) {
-        this.right = right;
     }
 
     @Override

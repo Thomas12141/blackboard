@@ -2,17 +2,15 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionSin extends AbstractFunction{
+public class FunctionSin extends AbstractFunctionOneVariable{
 
     private FunctionNode function;
 
 
-    private Function<double [], Double> child;
-
     public FunctionSin(Function<double[], Double> child) {
         ((AbstractFunction)child).parent = this;
         childs.add(child);
-        this.child = childs.get(0);
+        this.child = (AbstractFunction)childs.get(0);
     }
 
     public FunctionNode getFunction() {

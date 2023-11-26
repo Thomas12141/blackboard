@@ -2,16 +2,15 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionMinusUnary extends AbstractFunction {
+public class FunctionMinusUnary extends AbstractFunctionOneVariable {
 
     private FunctionNode function;
 
-    private Function<double [], Double> child;
 
     public FunctionMinusUnary(Function<double[], Double> child) {
         ((AbstractFunction)child).parent = this;
         childs.add(child);
-        this.child = childs.get(0);
+        this.child = (AbstractFunction)childs.get(0);
     }
 
     public FunctionNode getFunction() {
@@ -41,11 +40,7 @@ public class FunctionMinusUnary extends AbstractFunction {
         return ("(-" + child.toString() + ")");
     }
 
-    public Function<double[], Double> getChild() {
-        return child;
-    }
-
     public void setChild(Function<double[], Double> child) {
-        this.child = child;
+        this.child = (AbstractFunction) child;
     }
 }

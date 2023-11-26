@@ -2,21 +2,16 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionPow extends AbstractFunction{
+public class FunctionPow extends AbstractFunctionTwoVariable{
 
     private FunctionNode function;
-
-    private Function<double [], Double> left;
-
-    private Function<double [], Double> right;
-
     public FunctionPow(Function<double[], Double> left, Function<double[], Double> right) {
         ((AbstractFunction)left).parent = this;
         ((AbstractFunction)right).parent = this;
         childs.add(left);
         childs.add(right);
-        this.left = childs.get(0);
-        this.right = childs.get(1);
+        this.left = (AbstractFunction)childs.get(0);
+        this.right = (AbstractFunction)childs.get(1);
     }
 
     public FunctionNode getFunction() {

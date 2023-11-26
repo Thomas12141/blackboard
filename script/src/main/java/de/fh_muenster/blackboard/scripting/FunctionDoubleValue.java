@@ -2,7 +2,7 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionDoubleValue extends AbstractFunction {
+public class FunctionDoubleValue extends AbstractFunctionOneVariable {
 
     private FunctionNode function;
 
