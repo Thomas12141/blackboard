@@ -185,14 +185,16 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 				throw new IllegalArgumentException("sin braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.sin(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.data().startsWith("cos")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("cos braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.cos(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.data().startsWith("acos")){
 			if(n.childs().size()!=1){
