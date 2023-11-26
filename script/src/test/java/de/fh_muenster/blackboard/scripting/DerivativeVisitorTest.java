@@ -68,4 +68,62 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
         String expected = "cos(2 )";
         assertEquals(expected, returned);
     }
+
+    @Test
+    @Timeout(1)
+    public void testFctDerivation() throws Exception {
+        task = define("f'(x) = x + 2; f'(%.8f)", x1);
+        expected = 1;
+        System.out.println(x1);
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testFctDerivation2() throws Exception {
+        task = define("f'(x) = x^2 + 2; f'(%.8f)", x1);
+        expected = 2 * x1;
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testFctDerivation2_2() throws Exception {
+        task = define("f''(x) = x^2 + 2; f''(%.8f)", x1);
+        expected = 1;
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testSinInFct() throws Exception {
+        task = define("f'(x) = sin(x); f'(%.8f)", x1);
+        expected = cos(x1);
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testCosInFct() throws Exception {
+        task = define("f'(x) = cos(x); f'(%.8f)", x1);
+        expected = -(sin(x1));
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testAsinInFct() throws Exception {
+        task = define("f'(x) = asin(x); f'(%.8f)", x1);
+        expected = (1/(1-Math.pow(x1, 2)));
+        System.out.println(x1);
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+
 }
