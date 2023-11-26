@@ -20,6 +20,7 @@
 package de.fh_muenster.blackboard.scripting;
 
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.function.Function;
 
 /**
@@ -132,8 +133,16 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		}
 		if(n.equals(n.parent().childs().get(1))){
 			if(n.getFunctionCall()==null){
+				FunctionNode functionNode = FunctionMap.functions.get(n.data());
 				AbstractFunction toSolve = ((AbstractFunction)FunctionMap.functions.get(n.data()).getFunctionCall()).clone();
-
+				int position = 0;
+				for (AST<?> toReplace: n.childs()) {
+					AbstractFunction newFunctionSubtree = (AbstractFunction) toReplace.accept(this);
+					if(newFunctionSubtree!=null){
+						replace(newFunctionSubtree, toSolve, functionNode.getVariables().get(position));
+						position++;
+					}
+				}
 				return toSolve;
 			}
 			return n.getFunctionCall();
@@ -209,6 +218,22 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		}
 
 		return counter;
+	}
+
+	private void replace(AbstractFunction toReplace, AbstractFunction inWhichTree, String whichLabel){
+		AbstractFunction iterator = inWhichTree;
+		Stack<Function<double[], Double>> stack = new Stack<>();
+		stack.push(iterator);
+		do{
+			for (Function<double[], Double> toPush: iterator.childs) {
+				stack.push(toPush);
+			}
+			if(iterator.toString().equals(whichLabel)){
+				AbstractFunction newFunction = toReplace.clone();
+				iterator.parent.childs.set(iterator.parent.childs.indexOf(iterator), newFunction);
+			}
+			iterator = (AbstractFunction) stack.pop();
+		} while (!stack.empty());
 	}
 
 }

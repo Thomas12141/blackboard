@@ -11,7 +11,8 @@ public class FunctionLog extends AbstractFunction {
 
     public FunctionLog(Function<double[], Double> child) {
         ((AbstractFunction)child).parent = this;
-        this.child = child;
+        childs.add(child);
+        this.child = childs.get(0);
     }
 
     public FunctionNode getFunction() {

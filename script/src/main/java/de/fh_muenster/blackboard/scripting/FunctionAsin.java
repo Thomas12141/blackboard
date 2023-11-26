@@ -12,7 +12,7 @@ public class FunctionAsin extends AbstractFunction {
     public FunctionAsin(Function<double[], Double> child) {
         ((AbstractFunction)child).parent = this;
         childs.add(child);
-        this.child = child;
+        this.child = childs.get(0);
     }
 
     public FunctionNode getFunction() {

@@ -15,8 +15,8 @@ public class FunctionPlus extends AbstractFunction {
         ((AbstractFunction)right).parent = this;
         childs.add(left);
         childs.add(right);
-        this.left = left;
-        this.right = right;
+        this.left = childs.get(0);
+        this.right = childs.get(1);
     }
 
     public FunctionNode getFunction() {
