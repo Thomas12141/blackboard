@@ -158,13 +158,13 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
 			}else {
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
-				iterator.childs().set(0, n.childs().get(0));
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
 				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {
 					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
-					//FunctionShortener.toShort(temp);
-					iterator = new FunctionNode(iterator.data() + '\'', javaccParser.parse(temp.toString()).childs().get(0));
+					temp = FunctionShortener.toShort(temp);
+					iterator = new FunctionNode(iterator.data() + '\'', javaccParser.parse(temp.toString()).childs().get(0).childs().get(0));
+					iterator.childs().set(0, n.childs().get(0));
 					iterator.setFunctionCall(temp);
 					FunctionMap.functions.put(iterator.data(), iterator);
 				}

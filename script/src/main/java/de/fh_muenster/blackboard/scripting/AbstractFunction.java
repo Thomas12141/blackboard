@@ -5,6 +5,11 @@ import java.util.function.Function;
 
 public abstract class AbstractFunction implements Function<double[], Double>, Cloneable {
     ArrayList<Function<double[], Double>> childs =new ArrayList<>();
+
+    public void setParent(AbstractFunction parent) {
+        this.parent = parent;
+    }
+
     AbstractFunction parent;
 
     public ArrayList<Function<double[], Double>> getChilds() {

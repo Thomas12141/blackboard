@@ -5,6 +5,7 @@ import java.util.function.Function;
 
 public class FunctionShortener {
     public static Function<double[], Double> toShort(Function<double[], Double> toShort){
+        FunctionPlusUnary temp = new FunctionPlusUnary(toShort);
         Stack<Function<double[], Double>> myStack = new Stack<>();
         myStack.push(toShort);
         Function<double[], Double> iterator;
@@ -17,9 +18,9 @@ public class FunctionShortener {
             again = again || helper(iterator);
         }
         if(again){
-            toShort(toShort);
+            toShort(temp.child);
         }
-        return toShort;
+        return temp.child;
     }
 
     private static boolean helper(Function<double[], Double> toShort){
@@ -59,7 +60,7 @@ public class FunctionShortener {
                 return true;
             }
         }else if(toShort instanceof FunctionTimes){
-            Function<double[], Double> firstChild = ((FunctionTimes)toShort).getLeft();
+            AbstractFunction firstChild = ((FunctionTimes)toShort).getLeft();
             Function<double[], Double> secondChild = ((FunctionTimes)toShort).getRight();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
                 AbstractFunction newFunction =new FunctionDoubleValue(0.0);
@@ -78,8 +79,19 @@ public class FunctionShortener {
                 return true;
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 1.0){
+                if(parent.childs.size()==2){
+                    if(parent.childs.get(0)==toShort){
+                        ((AbstractFunctionTwoVariable)parent).setLeft(firstChild);
+                        ((AbstractFunctionTwoVariable) parent).getLeft().setParent(parent);
+                    }else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(firstChild);
+                        ((AbstractFunctionTwoVariable) parent).getRight().setParent(parent);
+                    }
+                }else {
+                    ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                    ((AbstractFunctionOneVariable) parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), firstChild);
-                toShort = firstChild;
                 return true;
             }
         }else if(toShort instanceof FunctionDivide){
