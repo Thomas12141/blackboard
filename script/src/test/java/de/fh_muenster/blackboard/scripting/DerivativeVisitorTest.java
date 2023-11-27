@@ -21,9 +21,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
      */
     @BeforeEach
     void setUp() throws Exception {
+        parser = new JavaccParser();
         visitor = new DerivativeVisitor();
         blackboard = Blackboard.getInstance();
-        parser = new JavaccParser();
         delta = 1.E-6;
         x1 = rnd(-1,1);
         x2 = rnd(-4,-0.1);

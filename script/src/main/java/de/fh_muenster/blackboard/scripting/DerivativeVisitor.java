@@ -93,7 +93,11 @@ public class DerivativeVisitor{
 			case DIVIDE:
 				return new FunctionDivide(new FunctionMinusBinary(new FunctionTimes(lsDerivative, rs), new FunctionTimes(ls, rsDerivative)), new FunctionPow(rs, new FunctionDoubleValue(2.0)));
 			case POWER, POWERCARET:
-				return new FunctionTimes(new FunctionPow(ls, rs), new FunctionPlus(new FunctionTimes(rs, new FunctionDivide(lsDerivative, ls)), new FunctionTimes(rsDerivative, new FunctionLog(ls))));
+
+				Function<double[], Double> functionVariableDerivative = visit(n.childs().get(0));
+				return new FunctionTimes(new FunctionTimes(new FunctionPow(n.childs().get(0).accept(functionVisitor),
+						new FunctionMinusBinary(n.childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))),
+						n.childs().get(1).accept(functionVisitor)), functionVariableDerivative);
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
 	}
