@@ -158,13 +158,13 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
 			}else {
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
+				iterator.childs().set(0, n.childs().get(0));
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
 				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {
 					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
 					temp = FunctionShortener.toShort(temp);
 					iterator = new FunctionNode(iterator.data() + '\'', javaccParser.parse(temp.toString()).childs().get(0).childs().get(0));
-					iterator.childs().set(0, n.childs().get(0));
 					iterator.setFunctionCall(temp);
 					FunctionMap.functions.put(iterator.data(), iterator);
 				}
@@ -178,7 +178,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				for (AST<?> toReplace: n.childs()) {
 					AbstractFunction newFunctionSubtree = (AbstractFunction) toReplace.accept(this);
 					if(newFunctionSubtree!=null){
-						replace(newFunctionSubtree, toSolve, functionNode.getVariables().get(position));
+						toSolve = replace(newFunctionSubtree, toSolve, functionNode.getVariables().get(position));
 						position++;
 					}
 				}
@@ -248,8 +248,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 
 
-	private void replace(AbstractFunction toReplace, AbstractFunction inWhichTree, String whichLabel){
-		AbstractFunction iterator = inWhichTree;
+	private AbstractFunction replace(AbstractFunction toReplace, AbstractFunction inWhichTree, String whichLabel){
+		AbstractFunction iterator = new FunctionPlusUnary(inWhichTree);
 		Stack<Function<double[], Double>> stack = new Stack<>();
 		stack.push(iterator);
 		do{
@@ -258,10 +258,27 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			}
 			if(iterator.toString().equals(whichLabel)){
 				AbstractFunction newFunction = toReplace.clone();
-				iterator.parent.childs.set(iterator.parent.childs.indexOf(iterator), newFunction);
+				if(iterator.parent.childs.size()==2){
+					if(iterator.parent.childs.get(0) == iterator){
+						((AbstractFunctionTwoVariable)iterator.parent).setLeft(newFunction);
+						((AbstractFunctionTwoVariable) iterator.parent).getLeft().setParent(newFunction);
+						iterator.parent.childs.set(0, newFunction);
+					}else{
+						((AbstractFunctionTwoVariable)iterator.parent).setRight(newFunction);
+						((AbstractFunctionTwoVariable)iterator.parent).getRight().setParent(iterator.parent);
+						iterator.parent.childs.set(1, newFunction);
+					}
+				}else {
+					((AbstractFunctionOneVariable)iterator.parent).setChild(newFunction);
+					((AbstractFunctionOneVariable)iterator.parent).child.setParent(iterator.parent);
+					iterator.parent.childs.set(0, newFunction);
+				}
 			}
 			iterator = (AbstractFunction) stack.pop();
 		} while (!stack.empty());
+		while (iterator.parent != null){
+			iterator = iterator.parent;
+		}
+		return (AbstractFunction) iterator.childs.get(0);
 	}
-
 }
