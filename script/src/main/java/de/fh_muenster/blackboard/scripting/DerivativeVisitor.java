@@ -160,7 +160,7 @@ public class DerivativeVisitor{
 		if(function.parent() instanceof FunctionAssignNode){
 			function = ((FunctionAssignNode) function.parent()).expr();
 		}
-		n.setFunctionCall(visit(function));
+		n.setFunctionCall(function.accept(functionVisitor));
 		return new FunctionTimes(visit(function), functionVariableDerivative);
 	}
 

@@ -46,6 +46,6 @@ public class FunctionPow extends AbstractFunctionTwoVariable{
     }
 
     public String toString() {
-        return ("pow(" + right.toString() + ")");
+        return ("pow(" + left.toString() + "," + right.toString() + ")");
     }
 }
