@@ -247,7 +247,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	@Disabled
 	public void testTwoDefinitions() throws Exception {
 		task = "f(x)= x*exp(-x)";
 		blackboard.write(task);
