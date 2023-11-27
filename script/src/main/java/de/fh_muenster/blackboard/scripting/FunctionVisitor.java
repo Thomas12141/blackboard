@@ -156,9 +156,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(grade>0){
 			if(FunctionMap.functions.containsKey(n.data())){
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
-			}else if(n.childs().get(0) instanceof Label){
+			}else if(n.childs().get(0) instanceof Label|| isNotElementaryFunction(n)){
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
-				iterator.childs().set(0, n.childs().get(0));
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
 				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {
@@ -168,7 +167,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 					iterator.setFunctionCall(temp);
 					FunctionMap.functions.put(iterator.data(), iterator);
 				}
-				return iterator.accept(this);
+				iterator.childs().set(0, n.childs().get(0));
+				return iterator.accept(new FunctionVisitor());
 			}else{
 				return new FunctionDoubleValue(0.0);
 			}
@@ -190,6 +190,14 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		}else {
 			return n.parent().childs().get(1).accept(this);
 		}
+	}
+
+	private boolean isNotElementaryFunction(FunctionNode n) {
+		String function = n.data().replaceAll("'", "");
+		if(function.equals("sin")||function.equals("cos")||function.equals("ln")||function.equals("lb")||function.equals("acos")
+				||function.equals("asin")||function.equals("pow")||function.equals("exp"))
+			return false;
+		return true;
 	}
 
 

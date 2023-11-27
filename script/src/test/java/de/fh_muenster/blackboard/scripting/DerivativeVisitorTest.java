@@ -64,17 +64,26 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     @Timeout(2)
     void testPow3() throws Exception {
         String task = " sin'( 2 )";
-        String returned = blackboard.answer(Function.class, task).toString();
-        String expected = "0";
-        assertEquals(expected, returned);
+        Function<double[], Double> returned = blackboard.answer(Function.class, task);
+        double expected = 0;
+        assertEquals(expected, returned.apply(new double[]{}));
     }
 
     @Test
     @Timeout(1)
     public void testFctDerivation() throws Exception {
-        task = define("f'(x) = x + 2; f'(%.8f)", x1);
+        task = define("f(x) = x + 2; f'(%.8f)", x1);
         expected = 1;
         System.out.println(x1);
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testPowDerivation() throws Exception {
+        task = define("f(x) = pow(x,2); f'(%.8f)", x1);
+        expected = 2 * x1;
         returned = resultOf(task,7);
         assertEquals(expected,returned, delta);
     }
@@ -91,7 +100,7 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     @Test
     @Timeout(1)
     public void testFctDerivation2_2() throws Exception {
-        task = define("f(x) = x^2 + 2; f''(%.8f)", x1);
+        task = define("f(x) = pow(x,2) + 2; f''(%.8f)", x1);
         expected = 2.0;
         returned = resultOf(task,7);
         assertEquals(expected,returned, delta);

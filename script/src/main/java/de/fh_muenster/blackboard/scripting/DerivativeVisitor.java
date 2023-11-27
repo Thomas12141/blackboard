@@ -135,8 +135,9 @@ public class DerivativeVisitor{
 		}
 
 		if(n.data().equals("pow")){
-			return new FunctionTimes(new FunctionTimes(visit(n.childs().get(1)), new FunctionPow(visit(n.childs().get(0)),
-					new FunctionMinusBinary(visit(n.childs().get(1)), new FunctionDoubleValue(1.0)))), functionVariableDerivative);
+			functionVariableDerivative = visit(n.childs().get(0).childs().get(0));
+			return new FunctionTimes(new FunctionPow(n.childs().get(0).childs().get(0).accept(functionVisitor),
+					new FunctionMinusBinary(n.childs().get(0).childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))), functionVariableDerivative);
 		}
 		if(n.data().equals("sin")){
 			return new FunctionTimes(new FunctionCos(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
@@ -155,9 +156,12 @@ public class DerivativeVisitor{
 		if(n.data().equals("exp")){
 			return new FunctionTimes(new FunctionExp(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
-		n.setFunctionCall(visit(n));
 		AST<?> function = FunctionMap.functions.get(n.data());
-		return new FunctionTimes(visit(n), functionVariableDerivative);
+		if(function.parent() instanceof FunctionAssignNode){
+			function = ((FunctionAssignNode) function.parent()).expr();
+		}
+		n.setFunctionCall(visit(function));
+		return new FunctionTimes(visit(function), functionVariableDerivative);
 	}
 
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
