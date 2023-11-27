@@ -101,8 +101,10 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     @Timeout(1)
     public void testFctDerivation2_2() throws Exception {
         task = define("f(x) = pow(x,2) + 2; f''(%.8f)", x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         expected = 2.0;
-        returned = resultOf(task,7);
         assertEquals(expected,returned, delta);
     }
 
