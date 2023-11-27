@@ -279,6 +279,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		while (iterator.parent != null){
 			iterator = iterator.parent;
 		}
+
+		((AbstractFunction)iterator.childs.get(0)).parent = null;
 		return (AbstractFunction) iterator.childs.get(0);
 	}
 }
