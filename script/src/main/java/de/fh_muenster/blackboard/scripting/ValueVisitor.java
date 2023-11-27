@@ -221,8 +221,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
 			return function.apply(new double[]{childValue});
 		}
-		if(!FunctionMap.functions.containsKey(n.data())){
+		if(!FunctionMap.functions.containsKey(n.data().replaceAll("'", ""))){
 			throw new IllegalArgumentException("unknown function");
+		}
+		if(FunctionVisitor.iteratorDerivative(n)>0){
+			childValue = n.childs().get(0).accept(this);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.parent() instanceof FunctionAssignNode&&((FunctionAssignNode) n.parent()).left().equals(n)){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
