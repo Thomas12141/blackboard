@@ -26,56 +26,140 @@ public class FunctionShortener {
     private static boolean helper(Function<double[], Double> toShort){
         AbstractFunction parent = ((AbstractFunction) toShort).parent;
         if(toShort instanceof FunctionPlus){
-            Function<double[], Double> firstChild = ((FunctionPlus)toShort).getLeft();
-            Function<double[], Double> secondChild = ((FunctionPlus)toShort).getRight();
+            AbstractFunction firstChild = ((FunctionPlus)toShort).getLeft();
+            AbstractFunction secondChild = ((FunctionPlus)toShort).getRight();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(secondChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), secondChild);
-                toShort = secondChild;
                 return true;
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 0.0){
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), firstChild);
-                toShort = firstChild;
                 return true;
             }
         }else if(toShort instanceof FunctionMinusBinary){
-            Function<double[], Double> firstChild = ((FunctionMinusBinary)toShort).getLeft();
-            Function<double[], Double> secondChild = ((FunctionMinusBinary)toShort).getRight();
+            AbstractFunction firstChild = ((FunctionMinusBinary)toShort).getLeft();
+            AbstractFunction secondChild = ((FunctionMinusBinary)toShort).getRight();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
-                AbstractFunction newFunction = new FunctionMinusUnary(secondChild);
-                parent.childs.set(parent.childs.indexOf(toShort), newFunction);
-                toShort = newFunction;
-                return true;
+                FunctionMinusUnary value;
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        value = new FunctionMinusUnary(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).setLeft(value);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                        parent.childs.set(parent.childs.indexOf(toShort), value);
+                        return true;
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                        parent.childs.set(parent.childs.indexOf(toShort), secondChild);
+                        return true;
+                    }
+                } else {
+                    value = new FunctionMinusUnary(secondChild);
+                    ((AbstractFunctionOneVariable)parent).setChild(value);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                    parent.childs.set(parent.childs.indexOf(toShort), value);
+                    return true;
+                }
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 0.0){
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), firstChild);
-                toShort = firstChild;
                 return true;
             }
         }else if(toShort instanceof FunctionMinusUnary){
-            Function<double[], Double> firstChild = ((FunctionMinusUnary)toShort).getChild();
+            AbstractFunction firstChild = ((FunctionMinusUnary)toShort).getChild();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
+                ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                ((AbstractFunctionOneVariable)parent).child.setParent(parent);
                 parent.childs.set(parent.childs.indexOf(toShort), firstChild);
-                toShort = firstChild;
                 return true;
             }
+
         }else if(toShort instanceof FunctionTimes){
             AbstractFunction firstChild = ((FunctionTimes)toShort).getLeft();
-            Function<double[], Double> secondChild = ((FunctionTimes)toShort).getRight();
+            AbstractFunction secondChild = ((FunctionTimes)toShort).getRight();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
-                AbstractFunction newFunction =new FunctionDoubleValue(0.0);
-                parent.childs.set(parent.childs.indexOf(toShort), newFunction);
-                toShort = newFunction;
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
+                parent.childs.set(parent.childs.indexOf(toShort), firstChild);
                 return true;
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 0.0){
-                AbstractFunction newFunction =new FunctionDoubleValue(0.0);
-                parent.childs.set(parent.childs.indexOf(toShort), newFunction);
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(secondChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
+                parent.childs.set(parent.childs.indexOf(toShort), secondChild);
                 return true;
             }
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 1.0){
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    } else {
+                        ((AbstractFunctionTwoVariable)parent).setRight(secondChild);
+                        ((AbstractFunctionTwoVariable)parent).getRight().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(secondChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), secondChild);
-                toShort = secondChild;
                 return true;
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 1.0){
@@ -95,16 +179,33 @@ public class FunctionShortener {
                 return true;
             }
         }else if(toShort instanceof FunctionDivide){
-            Function<double[], Double> firstChild = ((FunctionDivide)toShort).getLeft();
-            Function<double[], Double> secondChild = ((FunctionDivide)toShort).getRight();
+            AbstractFunction firstChild = ((FunctionDivide)toShort).getLeft();
+            AbstractFunction secondChild = ((FunctionDivide)toShort).getRight();
             if(firstChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) firstChild).getValue() == 0.0){
-                AbstractFunction newFunction =new FunctionDoubleValue(0.0);
-                parent.childs.set(parent.childs.indexOf(toShort), newFunction);
+                FunctionDoubleValue value = new FunctionDoubleValue(0.0);
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(0) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(value);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(value);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
+                parent.childs.set(parent.childs.indexOf(toShort), value);
                 return true;
             }
             if(secondChild instanceof FunctionDoubleValue && ((FunctionDoubleValue) secondChild).getValue() == 1.0){
+                if(parent.childs.size() == 2) {
+                    if(parent.childs.get(1) == toShort) {
+                        ((AbstractFunctionTwoVariable)parent).setLeft(firstChild);
+                        ((AbstractFunctionTwoVariable)parent).getLeft().setParent(parent);
+                    }
+                } else {
+                    ((AbstractFunctionOneVariable)parent).setChild(firstChild);
+                    ((AbstractFunctionOneVariable)parent).child.setParent(parent);
+                }
                 parent.childs.set(parent.childs.indexOf(toShort), firstChild);
-                toShort = firstChild;
                 return true;
             }
         }
