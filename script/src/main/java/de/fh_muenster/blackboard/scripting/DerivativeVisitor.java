@@ -136,8 +136,9 @@ public class DerivativeVisitor{
 
 		if(n.data().equals("pow")){
 			functionVariableDerivative = visit(n.childs().get(0).childs().get(0));
-			return new FunctionTimes(new FunctionPow(n.childs().get(0).childs().get(0).accept(functionVisitor),
-					new FunctionMinusBinary(n.childs().get(0).childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionTimes(new FunctionPow(n.childs().get(0).childs().get(0).accept(functionVisitor),
+					new FunctionMinusBinary(n.childs().get(0).childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))),
+					n.childs().get(0).childs().get(1).accept(functionVisitor)), functionVariableDerivative);
 		}
 		if(n.data().equals("sin")){
 			return new FunctionTimes(new FunctionCos(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
