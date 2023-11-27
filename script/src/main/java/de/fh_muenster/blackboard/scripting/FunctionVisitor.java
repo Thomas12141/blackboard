@@ -240,6 +240,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if (iterator instanceof FunctionAssignNode){
 			iterator = ((FunctionAssignNode) iterator).left();
 		}
+		if(((FunctionNode)iterator).getVariables() == null){
+			return new FunctionLabel(0, n.data());
+		}
 		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()), n.data());
 	}
 
