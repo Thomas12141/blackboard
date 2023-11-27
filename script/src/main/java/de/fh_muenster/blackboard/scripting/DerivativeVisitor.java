@@ -151,8 +151,9 @@ public class DerivativeVisitor{
 					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5)))), functionVariableDerivative);
 		}
 		if(n.data().equals("asin")){ // 1/(1-(x^2))
-			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionMinusBinary(new FunctionDoubleValue(1.0),
-					new FunctionPow(visit(n.childs().get(0)), new FunctionDoubleValue(2.0)))), functionVariableDerivative);
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0),
+					new FunctionPow(n.childs().get(0).accept(functionVisitor), new FunctionDoubleValue(2.0))), new FunctionDoubleValue(0.5))),
+					visit(n.childs().get(0)));
 		}
 		if(n.data().equals("exp")){
 			return new FunctionTimes(new FunctionExp(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
