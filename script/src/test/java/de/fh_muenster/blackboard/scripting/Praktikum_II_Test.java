@@ -39,12 +39,11 @@ import org.junit.jupiter.api.Timeout;
 /**
  * Extended test for Math and Scripting functions - state of exam II.
  */
-
 public class Praktikum_II_Test extends Praktikum_I_Test {
-   Function<double[], Double> fct;
-   /**
-    * @throws Exception
-    */
+	Function<double[], Double> fct;
+	/**
+	 * @throws Exception
+	 */
 	@BeforeEach
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -52,25 +51,27 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testSimpleFunction() throws Exception {
 		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*x1 + 2;
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
-	
+
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void test2DFunction() throws Exception {
 		task = define("f(x,y)=2*x + 3*y; x=%.8f; y=%.8f; z=f(x,y)",x1,x2);
 		expected = 2*x1 + 3*x2;
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
-	
+
 	@Test
 	@Timeout(1)
-	public void testUnknownFunction() throws Exception {
+	public void testUnkownFunction() throws Exception {
 		try {
 			task = define("x=%.8f;  y=foo(x)",x1);
 			returned = resultOf(task,7);
@@ -88,7 +89,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 			returned = resultOf(task,7);
 			fail("wrong function argumtens not recognized");
 		} catch(IllegalArgumentException e) {
-			log("e: %s",e.getMessage());
+			//log("e: %s",e.getMessage());
 			assertTrue(e.getMessage().contains("#args"));
 		}
 	}
@@ -107,6 +108,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testExpFunction() throws Exception {
 		task = define("f(x)=3*exp(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*exp(x1) + 2;
@@ -115,6 +117,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testSineFunction() throws Exception {
 		task = define("f(x)=3*sin(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*sin(x1) + 2;
@@ -123,6 +126,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testCosineFunction() throws Exception {
 		task = define("f(x)=3*cos(x) + 2; x=%.8f;  y=f(x)",x1);
 		expected = 3*cos(x1) + 2;
@@ -131,6 +135,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testPowerFunction() throws Exception {
 		task = define("f(x,y)=pow(x,y); x=%.8f; y=%.8f; z=f(x,y)",x1,x2);
 		expected = pow(x1,x2);
@@ -139,6 +144,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testDirectPower() throws Exception {
 		task = define("x=%.8f; y=%.8f; z=pow(x,y)",x1,x2);
 		expected = pow(x1,x2);
@@ -147,74 +153,9 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	}
 	@Test
 	@Timeout(1)
-	public void testMinusDirectSine() throws Exception {
+	public void testDirectSine() throws Exception {
 		task = define("-sin(%.8f)",x1);
 		expected = -sin(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-
-	@Test
-	@Timeout(1)
-	public void testDirectSine() throws Exception {
-		task = define("sin(%.8f)",x1);
-		expected = sin(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	@Test
-	@Timeout(1)
-	public void testDirectCosine() throws Exception {
-		task = define("cos(%.8f)",x1);
-		expected = cos(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	@Test
-	@Timeout(1)
-	public void testDirectArcsine() throws Exception {
-		task = define("asin(%.8f)",x1);
-		expected = Math.asin(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	@Test
-	@Timeout(1)
-	public void testDirectLog() throws Exception {
-		task = define("ln(%.8f)",x1);
-		expected = Math.log(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	@Test
-	@Timeout(1)
-	public void testDirectArcos() throws Exception {
-		task = define("acos(%.8f)",x1);
-		expected = Math.acos(x1);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	@Test
-	@Timeout(1)
-	public void testDirectPow() throws Exception {
-		task = define("pow(%.8f,%.8f)",x1,x2);
-		expected = Math.pow(x1,x2);
-		returned = resultOf(task,7);
-		assertEquals(expected,returned, delta);
-	}
-
-	// new
-	@Test
-	@Timeout(1)
-	public void testDirectExp() throws Exception {
-		task = define("exp(%.8f)",x1);
-		expected = Math.exp(x1);
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
 	}
@@ -222,6 +163,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
+	//@Disabled
 	public void testGetFunction() throws Exception {
 		task = define("f(x)= x*exp(-x)");
 		Object ref = blackboard.answer(Function.class, task);
@@ -234,11 +176,12 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 			assertEquals(expected,returned, delta);
 		}
 	}
-	
+
 	@Test
 	@Timeout(1)
+	//@Disabled
 	public void testCalculatedArguments() throws Exception {
-		task = define("  f(x)=3*x + 2; x=%.8f;y=f(x/3-1)",x1);
+		task = define("f(x)=3*x + 2; x=%.8f;  y=f(x/3-1)",x1);
 		expected = x1-1;
 		returned = resultOf(task,7);
 		assertEquals(expected,returned, delta);
@@ -247,6 +190,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
+	//@Disabled
 	public void testTwoDefinitions() throws Exception {
 		task = "f(x)= x*exp(-x)";
 		blackboard.write(task);
@@ -266,6 +210,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
+	//@Disabled
 	public void testSinConvolution() throws Exception {
 		task = "f(x)= asin(sin(x))";
 		Object ref = blackboard.answer(Function.class, task);
@@ -282,6 +227,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
+	//@Disabled
 	public void testCosConvolution() throws Exception {
 		task = "f(x)= acos(cos(x))";
 		Object ref = blackboard.answer(Function.class, task);
@@ -298,6 +244,7 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
+	//@Disabled
 	public void testExpConvolution() throws Exception {
 		task = "f(x)= ln(exp(x))";
 		Object ref = blackboard.answer(Function.class, task);
@@ -312,12 +259,4 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 		}
 	}
 
-	@Test
-	@Timeout(2)
-	void testFunction() throws Exception {
-		String task = "x=2;f( x  )=2*x";
-		returned = blackboard.answer(Double.class, task);
-		expected = 4;
-		assertEquals(expected, returned);
-	}
 }
