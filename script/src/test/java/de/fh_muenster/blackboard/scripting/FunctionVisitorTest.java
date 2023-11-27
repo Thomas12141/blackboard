@@ -84,4 +84,6 @@ class FunctionVisitorTest extends AbstractScriptTester{
 			assertTrue(e instanceof IllegalArgumentException);
 		}
 	}
+
+
 }
