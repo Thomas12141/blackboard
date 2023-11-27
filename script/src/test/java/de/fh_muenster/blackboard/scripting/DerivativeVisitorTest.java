@@ -128,9 +128,11 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     @Timeout(1)
     public void testAsinInFct() throws Exception {
         task = define("f(x) = asin(x); f'(%.8f)", x1);
-        expected = (1/(1-Math.pow(x1, 2)));
+        expected = (1/(Math.pow(1-Math.pow(x1, 2), 0.5)));
         System.out.println(x1);
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
