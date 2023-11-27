@@ -156,7 +156,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(grade>0){
 			if(FunctionMap.functions.containsKey(n.data())){
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
-			}else {
+			}else if(n.childs().get(0) instanceof Label){
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
 				iterator.childs().set(0, n.childs().get(0));
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
@@ -169,6 +169,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 					FunctionMap.functions.put(iterator.data(), iterator);
 				}
 				return iterator.accept(this);
+			}else{
+				return new FunctionDoubleValue(0.0);
 			}
 		}else if(n.equals(n.parent().childs().get(1))){
 			if(n.getFunctionCall()==null){
