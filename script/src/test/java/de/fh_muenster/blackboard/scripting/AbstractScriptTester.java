@@ -189,7 +189,7 @@ public abstract class AbstractScriptTester {
 		// these visitors should register as knowledge source
 		// within their constructors ...
 		new JavaccParser();
-		//new ValueVisitor();
+		new ValueVisitor();
 		new FunctionVisitor();
 		new StringVisitor();
 	}
