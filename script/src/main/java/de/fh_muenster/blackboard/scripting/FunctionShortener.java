@@ -18,7 +18,7 @@ public class FunctionShortener {
             again = again || helper(iterator);
         }
         if(again){
-            toShort(temp.child);
+            temp.setChild((AbstractFunction) toShort(temp.child));
         }
         return temp.child;
     }
