@@ -190,7 +190,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	//@Disabled
 	public void testTwoDefinitions() throws Exception {
 		task = "f(x)= x*exp(-x)";
 		blackboard.write(task);
@@ -210,7 +209,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	//@Disabled
 	public void testSinConvolution() throws Exception {
 		task = "f(x)= asin(sin(x))";
 		Object ref = blackboard.answer(Function.class, task);
@@ -227,7 +225,6 @@ public class Praktikum_II_Test extends Praktikum_I_Test {
 	@Test
 	@Timeout(1)
 	@SuppressWarnings("unchecked")
-	//@Disabled
 	public void testCosConvolution() throws Exception {
 		task = "f(x)= acos(cos(x))";
 		Object ref = blackboard.answer(Function.class, task);

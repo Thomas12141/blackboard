@@ -39,7 +39,7 @@ public class FunctionMinusBinary extends AbstractFunctionTwoVariable {
     }
 
     public String toString() {
-        return (left.toString() + "-" + right.toString());
+        return ("(" + left.toString() + "-" + right.toString() + ")");
     }
 
 }

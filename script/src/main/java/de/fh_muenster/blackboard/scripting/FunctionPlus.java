@@ -40,6 +40,6 @@ public class FunctionPlus extends AbstractFunctionTwoVariable {
     }
 
     public String toString() {
-        return (left.toString() + "+" + right.toString());
+        return ("(" + left.toString() + "+" + right.toString() + ")");
     }
 }

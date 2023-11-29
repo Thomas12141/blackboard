@@ -38,7 +38,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testSineDerivation() throws Exception {
         task = define("sin'(%.8f)", x1); // hier Symbol für Ableitung einsetzen
         expected = 0;
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -47,7 +49,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testCosDerivation() throws Exception {
         task = define("cos'(%.8f)", x1);
         expected = 0;
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -56,7 +60,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testLbDerivation() throws Exception {
         task = define("ln'(%.8f)", x1);
         expected = 0;
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -75,7 +81,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
         task = define("f(x) = x + 2; f'(%.8f)", x1);
         expected = 1;
         System.out.println(x1);
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -84,7 +92,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testPowDerivation() throws Exception {
         task = define("f(x) = pow(x,2); f'(%.8f)", x1);
         expected = 2 * x1;
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -93,8 +103,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testFctDerivation2() throws Exception {
         task = define("f(x) = x^2 + 2; f'(%.8f)", x1);
         expected = 2 * x1;
-        returned = resultOf(task,7);
-        assertEquals(expected,returned, delta);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});        assertEquals(expected,returned, delta);
     }
 
     @Test
@@ -105,6 +116,29 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
         Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
         returned = fct.apply(new double[]{x1});
         expected = 2.0;
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testFctDerivation2_3() throws Exception {
+        task = define("f(x) = pow(x,2) + 2; f'''(%.8f)", x1);
+        expected = 0.0;
+        returned = resultOf(task, 7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testFctDerivation3() throws Exception {
+        task = define("f(x) = pow(x,4) + 2; f'''(%.8f)", x1);
+        expected = 4 * 3 * 2 * x1;
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -113,7 +147,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testSinInFct() throws Exception {
         task = define("f(x) = sin(x); f'(%.8f)", x1);
         expected = cos(x1);
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -122,7 +158,9 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testCosInFct() throws Exception {
         task = define("f(x) = cos(x); f'(%.8f)", x1);
         expected = -(sin(x1));
-        returned = resultOf(task,7);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
         assertEquals(expected,returned, delta);
     }
 
@@ -131,6 +169,112 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testAsinInFct() throws Exception {
         task = define("f(x) = asin(x); f'(%.8f)", x1);
         expected = (1/(Math.pow(1-Math.pow(x1, 2), 0.5)));
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testCosAndSinInFct() throws Exception {
+        task = define("f(x) = sin(cos(x)); f'(%.8f)", x1);
+        expected = -(Math.sin(x1)*Math.cos(Math.cos(x1)));
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testAsinAndSinInFct2() throws Exception {
+        task = define("f(x) = sin(cos(x)) + 2; f'(%.8f)", x1);
+        expected = -(Math.sin(x1)*Math.cos(Math.cos(x1)));;
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testAsinAndSinInFct3() throws Exception {
+        task = define("f(x) = sin(cos(x)) + 2 * 5; f'(%.8f)", x1);
+        expected = -(Math.sin(x1)*Math.cos(Math.cos(x1)));;
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct4() throws Exception { // Regel 4
+        task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(x)^g(x); h'(%.8f)", x1);
+        expected = Math.pow(x1, 6 * x1) * (6 + 3 * Math.log(Math.pow(x1, 2)));
+        System.out.println(x1);
+        returned = resultOf(task, 7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct5() throws Exception { // Regel 2
+        task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(x) * g(x); h'(x)");
+        expected = (2*x1) * (3*x1) + (Math.pow(x1, 2) * 0);
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct6() throws Exception { // Regel 3
+        task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(x) / g(x); h'(x)");
+        expected = ((2 * x1) * (3 * x1) - (Math.pow(x1, 2) * (3 * x1))) / Math.pow(3 * x1, 2);
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct7() throws Exception { // Regel 1
+        task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(x) + g(x); h'(x)");
+        expected = (2*x1) + (0);
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct8() throws Exception { // Regel 5
+        task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(g(x)); h'(x)");
+        expected = 0;
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    //@Timeout(1)
+    public void testAsinAndSinInFct9() throws Exception { // Regel 5
+        task = define("f(x) = 2*x; h(x) = f(x); h'(%.8f)", x1);
+        expected = 2;
         System.out.println(x1);
         Object ref = blackboard.answer(Function.class, task);
         Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
