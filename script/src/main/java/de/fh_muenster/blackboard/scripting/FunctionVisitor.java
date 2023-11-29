@@ -127,7 +127,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 
 	@Override
-	public Function<double[], Double> visit(FunctionNode n) {
+	public Function<double[], Double> visit(FunctionNode n){
 		int grade = iteratorDerivative(n);
 		if(n.data().equals("lb")){
 			return new FunctionLogB(n.childs().get(0).accept(this));
@@ -159,12 +159,10 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			}else if(n.childs().get(0) instanceof Label|| isNotElementaryFunction(n)){
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
-				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {
 					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
 					temp = FunctionShortener.toShort(temp);
 					iterator = new FunctionNode(iterator.data() + '\'', iterator.childs().get(0));
-					new FunctionAssignNode(iterator ,javaccParser.parse(temp.toString()).childs().get(0).childs().get(0));
 					iterator.setFunctionCall(temp);
 					FunctionMap.functions.put(iterator.data(), iterator);
 				}
@@ -205,6 +203,18 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	@Override
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
 		FunctionMap.functions.put(functionAssignNode.id().data(), (FunctionNode) functionAssignNode.id());
+		AST<?> iterator = functionAssignNode.left().childs().get(0);
+		ArrayList<String> variables = new ArrayList<String>();
+		while (iterator!= null){
+			if(iterator instanceof Label){
+				variables.add((String) iterator.data());
+				break;
+			}
+			variables.add(iterator.childs().get(0).data().toString());
+			iterator = iterator.childs().get(1);
+		}
+		((FunctionNode) functionAssignNode.id()).setVariableList(variables);
+		((FunctionNode) functionAssignNode.id()).setFunctionCall(functionAssignNode.expr().accept(this));
 		return functionAssignNode.expr().accept(this);
 	}
 
