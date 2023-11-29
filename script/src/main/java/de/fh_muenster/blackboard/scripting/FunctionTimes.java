@@ -40,6 +40,6 @@ public class FunctionTimes extends AbstractFunctionTwoVariable{
 
     @Override
     public String toString() {
-        return "(" + left.toString() + ")" + "*" + "(" + right.toString() + ")";
+        return left.toString() + "*" + right.toString();
     }
 }
