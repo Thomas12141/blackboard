@@ -29,6 +29,8 @@ import org.junit.jupiter.api.Timeout;
 
 import de.fh_muenster.blackboard.Blackboard;
 
+import java.util.function.Function;
+
 /**
  * Very basic simple script parser test.
  */
@@ -142,7 +144,7 @@ class StringVisitorTest {
 	@Test
 	@Timeout(2)
 	void testAcos() throws Exception {
-		String task = " acos( 2 + 2  )";
+		String task = " acos( 0.8 )";
 		String returned = blackboard.answer(String.class, task);
 		String expected = task.replace(" ", "");
 		assertEquals(expected, returned);
@@ -160,7 +162,7 @@ class StringVisitorTest {
 	@Test
 	@Timeout(2)
 	void testAsin() throws Exception {
-		String task = " asin( 2 + 2  )";
+		String task = " asin( 0.7)";
 		String returned = blackboard.answer(String.class, task);
 		String expected = task.replace(" ", "");
 		assertEquals(expected, returned);

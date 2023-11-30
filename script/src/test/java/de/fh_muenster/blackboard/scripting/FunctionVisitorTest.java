@@ -70,4 +70,18 @@ class FunctionVisitorTest extends AbstractScriptTester{
 			assertEquals(expected,returned, delta);
 		}
 	}
+
+	@Test
+	@Timeout(1)
+	@SuppressWarnings("unchecked")
+	public void testAssainBadFunction() throws Exception {
+		try{
+			task = define("f(x,5)= 3+ 2");
+			Object ref = blackboard.answer(Function.class, task);
+			fail("wrong function argumtens not recognized");
+		} catch(IllegalArgumentException e) {
+			log("e: %s",e.getMessage());
+			assertTrue(e instanceof IllegalArgumentException);
+		}
+	}
 }

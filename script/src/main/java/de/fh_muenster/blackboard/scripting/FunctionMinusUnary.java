@@ -2,14 +2,15 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionMinusUnary implements Function<double [], Double> {
+public class FunctionMinusUnary extends AbstractFunctionOneVariable {
 
     private FunctionNode function;
 
-    private Function<double [], Double> right;
 
-    public FunctionMinusUnary(Function<double[], Double> right) {
-        this.right = right;
+    public FunctionMinusUnary(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
+        childs.add(child);
+        this.child = (AbstractFunction)childs.get(0);
     }
 
     public FunctionNode getFunction() {
@@ -22,16 +23,24 @@ public class FunctionMinusUnary implements Function<double [], Double> {
 
     @Override
     public Double apply(double[] doubles) {
-        return -right.apply(doubles);
+        return -child.apply(doubles);
     }
 
     @Override
     public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
+        return super.compose(before);
     }
 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
+        return super.andThen(after);
+    }
+
+    public String toString() {
+        return ("(-" + child.toString() + ")");
+    }
+
+    public void setChild(Function<double[], Double> child) {
+        this.child = (AbstractFunction) child;
     }
 }

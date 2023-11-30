@@ -19,6 +19,7 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import static de.fh_muenster.blackboard.Blackboard.log;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -159,6 +160,18 @@ class ParserTest {
 		ast = ast.childs().get(0);
 		assertNotNull(ast, "ast is null");
 		assertTrue(ast instanceof DivideNode);
+	}
+
+	@Test
+	@Timeout(2)
+	void testH() throws Exception {
+		try {
+			String task = "f'h'(x)";
+			AST<?> ast = parser.solve(blackboard, task);
+			ast = ast.childs().get(0); }
+		catch (IllegalArgumentException e) {
+			//log("e: %s",e.getMessage());
+		}
 	}
 
 }

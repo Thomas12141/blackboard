@@ -154,67 +154,80 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		double childValue;
 		double ls;
 		double rs;
-		if(n.data().equals("lb")){
+		if(n.data().startsWith("lb")){
 			if(n.childs().get(0)instanceof VariableNode){
 				throw new IllegalArgumentException("Lb kann nur ein Argument bekommen.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.log(childValue)/Math.log(2);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(n.data().equals("ln")){
+		if(n.data().startsWith("ln")){
 			if(n.childs().get(0)instanceof VariableNode){
 				throw new IllegalArgumentException("Ln kann nur ein Argument bekommen.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.log(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 
-		if(n.data().equals("pow")){
+		if(n.data().startsWith("pow")){
 			AstNode<?> variables = (AstNode<?>) n.childs().get(0);
 			if(variables.childs().size()!=2){
 				throw new IllegalArgumentException("pow braucht zwei Argumente  #args.");
 			}
 			ls = variables.childs().get(0).accept(this);
 			rs = variables.childs().get(1).accept(this);
-			return Math.pow(ls, rs);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{ls, rs});
 		}
-		if(n.data().equals("sin")){
+		if(n.data().startsWith("sin")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("sin braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.sin(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(n.data().equals("cos")){
+		if(n.data().startsWith("cos")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("cos braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.cos(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(n.data().equals("acos")){
+		if(n.data().startsWith("acos")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("acos braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.acos(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(n.data().equals("asin")){
+		if(n.data().startsWith("asin")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("asin braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.asin(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(n.data().equals("exp")){
+		if(n.data().startsWith("exp")){
 			if(n.childs().size()!=1){
 				throw new IllegalArgumentException("exp braucht ein Argumente.");
 			}
 			childValue = n.childs().get(0).accept(this);
-			return Math.exp(childValue);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
-		if(!FunctionMap.functions.containsKey(n.data())){
+		if(!FunctionMap.functions.containsKey(n.data().replaceAll("'", ""))){
 			throw new IllegalArgumentException("unknown function");
+		}
+		if(FunctionVisitor.iteratorDerivative(n)>0){
+			childValue = n.childs().get(0).accept(this);
+			AbstractFunction function = (AbstractFunction) functionVisitor.visit(n);
+			return function.apply(new double[]{childValue});
 		}
 		if(n.parent() instanceof FunctionAssignNode&&((FunctionAssignNode) n.parent()).left().equals(n)){
 			return ((FunctionAssignNode) n.parent()).right().accept(this);
@@ -266,7 +279,13 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}
 		((FunctionNode) functionAssignNode.id()).setVariableList(variables);
 		((FunctionNode) functionAssignNode.id()).setFunctionCall(functionAssignNode.expr().accept(functionVisitor));
-		return functionAssignNode.expr().accept(this);
+		Double answer;
+		try{
+			answer = functionAssignNode.expr().accept(this);
+		}catch (IllegalArgumentException e){
+			return 0.0;
+		}
+		return answer;
 	}
 
 	@Override

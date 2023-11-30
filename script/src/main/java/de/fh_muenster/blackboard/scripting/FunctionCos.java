@@ -2,15 +2,15 @@ package de.fh_muenster.blackboard.scripting;
 
 import java.util.function.Function;
 
-public class FunctionCos implements Function<double [], Double> {
+public class FunctionCos extends AbstractFunctionOneVariable {
 
     private FunctionNode function;
 
 
-    private Function<double [], Double> right;
-
-    public FunctionCos(Function<double[], Double> right) {
-        this.right = right;
+    public FunctionCos(Function<double[], Double> child) {
+        ((AbstractFunction)child).parent = this;
+        childs.add(child);
+        this.child = (AbstractFunction)childs.get(0);
     }
 
     public FunctionNode getFunction() {
@@ -23,17 +23,21 @@ public class FunctionCos implements Function<double [], Double> {
 
     @Override
     public Double apply(double[] doubles) {
-        double rightSide = right.apply(doubles);
+        double rightSide = child.apply(doubles);
         return Math.cos(rightSide);
     }
 
     @Override
     public <V> Function<V, Double> compose(Function<? super V, ? extends double[]> before) {
-        return Function.super.compose(before);
+        return super.compose(before);
     }
 
     @Override
     public <V> Function<double[], V> andThen(Function<? super Double, ? extends V> after) {
-        return Function.super.andThen(after);
+        return super.andThen(after);
+    }
+
+    public String toString() {
+        return ("cos(" + child.toString() + ")");
     }
 }

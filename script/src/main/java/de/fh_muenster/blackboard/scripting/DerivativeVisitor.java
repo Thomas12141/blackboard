@@ -19,23 +19,47 @@
  */
 package de.fh_muenster.blackboard.scripting;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.function.Function;
 
 /**
  *	A value visitor for ast.
  */
-public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Double>> {
+public class DerivativeVisitor{
 	FunctionVisitor functionVisitor = new FunctionVisitor();
+
+	static String variable;
+	private Function<double [], Double> visit(AST<?> toVisit){
+		if(toVisit instanceof LongValue)
+			return visit((LongValue) toVisit);
+		if(toVisit instanceof DoubleValue)
+			return visit((DoubleValue) toVisit);
+		if(toVisit instanceof OperationNode)
+			return visit((OperationNode) toVisit);
+		if(toVisit instanceof AssignNode)
+			return visit((AssignNode) toVisit);
+		if(toVisit instanceof UnaryOperationNode)
+			return visit((UnaryOperationNode) toVisit);
+		if(toVisit instanceof SemiNode)
+			return visit((SemiNode) toVisit);
+		if(toVisit instanceof FunctionNode)
+			return visit((FunctionNode) toVisit);
+		if(toVisit instanceof FunctionAssignNode)
+			return visit((FunctionAssignNode) toVisit);
+		if(toVisit instanceof VariableNode)
+			return visit((VariableNode) toVisit);
+		if(toVisit instanceof Label)
+			return visit((Label) toVisit);
+		throw new IllegalArgumentException("Unknown node in DerivativeVisitor.");
+	}
 	/**
 	 * (non-Javadoc)
 	 *
 	 * @see AstVisitor#visit(LongValue)
 	 */
 	public Function<double [], Double> visit(LongValue n) {
-		return (a) ->{
-			return 0.0;
-		};
+		return new FunctionDoubleValue(0.0);
 	}
 
 	/**
@@ -44,9 +68,7 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(DoubleValue)
 	 */
 	public Function<double [], Double> visit(DoubleValue n) {
-		return (a) ->{
-			return 0.0;
-		};
+		return new FunctionDoubleValue(0.0);
 	}
 
 	/**
@@ -55,31 +77,29 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(OperationNode)
 	 */
 	public Function<double[], Double> visit(OperationNode n) {
-		Function<double[], Double> ls = n.left().accept(this);
-		Function<double[], Double> rs = n.right().accept(this);
+		Function<double[], Double> lsDerivative = visit(n.left());
+		Function<double[], Double> rsDerivative = visit(n.right());
+		Function<double[], Double> ls = n.left().accept(functionVisitor);
+		Function<double[], Double> rs = n.right().accept(functionVisitor);
 		Operation op = n.data();
 
 		switch (op) {
 			case PLUS:
-				return (a) -> {return ls.apply(a) + rs.apply(a);};
+				return new FunctionPlus(lsDerivative, rsDerivative);
 			case MINUS:
-				return (a) -> {return ls.apply(a) - rs.apply(a);};
+				return new FunctionMinusBinary(lsDerivative, rsDerivative);
 			case TIMES:
-				return (a) -> {return ls.apply(a)*n.right().accept(functionVisitor).apply(a) + rs.apply(a) *n.left().accept(functionVisitor).apply(a);};
+				return new FunctionPlus(new FunctionTimes(lsDerivative, rs), new FunctionTimes(ls, rsDerivative));
 			case DIVIDE:
-
-				return (a) -> {
-					if(n.right().accept(this).apply(a) == 0){
-						throw new IllegalArgumentException("division by zero");
-					}
-					return (  ls.apply(a)*n.right().accept(functionVisitor).apply(a)-rs.apply(a) *n.left().accept(functionVisitor).apply(a) ) / Math.pow(n.right().accept(functionVisitor).apply(a), 2);};
+				return new FunctionDivide(new FunctionMinusBinary(new FunctionTimes(lsDerivative, rs), new FunctionTimes(ls, rsDerivative)), new FunctionPow(rs, new FunctionDoubleValue(2.0)));
 			case POWER, POWERCARET:
-				return (a) -> {
-					if(n.left().accept(functionVisitor).apply(a)<0){
-						throw new IllegalArgumentException("complex number");
-					}
-					return  rs.apply(a)*Math.pow(ls.apply(a), rs.apply(a)-1);
-				};
+
+				Function<double[], Double> f = n.childs().get(0).accept(functionVisitor);
+				Function<double[], Double> g = n.childs().get(1).accept(functionVisitor);
+
+				Function<double[], Double> fDerivative = visit(n.childs().get(0));
+				Function<double[], Double> gDerivative = visit(n.childs().get(1));
+				return new FunctionTimes(new FunctionPow(f,g),new FunctionPlus(new FunctionDivide(new FunctionTimes(g, fDerivative), f), new FunctionTimes(gDerivative, new FunctionLog(f))));
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
 	}
@@ -90,88 +110,69 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(AssignNode)
 	 */
 	public Function<double[], Double> visit(AssignNode n) {
-		return n.right().accept(this);
+		return visit(n.right());
 	}
 
 	public Function<double[], Double> visit(UnaryOperationNode n) {
 
 		switch (n.data()){
 			case MINUS:
-				return (a)->{return -n.childs().get(0).accept(this).apply(a);};
+				return new FunctionMinusUnary(visit(n.childs().get(0)));
+			case PLUS:
+
+				return new FunctionPlusUnary(visit(n.childs().get(0)));
 		}
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
 
 	public Function<double[], Double> visit(SemiNode n) {
-		return n.right().accept(this);
+		return null;
 	}
 
+
 	public Function<double[], Double> visit(FunctionNode n) {
+		Function<double[], Double> functionVariableDerivative = visit(n.childs().get(0));
 		if(n.data().equals("lb")){
-			return new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionTimes(n.childs().get(0).accept(this), new FunctionLog(new FunctionDoubleValue(2.0))));
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionTimes(visit(n.childs().get(0)), new FunctionLog(new FunctionDoubleValue(2.0)))), functionVariableDerivative);
 
 		}
 		if(n.data().equals("ln")){
-			return new FunctionDivide(new FunctionDoubleValue(1.0), n.childs().get(0).accept(this));
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
 
 		if(n.data().equals("pow")){
-			return new FunctionTimes(n.childs().get(1).accept(this), new FunctionPow(n.childs().get(0).accept(this),
-					new FunctionMinusBinary(n.childs().get(1).accept(this), new FunctionDoubleValue(1.0))));
+			Function<double[], Double> f = n.childs().get(0).childs().get(0).accept(functionVisitor);
+			Function<double[], Double> g = n.childs().get(0).childs().get(1).accept(functionVisitor);
+
+			Function<double[], Double> fDerivative = visit(n.childs().get(0).childs().get(0));
+			Function<double[], Double> gDerivative = visit(n.childs().get(0).childs().get(1));
+
+			return new FunctionTimes(new FunctionPow(f,g),new FunctionPlus(new FunctionDivide(new FunctionTimes(g, fDerivative), f), new FunctionTimes(gDerivative, new FunctionLog(f))));
 		}
 		if(n.data().equals("sin")){
-			return new FunctionCos(n.childs().get(0).accept(this));
+			return new FunctionTimes(new FunctionCos(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
 		if(n.data().equals("cos")){
-			return new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(this)));
+			return new FunctionTimes(new FunctionMinusUnary(new FunctionSin(n.childs().get(0).accept(functionVisitor))), functionVariableDerivative);
 		}
 		if(n.data().equals("acos")) { // −(1 − x^2)^(−1/2)
-			return new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(n.childs().get(0).accept(this),
-					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5))));
+			return new FunctionTimes(new FunctionMinusUnary(new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0), new FunctionPow(visit(n.childs().get(0)),
+					new FunctionDoubleValue(2.0))), new FunctionMinusUnary(new FunctionDoubleValue(0.5)))), functionVariableDerivative);
 		}
 		if(n.data().equals("asin")){ // 1/(1-(x^2))
-			return new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionMinusBinary(new FunctionDoubleValue(1.0),
-					new FunctionPow(n.childs().get(0).accept(this), new FunctionDoubleValue(2.0))));
+			return new FunctionTimes(new FunctionDivide(new FunctionDoubleValue(1.0), new FunctionPow(new FunctionMinusBinary(new FunctionDoubleValue(1.0),
+					new FunctionPow(n.childs().get(0).accept(functionVisitor), new FunctionDoubleValue(2.0))), new FunctionDoubleValue(0.5))),
+					visit(n.childs().get(0)));
 		}
 		if(n.data().equals("exp")){
-			return new FunctionExp(n.childs().get(0).accept(this));
+			return new FunctionTimes(new FunctionExp(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);
 		}
-		n.setFunctionCall((FunctionPlus) n.accept(new DerivativeVisitor()));
-		if(n.parent() instanceof FunctionAssignNode){
-			return ((FunctionAssignNode) n.parent()).right().accept(this);
+		AST<?> function = FunctionMap.functions.get(n.data());
+		if(function.parent() instanceof FunctionAssignNode){
+			function = ((FunctionAssignNode) function.parent()).expr();
 		}
-		AST<?> function = searchFunctionDeclaration(n);
-		return function.accept(this);
-	}
-
-
-	private FunctionNode searchFunctionDeclaration(FunctionNode toFind){
-		AST<?> parentAssignNode = toFind;
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-		AST<?> iterator = parentAssignNode.parent();
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-				iterator = iterator.childs().get(0);
-				if(iterator instanceof FunctionNode){
-					if(iterator.data().equals(toFind.data())&&iterator.parent() instanceof FunctionAssignNode){
-						return  ((FunctionNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("unknown function");
+		n.setFunctionCall(function.accept(functionVisitor));
+		return new FunctionTimes(visit(function), functionVariableDerivative);
 	}
 
 	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
@@ -185,9 +186,9 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	public Function<double[], Double> visit(MasterNode masterNode) {
 		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
 		for (int i = 0; i < trees.size()-1; i++) {
-			trees.get(i).accept(this);
+			visit(trees.get(i));
 		}
-		return trees.get(trees.size()-1).accept(this);
+		return visit(trees.get(trees.size()-1));
 	}
 
 	/**
@@ -196,49 +197,10 @@ public class DerivativeVisitor extends AbstractAstVisitor<Function<double[], Dou
 	 * @see AstVisitor#visit(Label)
 	 */
 	public Function<double[], Double> visit(Label n) {
-		return (a)->{
-			return a[0];
-		};
+		if(n.data().equals(variable)){
+			return new FunctionDoubleValue(1.0);
+		}
+		return new FunctionDoubleValue(0.0);
 	}
 
-
-	private AssignNode needleInHaystack(Label needle) {
-
-
-		/*	iteration till the assign node of the needle.
-		 */
-		AST<?> parentAssignNode = needle;
-
-		while (!(parentAssignNode.parent() instanceof SemiNode)){
-			parentAssignNode = parentAssignNode.parent();
-			if(parentAssignNode==null){
-				throw new IllegalArgumentException("function reference is null");
-			}
-		}
-
-		AST<?> iterator = needle.parent();
-
-		while (iterator != null){
-			if (iterator instanceof SemiNode) {
-				iterator = ((SemiNode) iterator).left();
-
-				if((iterator) instanceof AssignNode){
-					iterator = ((AssignNode) iterator).left();
-
-					if(iterator.data().equals(needle.data())){
-						iterator = iterator.parent();
-
-						return  ((AssignNode) iterator);
-					}
-					iterator = iterator.parent();
-				}
-				iterator = iterator.parent();
-			}
-			iterator = iterator.parent();
-			if(iterator instanceof SemiNode && ((SemiNode) iterator).left().equals(parentAssignNode)){
-				iterator = iterator.parent();
-			}
-		}
-		throw new IllegalArgumentException("Es gibt diesen Label im Baum nicht.");
-	}
 }

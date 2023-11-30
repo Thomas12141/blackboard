@@ -20,6 +20,7 @@
 package de.fh_muenster.blackboard.scripting;
 
 import java.util.ArrayList;
+import java.util.Stack;
 import java.util.function.Function;
 
 /**
@@ -27,6 +28,27 @@ import java.util.function.Function;
  */
 public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Double>> {
 
+
+
+	public FunctionVisitor(){
+		super();
+		FunctionNode functionNode = new FunctionNode("ln", new Label("x"));
+		FunctionMap.functions.put("ln", functionNode);
+		functionNode = new FunctionNode("sin", new Label("x"));
+		FunctionMap.functions.put("sin", functionNode);
+		functionNode = new FunctionNode("lb", new Label("x"));
+		FunctionMap.functions.put("lb", functionNode);
+		functionNode = new FunctionNode("pow", new VariableNode(new Label("x"), new Label("y")));
+		FunctionMap.functions.put("pow", functionNode);
+		functionNode = new FunctionNode("cos", new Label("x"));
+		FunctionMap.functions.put("cos", functionNode);
+		functionNode = new FunctionNode("acos", new Label("x"));
+		FunctionMap.functions.put("acos", functionNode);
+		functionNode = new FunctionNode("asin", new Label("x"));
+		FunctionMap.functions.put("asin", functionNode);
+		functionNode = new FunctionNode("exp", new Label("x"));
+		FunctionMap.functions.put("exp", functionNode);
+	}
 	/**
 	 * (non-Javadoc)
 	 *
@@ -34,9 +56,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double [], Double> visit(LongValue n) {
-		return (a) ->{
-			return Double.valueOf(n.data());
-		};
+		return new FunctionDoubleValue(n.data().doubleValue());
 	}
 
 	/**
@@ -46,9 +66,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	 */
 	@Override
 	public Function<double [], Double> visit(DoubleValue n) {
-		return (a) ->{
-			return n.data();
-		};
+		return new FunctionDoubleValue(n.data());
 	}
 
 	/**
@@ -110,6 +128,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 	@Override
 	public Function<double[], Double> visit(FunctionNode n) {
+		int grade = iteratorDerivative(n);
 		if(n.data().equals("lb")){
 			return new FunctionLogB(n.childs().get(0).accept(this));
 		}
@@ -134,11 +153,57 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		if(n.data().equals("exp")){
 			return new FunctionExp(n.childs().get(0).accept(this));
 		}
-		if(n.equals(n.parent().childs().get(1))){
+		if(grade>0){
+			if(FunctionMap.functions.containsKey(n.data())){
+				DerivativeVisitor.variable = FunctionMap.functions.get(n.data()).childs().get(0).toString();
+				return FunctionMap.functions.get(n.data()).getFunctionCall();
+			}else if(n.childs().get(0) instanceof Label|| isNotElementaryFunction(n)){
+				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
+				DerivativeVisitor.variable = iterator.childs().get(0).toString();
+				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
+				JavaccParser javaccParser = new JavaccParser();
+				for (int i = 0; i < grade; i++) {
+					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
+					temp = FunctionShortener.toShort(temp);
+					iterator = new FunctionNode(iterator.data() + '\'', iterator.childs().get(0));
+					new FunctionAssignNode(iterator ,javaccParser.parse(temp.toString()).childs().get(0));
+					iterator.setFunctionCall(temp);
+					ArrayList<String> variables = new ArrayList<String>();
+					variables.add(iterator.childs().get(0).toString());
+					iterator.setVariableList(variables);
+					FunctionMap.functions.put(iterator.data(), iterator);
+				}
+				iterator.childs().set(0, n.childs().get(0));
+				return iterator.accept(new FunctionVisitor());
+			}else{
+				return new FunctionDoubleValue(0.0);
+			}
+		}else if(n.equals(n.parent().childs().get(1))){
+			if(n.getFunctionCall()==null){
+				FunctionNode functionNode = FunctionMap.functions.get(n.data());
+				AbstractFunction toSolve = ((AbstractFunction)FunctionMap.functions.get(n.data()).getFunctionCall()).clone();
+				int position = 0;
+				for (AST<?> toReplace: n.childs()) {
+					AbstractFunction newFunctionSubtree = (AbstractFunction) toReplace.accept(this);
+					if(newFunctionSubtree!=null){
+						toSolve = replace(newFunctionSubtree, toSolve, functionNode.getVariables().get(position));
+						position++;
+					}
+				}
+				return toSolve;
+			}
 			return n.getFunctionCall();
 		}else {
 			return n.parent().childs().get(1).accept(this);
 		}
+	}
+
+	private boolean isNotElementaryFunction(FunctionNode n) {
+		String function = n.data().replaceAll("'", "");
+		if(function.equals("sin")||function.equals("cos")||function.equals("ln")||function.equals("lb")||function.equals("acos")
+				||function.equals("asin")||function.equals("pow")||function.equals("exp"))
+			return false;
+		return true;
 	}
 
 
@@ -174,13 +239,64 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			iterator = iterator.parent();
 		}
 		if (iterator ==null|| (!(iterator instanceof FunctionAssignNode) && ((FunctionNode) iterator).getVariables()==null)){
-			return (a)->{return a[0];};
+			return new FunctionLabel(0, n.data());
 		}
 
 		if (iterator instanceof FunctionAssignNode){
 			iterator = ((FunctionAssignNode) iterator).left();
 		}
-		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()));
+		return new FunctionLabel(((FunctionNode)iterator).getVariables().indexOf(n.data()), n.data());
 	}
 
+	public static int iteratorDerivative(FunctionNode n) {
+		StringVisitor stringVisitor = new StringVisitor();
+		String i = n.accept(stringVisitor);
+		int end = i.indexOf("(");
+		int counter = 0;
+
+		for (int j = 0; j < end; j++) {
+			if ("'".equals(i.substring(j, j + 1))) {
+				counter++;
+			}
+		}
+
+		return counter;
+	}
+
+
+	private AbstractFunction replace(AbstractFunction toReplace, AbstractFunction inWhichTree, String whichLabel){
+		AbstractFunction iterator = new FunctionPlusUnary(inWhichTree);
+		Stack<Function<double[], Double>> stack = new Stack<>();
+		stack.push(iterator);
+		do{
+			for (Function<double[], Double> toPush: iterator.childs) {
+				stack.push(toPush);
+			}
+			if(iterator.toString().equals(whichLabel)){
+				AbstractFunction newFunction = toReplace.clone();
+				if(iterator.parent.childs.size()==2){
+					if(iterator.parent.childs.get(0) == iterator){
+						((AbstractFunctionTwoVariable)iterator.parent).setLeft(newFunction);
+						((AbstractFunctionTwoVariable) iterator.parent).getLeft().setParent(newFunction);
+						iterator.parent.childs.set(0, newFunction);
+					}else{
+						((AbstractFunctionTwoVariable)iterator.parent).setRight(newFunction);
+						((AbstractFunctionTwoVariable)iterator.parent).getRight().setParent(iterator.parent);
+						iterator.parent.childs.set(1, newFunction);
+					}
+				}else {
+					((AbstractFunctionOneVariable)iterator.parent).setChild(newFunction);
+					((AbstractFunctionOneVariable)iterator.parent).child.setParent(iterator.parent);
+					iterator.parent.childs.set(0, newFunction);
+				}
+			}
+			iterator = (AbstractFunction) stack.pop();
+		} while (!stack.empty());
+		while (iterator.parent != null){
+			iterator = iterator.parent;
+		}
+
+		((AbstractFunction)iterator.childs.get(0)).parent = null;
+		return (AbstractFunction) iterator.childs.get(0);
+	}
 }

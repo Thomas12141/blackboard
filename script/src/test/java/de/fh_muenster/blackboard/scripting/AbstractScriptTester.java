@@ -188,9 +188,10 @@ public abstract class AbstractScriptTester {
 		blackboard = Blackboard.getInstance();
 		// these visitors should register as knowledge source
 		// within their constructors ...
-		new ValueVisitor();
 		new JavaccParser();
+		new ValueVisitor();
 		new FunctionVisitor();
+		new StringVisitor();
 	}
     /**
      * Utility method to get an answer as double

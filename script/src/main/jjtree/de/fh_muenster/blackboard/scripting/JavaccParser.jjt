@@ -155,13 +155,36 @@ protected AST<?> assignmentId(): {
 protected AST<?> assignmentFunction(): {
   AST<?> n=null, m = null;  AST<?> function;}
 {
-  ( function = function() < ASSIGN > m = expr() )
+  ( function = assignmentWithVariablesFunction() < ASSIGN > m = expr() )
   {n = node(function,m);  return n; }
 }
 
+protected AST<?> assignmentWithVariablesFunction(): {
+  AST<?> n=null, m=null;
+    Token functionToken=null; int grade=0;
+    StringBuilder function = new StringBuilder();}
+  {
 
+     functionToken =<IDENTIFIER> {function.append(functionToken.image);} (<DERI>{function.append('\'');})* <LPARA> (n=functionVariable() ) <RPARA>
+     {
+      return node(function.toString(), n);
+      }
+}
 
+protected AST<?> functionVariable(): {
+ AST<?> n = null,  m = null;
+}
+{
+    (n=id() ) ("," m =functionVariable())*
 
+    {
+        if(m!=null){
+            return node(n, ",", m);
+        }else {
+            return n;
+            }
+    }
+}
 /** additive expression. */
 protected AST<?> expr(): {
   AST<?> n=null, m = null;
