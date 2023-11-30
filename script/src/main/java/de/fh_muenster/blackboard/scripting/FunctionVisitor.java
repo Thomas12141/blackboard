@@ -155,9 +155,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 		}
 		if(grade>0){
 			if(FunctionMap.functions.containsKey(n.data())){
+				DerivativeVisitor.variable = FunctionMap.functions.get(n.data()).childs().get(0).toString();
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
 			}else if(n.childs().get(0) instanceof Label|| isNotElementaryFunction(n)){
 				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
+				DerivativeVisitor.variable = iterator.childs().get(0).toString();
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
 				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {

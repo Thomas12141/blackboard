@@ -29,7 +29,7 @@ import java.util.function.Function;
 public class DerivativeVisitor{
 	FunctionVisitor functionVisitor = new FunctionVisitor();
 
-
+	static String variable;
 	private Function<double [], Double> visit(AST<?> toVisit){
 		if(toVisit instanceof LongValue)
 			return visit((LongValue) toVisit);
@@ -197,7 +197,10 @@ public class DerivativeVisitor{
 	 * @see AstVisitor#visit(Label)
 	 */
 	public Function<double[], Double> visit(Label n) {
-		return new FunctionDoubleValue(1.0);
+		if(n.data().equals(variable)){
+			return new FunctionDoubleValue(1.0);
+		}
+		return new FunctionDoubleValue(0.0);
 	}
 
 }
