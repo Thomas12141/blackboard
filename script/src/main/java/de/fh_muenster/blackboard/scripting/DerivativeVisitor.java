@@ -94,10 +94,12 @@ public class DerivativeVisitor{
 				return new FunctionDivide(new FunctionMinusBinary(new FunctionTimes(lsDerivative, rs), new FunctionTimes(ls, rsDerivative)), new FunctionPow(rs, new FunctionDoubleValue(2.0)));
 			case POWER, POWERCARET:
 
-				Function<double[], Double> functionVariableDerivative = visit(n.childs().get(0));
-				return new FunctionTimes(new FunctionTimes(new FunctionPow(n.childs().get(0).accept(functionVisitor),
-						new FunctionMinusBinary(n.childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))),
-						n.childs().get(1).accept(functionVisitor)), functionVariableDerivative);
+				Function<double[], Double> f = n.childs().get(0).accept(functionVisitor);
+				Function<double[], Double> g = n.childs().get(1).accept(functionVisitor);
+
+				Function<double[], Double> fDerivative = visit(n.childs().get(0));
+				Function<double[], Double> gDerivative = visit(n.childs().get(1));
+				return new FunctionTimes(new FunctionPow(f,g),new FunctionPlus(new FunctionDivide(new FunctionTimes(g, fDerivative), f), new FunctionTimes(gDerivative, new FunctionLog(f))));
 		}
 		throw new IllegalArgumentException("unkown operation: " + op);
 	}
@@ -139,10 +141,13 @@ public class DerivativeVisitor{
 		}
 
 		if(n.data().equals("pow")){
-			functionVariableDerivative = visit(n.childs().get(0).childs().get(0));
-			return new FunctionTimes(new FunctionTimes(new FunctionPow(n.childs().get(0).childs().get(0).accept(functionVisitor),
-					new FunctionMinusBinary(n.childs().get(0).childs().get(1).accept(functionVisitor),new FunctionDoubleValue(1.0))),
-					n.childs().get(0).childs().get(1).accept(functionVisitor)), functionVariableDerivative);
+			Function<double[], Double> f = n.childs().get(0).childs().get(0).accept(functionVisitor);
+			Function<double[], Double> g = n.childs().get(0).childs().get(1).accept(functionVisitor);
+
+			Function<double[], Double> fDerivative = visit(n.childs().get(0).childs().get(0));
+			Function<double[], Double> gDerivative = visit(n.childs().get(0).childs().get(1));
+
+			return new FunctionTimes(new FunctionPow(f,g),new FunctionPlus(new FunctionDivide(new FunctionTimes(g, fDerivative), f), new FunctionTimes(gDerivative, new FunctionLog(f))));
 		}
 		if(n.data().equals("sin")){
 			return new FunctionTimes(new FunctionCos(n.childs().get(0).accept(functionVisitor)), functionVariableDerivative);

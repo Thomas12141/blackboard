@@ -21,6 +21,8 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
      */
     @BeforeEach
     void setUp() throws Exception {
+        VariablesMap.variables.clear();
+        FunctionMap.functions.clear();
         parser = new JavaccParser();
         visitor = new DerivativeVisitor();
         blackboard = Blackboard.getInstance();
@@ -100,7 +102,7 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     @Test
     @Timeout(1)
     public void testFctDerivation2_2() throws Exception {
-        task = define("f(x) = pow(x,2) + 2; f''(%.8f)", x1);
+        task = define("f(x) = pow(x,2); f''(%.8f)", x1);
         Object ref = blackboard.answer(Function.class, task);
         Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
         returned = fct.apply(new double[]{x1});
@@ -113,6 +115,15 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     public void testSinInFct() throws Exception {
         task = define("f(x) = sin(x); f'(%.8f)", x1);
         expected = cos(x1);
+        returned = resultOf(task,7);
+        assertEquals(expected,returned, delta);
+    }
+
+    @Test
+    @Timeout(1)
+    public void testSinInFc2() throws Exception {
+        task = define("f(x) = sin(x); f''(%.8f)", x1);
+        expected = -sin(x1);
         returned = resultOf(task,7);
         assertEquals(expected,returned, delta);
     }
