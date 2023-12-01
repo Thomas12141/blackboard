@@ -12,4 +12,15 @@ public class LinearAlgebraExpert {
 
         return result;
     }
+
+    static double vectorMultiplication(double[] firstVector, double[] secondVector){
+        if(firstVector.length!= secondVector.length){
+            throw new IllegalArgumentException("The vectors have different length in vectorMultiplication.");
+        }
+        double result = 0;
+        for (int i = 0; i <firstVector.length; i++) {
+            result += firstVector[i] * secondVector[i];
+        }
+        return result;
+    }
 }
