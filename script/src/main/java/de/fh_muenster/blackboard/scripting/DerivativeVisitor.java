@@ -30,36 +30,20 @@ public class DerivativeVisitor{
 	FunctionVisitor functionVisitor = new FunctionVisitor();
 
 	static String variable;
-	private Function<double [], Double> visit(AST<?> toVisit){
-		if(toVisit instanceof LongValue)
-			return visit((LongValue) toVisit);
-		if(toVisit instanceof DoubleValue)
-			return visit((DoubleValue) toVisit);
-		if(toVisit instanceof OperationNode)
-			return visit((OperationNode) toVisit);
-		if(toVisit instanceof AssignNode)
-			return visit((AssignNode) toVisit);
-		if(toVisit instanceof UnaryOperationNode)
-			return visit((UnaryOperationNode) toVisit);
-		if(toVisit instanceof SemiNode)
-			return visit((SemiNode) toVisit);
-		if(toVisit instanceof FunctionNode)
-			return visit((FunctionNode) toVisit);
-		if(toVisit instanceof FunctionAssignNode)
-			return visit((FunctionAssignNode) toVisit);
-		if(toVisit instanceof VariableNode)
-			return visit((VariableNode) toVisit);
-		if(toVisit instanceof Label)
-			return visit((Label) toVisit);
+	public Function<double [], Double> visit(AbstractFunction toVisit){
+		if(toVisit instanceof FunctionDoubleValue)
+			return visit((FunctionDoubleValue) toVisit);
+
+		if(toVisit instanceof AbstractFunctionOneVariable)
+			return visit((AbstractFunctionOneVariable) toVisit);
+
+		if(toVisit instanceof AbstractFunctionTwoVariable)
+			return visit((AbstractFunctionTwoVariable) toVisit);
+
+		if(toVisit instanceof FunctionLabel)
+			return visit((FunctionLabel) toVisit);
+
 		throw new IllegalArgumentException("Unknown node in DerivativeVisitor.");
-	}
-	/**
-	 * (non-Javadoc)
-	 *
-	 * @see AstVisitor#visit(LongValue)
-	 */
-	public Function<double [], Double> visit(LongValue n) {
-		return new FunctionDoubleValue(0.0);
 	}
 
 	/**
@@ -113,21 +97,22 @@ public class DerivativeVisitor{
 		return visit(n.right());
 	}
 
-	public Function<double[], Double> visit(UnaryOperationNode n) {
+	public Function<double[], Double> visit(AbstractFunctionOneVariable n) {
+		Function<double[], Double> functionVariableDerivative = visit(n.getChild());
+		if (n instanceof FunctionMinusUnary) {
+			return new FunctionMinusUnary(visit(n.getChild()));
+		} else if (n instanceof FunctionPlusUnary) {
+			return new FunctionPlusUnary(visit(n.getChild()));
+		} else if (n instanceof FunctionCos) {
+			return new FunctionTimes(new FunctionMinusUnary(new FunctionSin(n.getChild())), functionVariableDerivative);
+		} else if (n instanceof FunctionSin) {
 
-		switch (n.data()){
-			case MINUS:
-				return new FunctionMinusUnary(visit(n.childs().get(0)));
-			case PLUS:
-
-				return new FunctionPlusUnary(visit(n.childs().get(0)));
 		}
+
 		throw new IllegalArgumentException("unknown operation: " + n.data());
 	}
 
-	public Function<double[], Double> visit(SemiNode n) {
-		return null;
-	}
+
 
 
 	public Function<double[], Double> visit(FunctionNode n) {

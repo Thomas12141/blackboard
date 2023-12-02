@@ -158,16 +158,15 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				DerivativeVisitor.variable = FunctionMap.functions.get(n.data()).childs().get(0).toString();
 				return FunctionMap.functions.get(n.data()).getFunctionCall();
 			}else if(n.childs().get(0) instanceof Label|| isNotElementaryFunction(n)){
-				FunctionNode iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\'')));
-				DerivativeVisitor.variable = iterator.childs().get(0).toString();
+				Function<double[], Double> iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\''))).getFunctionCall();
+				DerivativeVisitor.variable = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\''))).childs().get(0).toString();
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
 				JavaccParser javaccParser = new JavaccParser();
 				for (int i = 0; i < grade; i++) {
-					Function<double[], Double> temp = derivativeVisitor.visit(iterator);
-					temp = FunctionShortener.toShort(temp);
-					iterator = new FunctionNode(iterator.data() + '\'', iterator.childs().get(0));
-					new FunctionAssignNode(iterator ,javaccParser.parse(temp.toString()).childs().get(0));
-					iterator.setFunctionCall(temp);
+					iterator = derivativeVisitor.visit((AbstractFunction)iterator);
+					iterator = FunctionShortener.toShort(iterator);
+					new FunctionAssignNode(iterator ,javaccParser.parse(iterator.toString()).childs().get(0));
+					iterator.setFunctionCall(iterator);
 					ArrayList<String> variables = new ArrayList<String>();
 					variables.add(iterator.childs().get(0).toString());
 					iterator.setVariableList(variables);
