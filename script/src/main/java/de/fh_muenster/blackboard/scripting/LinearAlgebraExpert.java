@@ -39,4 +39,20 @@ public class LinearAlgebraExpert {
         }
         return result;
     }
+
+    static double[][] metricsAddition(double[][] matrix1,double[][] matrix2){
+        if (matrix1.length==0||matrix1[0].length==0){
+            return new double[0][0];
+        }
+        if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
+            throw new IllegalArgumentException("The metrics have different size in metricsAddition.");
+        }
+        double[][] result = new double[matrix1.length][matrix1[0].length];
+        for (int i = 0; i < matrix1.length; i++) {
+            for (int j = 0; j < matrix1[0].length; j++) {
+                result[i][j] = matrix1[i][j] + matrix2[i][j];
+            }
+        }
+        return result;
+    }
 }
