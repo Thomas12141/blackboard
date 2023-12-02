@@ -192,6 +192,8 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				return toSolve;
 			}
 			return n.getFunctionCall();
+		}else if(FunctionMap.functions.containsKey(n.data())){
+			return FunctionMap.functions.get(n.data()).getFunctionCall();
 		}else {
 			return n.parent().childs().get(1).accept(this);
 		}
