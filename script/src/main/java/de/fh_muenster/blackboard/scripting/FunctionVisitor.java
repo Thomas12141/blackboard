@@ -177,6 +177,11 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			}else{
 				return new FunctionDoubleValue(0.0);
 			}
+		}else if(n.childs().size()==1&& n.childs().get(0) instanceof FunctionNode){
+			Function<double[], Double> function = FunctionMap.functions.get(n.data()).getFunctionCall();
+			String label = (String) n.childs().get(0).childs().get(0).data();
+			AbstractFunction abstractFunction = replace((AbstractFunction) FunctionMap.functions.get(n.childs().get(0).data()).getFunctionCall(), (AbstractFunction) function, label);
+			return abstractFunction;
 		}else if(n.equals(n.parent().childs().get(1))){
 			if(n.getFunctionCall()==null){
 				FunctionNode functionNode = FunctionMap.functions.get(n.data());

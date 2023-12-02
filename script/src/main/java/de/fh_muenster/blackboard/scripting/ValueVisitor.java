@@ -151,6 +151,9 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 
 	@Override
 	public Double visit(FunctionNode n) {
+		if(n.childs().get(0) instanceof Label&&!VariablesMap.variables.containsKey(n.childs().get(0).data())){
+			return 0.0;
+		}
 		double childValue;
 		double ls;
 		double rs;

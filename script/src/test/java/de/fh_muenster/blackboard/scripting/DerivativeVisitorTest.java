@@ -214,7 +214,7 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
     //@Timeout(1)
     public void testAsinAndSinInFct8() throws Exception { // Regel 5
         task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(g(x)); h'(%.8f)", x1);
-        expected = (2*x1)*(3);
+        expected = 18*x1;
         System.out.println(x1);
         returned = resultOf(task, 7);
         assertEquals(expected,returned, delta);
