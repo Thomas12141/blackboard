@@ -27,4 +27,13 @@ public class LinearAlgebraTest {
         double result = LinearAlgebraExpert.vectorMultiplication(firstVector, secondVector);
         assertEquals(35, result);
     }
+
+    @Test
+    @Timeout(1)
+    public void vectorMatrixMultiplication(){
+        double[][] matrix = new double[][]{{1, 2, -3},{2, 9, 0},{6, -1, -2}};
+        double[] vector = new double[]{2,3, -1};
+        double[] result = LinearAlgebraExpert.vectorMatrixMultiplication(matrix, vector);
+        assertArrayEquals(new double[]{11, 31, 11}, result);
+    }
 }

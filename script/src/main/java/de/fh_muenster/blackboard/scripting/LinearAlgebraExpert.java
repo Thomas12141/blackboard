@@ -23,4 +23,20 @@ public class LinearAlgebraExpert {
         }
         return result;
     }
+
+    static double[] vectorMatrixMultiplication(double[][] matrix, double[] vector){
+        if (matrix.length==0||matrix[0].length==0){
+            return new double[0];
+        }
+        if(vector.length!= matrix.length){
+            throw new IllegalArgumentException("The vector column number have different length then the matrix row number in vectorMatrixMultiplication.");
+        }
+        double[] result = new double[matrix.length];
+        for (int i = 0; i <matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                result[i] += vector[j] * matrix[i][j];
+            }
+        }
+        return result;
+    }
 }
