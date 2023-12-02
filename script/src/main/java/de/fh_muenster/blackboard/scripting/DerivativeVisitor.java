@@ -160,15 +160,6 @@ public class DerivativeVisitor{
 		return new FunctionTimes(visit(function), functionVariableDerivative);
 	}
 
-	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
-		return null;
-	}
-
-	public Function<double[], Double> visit(VariableNode variableNode) {
-		return null;
-	}
-
-
 	/**
 	 * (non-Javadoc)
 	 *

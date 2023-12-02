@@ -161,19 +161,19 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				Function<double[], Double> iterator = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\''))).getFunctionCall();
 				DerivativeVisitor.variable = FunctionMap.functions.get(n.data().substring(0, n.data().indexOf('\''))).childs().get(0).toString();
 				DerivativeVisitor derivativeVisitor = new DerivativeVisitor();
-				JavaccParser javaccParser = new JavaccParser();
+				String functionName = n.data();
 				for (int i = 0; i < grade; i++) {
 					iterator = derivativeVisitor.visit((AbstractFunction)iterator);
 					iterator = FunctionShortener.toShort(iterator);
-					new FunctionAssignNode(iterator ,javaccParser.parse(iterator.toString()).childs().get(0));
-					iterator.setFunctionCall(iterator);
+					functionName += "'";
 					ArrayList<String> variables = new ArrayList<String>();
-					variables.add(iterator.childs().get(0).toString());
-					iterator.setVariableList(variables);
-					FunctionMap.functions.put(iterator.data(), iterator);
+					variables.add(DerivativeVisitor.variable);
+					FunctionNode functionNode = new FunctionNode(functionName, new Label(DerivativeVisitor.variable));
+					functionNode.setFunctionCall(iterator);
+					functionNode.setVariableList(variables);
+					FunctionMap.functions.put(functionNode.data(), functionNode);
 				}
-				iterator.childs().set(0, n.childs().get(0));
-				return iterator.accept(new FunctionVisitor());
+				return iterator;
 			}else{
 				return new FunctionDoubleValue(0.0);
 			}
