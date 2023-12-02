@@ -50,7 +50,7 @@ public class DerivativeVisitor{
 	 *
 	 * @see AstVisitor#visit(DoubleValue)
 	 */
-	public Function<double [], Double> visit(DoubleValue n) {
+	public Function<double [], Double> visit(FunctionDoubleValue n) {
 		return new FunctionDoubleValue(0.0);
 	}
 
@@ -116,10 +116,6 @@ public class DerivativeVisitor{
 		} else {
 			throw new IllegalArgumentException("unknown operation: " + n.toString());
 		}
-	}
-
-	public Function<double[], Double> visit(FunctionAssignNode functionAssignNode) {
-		return null;
 	}
 
 	/**

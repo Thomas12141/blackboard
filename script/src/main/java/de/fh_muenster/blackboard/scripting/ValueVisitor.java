@@ -315,7 +315,7 @@ public class ValueVisitor extends AbstractAstVisitor<Double> {
 		}else if(n.parent() instanceof AssignNode){
 			return ((AssignNode) n.parent()).expr().accept(this);
 		}else {
-			throw new IllegalArgumentException("ValueVisitor in visit Label, this label wasn't declared.");
+			return 0.0;
 		}
 	}
 }

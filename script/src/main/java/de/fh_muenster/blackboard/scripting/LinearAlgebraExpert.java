@@ -93,7 +93,6 @@ public class LinearAlgebraExpert {
         }
         return result;
     }
-    //TODO: anzupassen nach Anforderung.
     static double[][] matSeriell_4(double[][] matrix1,double[][] matrix2){
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_4.");
