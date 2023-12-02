@@ -41,6 +41,6 @@ public class FunctionAsin extends AbstractFunctionOneVariable {
     }
 
     public String toString() {
-        return ("sin(" + child.toString() + ")");
+        return ("asin(" + child.toString() + ")");
     }
 }

@@ -183,21 +183,14 @@ public class DerivativeVisitor{
 		return null;
 	}
 
-	public Function<double[], Double> visit(MasterNode masterNode) {
-		ArrayList<AST<?>> trees = (ArrayList) masterNode.childs();
-		for (int i = 0; i < trees.size()-1; i++) {
-			visit(trees.get(i));
-		}
-		return visit(trees.get(trees.size()-1));
-	}
 
 	/**
 	 * (non-Javadoc)
 	 *
 	 * @see AstVisitor#visit(Label)
 	 */
-	public Function<double[], Double> visit(Label n) {
-		if(n.data().equals(variable)){
+	public Function<double[], Double> visit(FunctionLabel n) {
+		if(n.toString().equals(variable)){
 			return new FunctionDoubleValue(1.0);
 		}
 		return new FunctionDoubleValue(0.0);

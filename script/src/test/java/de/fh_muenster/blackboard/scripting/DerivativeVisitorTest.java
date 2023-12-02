@@ -149,5 +149,15 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
         assertEquals(expected,returned, delta);
     }
 
-
+    @Test
+    @Timeout(1)
+    public void testFirstRule() throws Exception {
+        task = define("f(x) = asin(x); h(x) = f(x); h'(x)", x1);
+        expected = (1/(Math.pow(1-Math.pow(x1, 2), 0.5)));
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        Function<double[], Double> fct = (Function<double[],Double>)Function.class.cast(ref);
+        returned = fct.apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
 }
