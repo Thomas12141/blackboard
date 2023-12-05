@@ -1,4 +1,4 @@
-package de.fh_muenster.blackboard.scripting;
+package de.fh_muenster.blackboard.linear_algebra;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;

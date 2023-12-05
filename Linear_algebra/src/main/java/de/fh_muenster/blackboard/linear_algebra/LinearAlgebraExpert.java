@@ -1,4 +1,4 @@
-package de.fh_muenster.blackboard.scripting;
+package de.fh_muenster.blackboard.linear_algebra;
 
 public class LinearAlgebraExpert {
     static double[] vectorAddition(double[] firstVector, double[] secondVector){

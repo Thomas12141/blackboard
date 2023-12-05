@@ -12,3 +12,5 @@ plugins {
 
 rootProject.name = 'blackboard'
 include('core', 'script')
+include 'Linear_algebra'
+
