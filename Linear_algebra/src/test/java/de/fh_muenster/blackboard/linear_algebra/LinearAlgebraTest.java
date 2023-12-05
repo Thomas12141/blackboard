@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -84,5 +85,18 @@ public class LinearAlgebraTest {
         double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
         double[][] returned = LinearAlgebraExpert.matSeriell_4(matrix1, matrix2);
         assertTrue(Arrays.deepEquals(expected, returned));
+    }
+
+    public static int[][] getRandomMatrix(int row, int col) {
+        Random random = new Random();
+
+        int[][] matrix = new int[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                matrix[i][j] = random.nextInt();
+            }
+        }
+
+        return matrix;
     }
 }
