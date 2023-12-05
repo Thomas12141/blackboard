@@ -1,5 +1,7 @@
 package de.fh_muenster.blackboard.linear_algebra;
 
+import java.util.concurrent.CountDownLatch;
+
 public class LinearAlgebraExpert {
     static double[] vectorAddition(double[] firstVector, double[] secondVector){
         if(firstVector.length!= secondVector.length){
@@ -77,6 +79,30 @@ public class LinearAlgebraExpert {
                 }
             }
         }
+        return result;
+    }
+
+    static double[][] matParallel_2(double[][] matrix1,double[][] matrix2) throws InterruptedException {
+        if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
+            throw new IllegalArgumentException("The metrics have different size in matParallel_2.");
+        }
+        double[][] result = new double[matrix1.length][matrix1[0].length];
+        CountDownLatch countDownLatch = new CountDownLatch(matrix1.length);
+        for (int i = 0; i < matrix1.length; i++) {
+            int temp = i;
+            new Runnable(){
+                @Override
+                public void run() {
+                    for (int j = 0; j < matrix2[0].length; j++) {
+                        for (int k = 0; k < matrix1[0].length; k++) {
+                            result[temp][j] += matrix1[temp][k] * matrix2[k][j];
+                        }
+                    }
+                    countDownLatch.countDown();
+                }
+            }.run();
+        }
+        countDownLatch.await();
         return result;
     }
 

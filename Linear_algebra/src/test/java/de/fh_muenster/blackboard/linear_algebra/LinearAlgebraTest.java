@@ -58,6 +58,16 @@ public class LinearAlgebraTest {
 
     @Test
     @Timeout(1)
+    public void matParallel_1Test() throws InterruptedException {
+        double[][] matrix1 = new double[][]{{5, 2},{6, 3}};
+        double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
+        double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
+        double[][] returned = LinearAlgebraExpert.matParallel_2(matrix1, matrix2);
+        assertTrue(Arrays.deepEquals(expected, returned));
+    }
+
+    @Test
+    @Timeout(1)
     public void matSeriell_3Test(){
         double[][] matrix1 = new double[][]{{5, 2},{6, 3}};
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
