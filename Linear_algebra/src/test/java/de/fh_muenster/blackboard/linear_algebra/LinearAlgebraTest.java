@@ -9,7 +9,7 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LinearAlgebraTest {
-
+    private static double delta = 0.1;
     @Test
     @Timeout(1)
     public void vectorAddition(){
@@ -44,7 +44,7 @@ public class LinearAlgebraTest {
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
         double[][] expected = new double[][]{{15, 32},{11, 4}};
         double[][] returned = LinearAlgebraExpert.metricsAddition(matrix1, matrix2);
-        assertTrue(Arrays.deepEquals(expected, returned));
+        assertMatrixEquals(expected, returned);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class LinearAlgebraTest {
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
         double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
         double[][] returned = LinearAlgebraExpert.matSeriell_1(matrix1, matrix2);
-        assertTrue(Arrays.deepEquals(expected, returned));
+        assertMatrixEquals(expected, returned);
     }
 
     @Test
@@ -64,7 +64,7 @@ public class LinearAlgebraTest {
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
         double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
         double[][] returned = LinearAlgebraExpert.matParallel_2(matrix1, matrix2);
-        assertTrue(Arrays.deepEquals(expected, returned));
+        assertMatrixEquals(expected, returned);
     }
 
     @Test
@@ -75,7 +75,7 @@ public class LinearAlgebraTest {
         double[][] inverse = LinearAlgebraExpert.hilbertInverse(2);
         double[][] returned = LinearAlgebraExpert.matParallel_2(matrix1, hilbert);
         returned = LinearAlgebraExpert.matParallel_2(returned, inverse);
-        assertTrue(Arrays.deepEquals(matrix1, returned));
+        assertMatrixEquals(matrix1, returned);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class LinearAlgebraTest {
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
         double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
         double[][] returned = LinearAlgebraExpert.matSeriell_3(matrix1, matrix2);
-        assertTrue(Arrays.deepEquals(expected, returned));
+        assertMatrixEquals(expected, returned);
     }
 
     @Test
@@ -95,7 +95,7 @@ public class LinearAlgebraTest {
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
         double[][] expected = new double[][]{{60.0 , 152.0},{75.0, 183.0}};
         double[][] returned = LinearAlgebraExpert.matSeriell_4(matrix1, matrix2);
-        assertTrue(Arrays.deepEquals(expected, returned));
+        assertMatrixEquals(expected, returned);
     }
 
     public static int[][] getRandomMatrix(int row, int col) {
@@ -109,5 +109,14 @@ public class LinearAlgebraTest {
         }
 
         return matrix;
+    }
+
+    public static void assertMatrixEquals(double[][] matrix1, double[][] matrix2){
+        if(matrix1.length!= matrix2.length||matrix1[0].length!=matrix2[0].length){
+            throw new AssertionError();
+        }
+        for (int i = 0; i < matrix1.length; i++) {
+            assertArrayEquals(matrix1[i], matrix2[i], delta);
+        }
     }
 }
