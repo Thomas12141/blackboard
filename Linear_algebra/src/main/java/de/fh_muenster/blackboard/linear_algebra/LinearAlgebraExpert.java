@@ -34,6 +34,9 @@ public class LinearAlgebraExpert {
         if(vector.length!= matrix.length){
             throw new IllegalArgumentException("The vector column number have different length then the matrix row number in vectorMatrixMultiplication.");
         }
+        if(!isItARealMatrix(matrix)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
         double[] result = new double[matrix.length];
         for (int i = 0; i <matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
@@ -43,9 +46,15 @@ public class LinearAlgebraExpert {
         return result;
     }
 
-    static double[][] metricsAddition(double[][] matrix1,double[][] matrix2){
+    static double[][] metricsAddition(double[][] matrix1, double[][] matrix2){
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in metricsAddition.");
+        }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
         }
         double[][] result = new double[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++) {
@@ -59,6 +68,12 @@ public class LinearAlgebraExpert {
     static double[][] matSeriell_1(double[][] matrix1,double[][] matrix2){
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_1.");
+        }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
         }
         double[][] result = new double[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++) {
@@ -75,6 +90,12 @@ public class LinearAlgebraExpert {
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_2.");
         }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
         double[][] result = new double[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++) {
             for (int j = 0; j < matrix2[0].length; j++) {
@@ -89,6 +110,12 @@ public class LinearAlgebraExpert {
     static double[][] matParallel_2(double[][] matrix1,double[][] matrix2) throws InterruptedException {
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matParallel_2.");
+        }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
         }
         double[][] result = new double[matrix1.length][matrix1[0].length];
         CountDownLatch countDownLatch = new CountDownLatch(matrix1.length);
@@ -120,6 +147,12 @@ public class LinearAlgebraExpert {
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_3.");
         }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
         double[][] matrix2Transpose = transpose(matrix2);
         double[][] result = new double[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++) {
@@ -132,6 +165,12 @@ public class LinearAlgebraExpert {
     static double[][] matSeriell_4(double[][] matrix1,double[][] matrix2){
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_4.");
+        }
+        if(!isItARealMatrix(matrix1)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
+        }
+        if(!isItARealMatrix(matrix2)){
+            throw new IllegalArgumentException("Keine gültige Matrix!");
         }
         double[][] result = new double[matrix1.length][matrix1[0].length];
         for (int i = 0; i < matrix1.length; i++) {
@@ -182,4 +221,13 @@ public class LinearAlgebraExpert {
         return factorial;
     }
 
+    private static boolean isItARealMatrix(double[][] matrix){
+        int size = matrix[0].length;
+        for (int i = 1; i < matrix.length; i++) {
+            if(size!=matrix[i].length){
+                return false;
+            }
+        }
+        return true;
+    }
 }
