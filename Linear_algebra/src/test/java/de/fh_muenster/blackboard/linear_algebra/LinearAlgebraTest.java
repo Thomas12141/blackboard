@@ -69,6 +69,17 @@ public class LinearAlgebraTest {
 
     @Test
     @Timeout(1)
+    public void matParallel_1TestWithHilbert() throws InterruptedException {
+        double[][] matrix1 = new double[][]{{5, 2},{6, 3}};
+        double[][] hilbert = LinearAlgebraExpert.hilbertMatrix(2);
+        double[][] inverse = LinearAlgebraExpert.hilbertInverse(2);
+        double[][] returned = LinearAlgebraExpert.matParallel_2(matrix1, hilbert);
+        returned = LinearAlgebraExpert.matParallel_2(returned, inverse);
+        assertTrue(Arrays.deepEquals(matrix1, returned));
+    }
+
+    @Test
+    @Timeout(1)
     public void matSeriell_3Test(){
         double[][] matrix1 = new double[][]{{5, 2},{6, 3}};
         double[][] matrix2 = new double[][]{{10, 30},{5, 1}};
