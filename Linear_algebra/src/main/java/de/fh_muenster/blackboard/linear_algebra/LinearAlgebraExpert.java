@@ -134,9 +134,9 @@ public class LinearAlgebraExpert {
                 }
             };
             if(parallel){
-                executorService.submit(task);
+                executorService.execute(task);
             }else {
-                singleThreadexecutorService.submit(task);
+                singleThreadexecutorService.execute(task);
             }
         }
         countDownLatch.await();
@@ -195,9 +195,16 @@ public class LinearAlgebraExpert {
     
     public static double[][] hilbertInverse(int n){
         double[][] inverse = new double[n][n];
+        CountDownLatch countDownLatch = new CountDownLatch(n*n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                inverse[i-1][j-1] = Math.pow(-1, i+j)*factorial(n+i-1)*factorial(n+j-1)/((i+j-1)*Math.pow(factorial(i-1)*factorial(j-1), 2)*factorial(n-i)*factorial(n-j));
+                int finalI = i;
+                int finalJ = j;
+                Runnable task = () -> {
+                    inverse[finalI -1][finalJ -1] = Math.pow(-1, finalI + finalJ)*factorial(n+ finalI -1)*factorial(n+ finalJ -1)/((finalI + finalJ -1)*Math.pow(factorial(finalI -1)*factorial(finalJ -1), 2)*factorial(n- finalI)*factorial(n- finalJ));
+                    countDownLatch.countDown();
+                };
+                executorService.execute(task);
             }
         }
         return inverse;

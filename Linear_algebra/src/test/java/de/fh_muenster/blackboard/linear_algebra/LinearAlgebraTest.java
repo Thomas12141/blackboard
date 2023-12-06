@@ -1,5 +1,7 @@
 package de.fh_muenster.blackboard.linear_algebra;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -10,6 +12,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class LinearAlgebraTest {
     private static double delta = 0.1;
+
+    private double[][] bigMatrix = new double[4096][4096];
+    private double[][] hilbertBigMatrix = LinearAlgebraExpert.hilbertMatrix(4096);
+    private double[][] hilbertBigInvers = LinearAlgebraExpert.hilbertInverse(4096);
+
+    public LinearAlgebraTest() throws InterruptedException {
+    }
+
+    @BeforeEach
+    void setUp(){
+        for (int i = 0; i < 4096; i++) {
+            for (int j = 0; j < 4096; j++) {
+                bigMatrix[i][j] = (Math.random()+0.5)*2;
+            }
+        }
+    }
     @Test
     @Timeout(1)
     public void vectorAddition(){
@@ -76,6 +94,13 @@ public class LinearAlgebraTest {
         double[][] returned = LinearAlgebraExpert.matParallel_2(matrix1, hilbert);
         returned = LinearAlgebraExpert.matParallel_2(returned, inverse);
         assertMatrixEquals(matrix1, returned);
+    }
+
+    @Test
+    public void matParallelRandomized_1TestWithHilbert() throws InterruptedException {
+        double[][] returned = LinearAlgebraExpert.matParallel_2(bigMatrix, hilbertBigMatrix);
+        returned = LinearAlgebraExpert.matParallel_2(returned, hilbertBigInvers);
+        assertMatrixEquals(returned, returned);
     }
 
     @Test
