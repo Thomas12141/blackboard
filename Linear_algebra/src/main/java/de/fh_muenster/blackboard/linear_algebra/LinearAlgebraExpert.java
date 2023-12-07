@@ -193,30 +193,41 @@ public class LinearAlgebraExpert {
         return result;
     }
     
-    public static double[][] hilbertInverse(int n){
+    public static double[][] hilbertInverse(int n) throws InterruptedException {
         double[][] inverse = new double[n][n];
-        CountDownLatch countDownLatch = new CountDownLatch(n*n);
+        CountDownLatch countDownLatch = new CountDownLatch(n);
         for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                int finalI = i;
-                int finalJ = j;
-                Runnable task = () -> {
-                    inverse[finalI -1][finalJ -1] = Math.pow(-1, finalI + finalJ)*factorial(n+ finalI -1)*factorial(n+ finalJ -1)/((finalI + finalJ -1)*Math.pow(factorial(finalI -1)*factorial(finalJ -1), 2)*factorial(n- finalI)*factorial(n- finalJ));
+            int finalI = i;
+            Runnable task = () ->{
+                for (int j = 1; j <= n; j++) {
+                        inverse[finalI -1][j -1] = Math.pow(-1, finalI + j)*factorial(n+ finalI -1)*factorial(n+ j -1)/((finalI + j -1)*Math.pow(factorial(finalI -1)*factorial(j -1), 2)*factorial(n- finalI)*factorial(n- j));
                     countDownLatch.countDown();
-                };
-                executorService.execute(task);
-            }
+
+                }
+            };
+            executorService.execute(task);
         }
+        countDownLatch.await();
         return inverse;
     }
     
-    public static double[][] hilbertMatrix(int n){
+    public static double[][] hilbertMatrix(int n) throws InterruptedException {
         double[][] matrix = new double[n][n];
+        CountDownLatch countDownLatch = new CountDownLatch(n);
         for (int i = 1; i <= matrix.length; i++) {
-            for (int j = 1; j <= matrix[0].length; j++) {
-                matrix[i-1][j-1] = (double) 1 /(i+j-1);
-            }
+            int finalI = i;
+            Runnable task = new Runnable() {
+                @Override
+                public void run() {
+                    for (int j = 1; j <= matrix[0].length; j++) {
+                        matrix[finalI -1][j-1] = (double) 1 /(finalI +j-1);
+                    }
+                    countDownLatch.countDown();
+                }
+            };
+            executorService.execute(task);
         }
+        countDownLatch.await();
         return matrix;
     }
 
