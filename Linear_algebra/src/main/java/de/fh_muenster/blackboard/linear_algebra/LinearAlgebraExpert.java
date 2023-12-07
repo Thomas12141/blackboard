@@ -1,12 +1,15 @@
 package de.fh_muenster.blackboard.linear_algebra;
 
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class LinearAlgebraExpert {
-    private final static ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    public static int coresNum = Runtime.getRuntime().availableProcessors();
+    private final static ExecutorService executorService = Executors.newFixedThreadPool(coresNum);
     private final static ExecutorService singleThreadexecutorService = Executors.newSingleThreadExecutor();
+    private static boolean parallel = true;
     static double[] vectorAddition(double[] firstVector, double[] secondVector){
         if(firstVector.length!= secondVector.length){
             throw new IllegalArgumentException("The vectors have different length in vectorAddition.");
@@ -69,6 +72,9 @@ public class LinearAlgebraExpert {
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_1.");
         }
+        if(matrix1[0].length!=matrix2.length){
+            throw new IllegalArgumentException("The metrics cant be multiplied matSeriell_1.");
+        }
         if(!isItARealMatrix(matrix1)){
             throw new IllegalArgumentException("Keine gültige Matrix!");
         }
@@ -89,6 +95,9 @@ public class LinearAlgebraExpert {
     static double[][] matSeriell_2(double[][] matrix1,double[][] matrix2){
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matSeriell_2.");
+        }
+        if(matrix1[0].length!=matrix2.length){
+            throw new IllegalArgumentException("The metrics cant be multiplied matSeriell_2.");
         }
         if(!isItARealMatrix(matrix1)){
             throw new IllegalArgumentException("Keine gültige Matrix!");
@@ -111,6 +120,9 @@ public class LinearAlgebraExpert {
         if(matrix1.length!=matrix2.length||matrix1[0].length!=matrix2[0].length){
             throw new IllegalArgumentException("The metrics have different size in matParallel_2.");
         }
+        if(matrix1[0].length!=matrix2.length){
+            throw new IllegalArgumentException("The metrics cant be multiplied.");
+        }
         if(!isItARealMatrix(matrix1)){
             throw new IllegalArgumentException("Keine gültige Matrix!");
         }
@@ -121,7 +133,6 @@ public class LinearAlgebraExpert {
         CountDownLatch countDownLatch = new CountDownLatch(matrix1.length);
         for (int i = 0; i < matrix1.length; i++) {
             int temp = i;
-            boolean parallel = true;
             Runnable task = new Runnable(){
                 @Override
                 public void run() {
@@ -248,4 +259,57 @@ public class LinearAlgebraExpert {
         }
         return true;
     }
+
+    public static double[][] getRandomMatrix(int row, int col) {
+        Random random = new Random();
+
+        double[][] matrix = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                matrix[i][j] = random.nextInt();
+            }
+        }
+
+        return matrix;
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println(" dim | baseline      |        optimized    |       parallelized  | speedup | Amdahl");
+        System.out.println("-----+---------------+---------------+-----+--------------+------+---------+--------");
+        System.out.println("  n  | b[us]         |        o[us]  | b/o |        p[us] | b/p  |     o/p | pi[%]");
+        for (int n = 128; n<=4096; n*=2){
+            double[][] hilbertMatrix = hilbertMatrix(n);
+            double[][] hilbertInverse = hilbertInverse(n);
+            double[][] randomizedMatrix = getRandomMatrix(n, n);
+
+            parallel = false;
+            Long timeBefore = System.nanoTime();
+            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
+            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            Long timeAfter = System.nanoTime();
+            Long timeBaseine = timeAfter-timeBefore;
+
+            parallel = false;
+            timeBefore = System.nanoTime();
+            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
+            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            timeAfter = System.nanoTime();
+            Long timeOptimized = timeAfter-timeBefore;
+
+            parallel = true;
+            timeBefore = System.nanoTime();
+            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
+            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            timeAfter = System.nanoTime();
+            Long timeParallel = timeAfter-timeBefore;
+
+            double speedup = (double) timeOptimized /timeParallel;
+            double bDividedByO = (double) timeBaseine /timeOptimized;
+            double bDividedByP = (double) timeBaseine /timeParallel;
+            double amdahl = ((double) coresNum /(coresNum-1))*(speedup-1);
+            String output = String.format("%4d |%15d|%15d|%5.1f|%14d|%6.1f|%9.1f|%5.1f",n, timeBaseine, timeOptimized, bDividedByO, timeParallel, bDividedByP, speedup, amdahl);
+            System.out.println(output);
+        }
+    }
+
 }

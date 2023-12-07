@@ -11,11 +11,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static de.fh_muenster.blackboard.linear_algebra.LinearAlgebraExpert.coresNum;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LinearAlgebraTest {
     private static double delta = 0.1;
-    private final static ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private final static ExecutorService executorService = Executors.newFixedThreadPool(coresNum);
     private static double[][] bigMatrix = new double[4096][4096];
     private double[][] hilbertBigMatrix = LinearAlgebraExpert.hilbertMatrix(4096);
     private double[][] hilbertBigInvers = LinearAlgebraExpert.hilbertInverse(4096);
@@ -136,18 +137,7 @@ public class LinearAlgebraTest {
         assertMatrixEquals(expected, returned);
     }
 
-    public static int[][] getRandomMatrix(int row, int col) {
-        Random random = new Random();
 
-        int[][] matrix = new int[row][col];
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                matrix[i][j] = random.nextInt();
-            }
-        }
-
-        return matrix;
-    }
 
     public static void assertMatrixEquals(double[][] matrix1, double[][] matrix2){
         if(matrix1.length!= matrix2.length||matrix1[0].length!=matrix2[0].length){
