@@ -307,6 +307,7 @@ public class LinearAlgebraExpert {
             System.out.println(output);
         }
         executorService.shutdown();
+        singleThreadexecutorService.shutdown();
     }
 
 }
