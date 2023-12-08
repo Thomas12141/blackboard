@@ -279,27 +279,23 @@ public class LinearAlgebraExpert {
         System.out.println("  n  | b[us]         |        o[us]  | b/o |        p[us] | b/p  |     o/p | pi[%]");
         for (int n = 128; n<=4096; n*=2){
             double[][] hilbertMatrix = hilbertMatrix(n);
-            double[][] hilbertInverse = hilbertInverse(n);
             double[][] randomizedMatrix = getRandomMatrix(n, n);
 
             parallel = false;
             Long timeBefore = System.nanoTime();
-            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
-            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            matParallel_2(randomizedMatrix,hilbertMatrix);
             Long timeAfter = System.nanoTime();
             Long timeBaseine = timeAfter-timeBefore;
 
             parallel = false;
             timeBefore = System.nanoTime();
-            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
-            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            matParallel_2(randomizedMatrix,hilbertMatrix);
             timeAfter = System.nanoTime();
             Long timeOptimized = timeAfter-timeBefore;
 
             parallel = true;
             timeBefore = System.nanoTime();
-            randomizedMatrix = matParallel_2(randomizedMatrix,hilbertMatrix);
-            randomizedMatrix = matParallel_2(randomizedMatrix, hilbertInverse);
+            matParallel_2(randomizedMatrix,hilbertMatrix);
             timeAfter = System.nanoTime();
             Long timeParallel = timeAfter-timeBefore;
 
@@ -307,9 +303,10 @@ public class LinearAlgebraExpert {
             double bDividedByO = (double) timeBaseine /timeOptimized;
             double bDividedByP = (double) timeBaseine /timeParallel;
             double amdahl = ((double) coresNum /(coresNum-1))*(speedup-1);
-            String output = String.format("%4d |%15d|%15d|%5.1f|%14d|%6.1f|%9.1f|%5.1f",n, timeBaseine, timeOptimized, bDividedByO, timeParallel, bDividedByP, speedup, amdahl);
+            String output = String.format("%4d |%15d|%15d|%5.1f|%14d|%6.1f|%9.1f|%5.1f",n, timeBaseine, timeOptimized, bDividedByO, timeParallel, bDividedByP, speedup, 100 - amdahl);
             System.out.println(output);
         }
+        executorService.shutdown();
     }
 
 }
