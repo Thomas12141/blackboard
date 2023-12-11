@@ -190,6 +190,7 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 				for (AST<?> toReplace: n.childs()) {
 					AbstractFunction newFunctionSubtree = (AbstractFunction) toReplace.accept(this);
 					if(newFunctionSubtree!=null){
+						variableReplace(n.childs().get(0).data().toString(), functionNode.getVariables().get(0), toSolve);
 						toSolve = replace(newFunctionSubtree, toSolve, functionNode.getVariables().get(position));
 						position++;
 					}
@@ -198,6 +199,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 			}
 			return n.getFunctionCall();
 		}else if(FunctionMap.functions.containsKey(n.data())){
+			FunctionNode functionNode = FunctionMap.functions.get(n.data());
+			AbstractFunction toSolve = ((AbstractFunction)functionNode.getFunctionCall()).clone();
+			variableReplace(n.childs().get(0).data().toString(), functionNode.childs().get(0).toString(), toSolve);
 			return FunctionMap.functions.get(n.data()).getFunctionCall();
 		}else {
 			return n.parent().childs().get(1).accept(this);
@@ -304,5 +308,16 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 
 		((AbstractFunction)iterator.childs.get(0)).parent = null;
 		return (AbstractFunction) iterator.childs.get(0);
+	}
+
+	private static void variableReplace(String newVariable, String oldVariable, AbstractFunction toSolve){
+		if(toSolve instanceof AbstractFunctionTwoVariable){
+			variableReplace(newVariable, oldVariable, ((AbstractFunctionTwoVariable) toSolve).left);
+			variableReplace(newVariable, oldVariable, ((AbstractFunctionTwoVariable) toSolve).right);
+		}else if(toSolve instanceof AbstractFunctionOneVariable){
+			variableReplace(newVariable, oldVariable, ((AbstractFunctionOneVariable) toSolve).child);
+		}else if(toSolve instanceof FunctionLabel&&((FunctionLabel) toSolve).getLabel().equals(oldVariable)){
+			((FunctionLabel) toSolve).setLabel(newVariable);
+		}
 	}
 }

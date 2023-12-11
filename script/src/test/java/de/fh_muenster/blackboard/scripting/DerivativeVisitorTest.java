@@ -174,6 +174,18 @@ public class DerivativeVisitorTest extends AbstractScriptTester {
 
     @Test
     //@Timeout(1)
+    public void testAsinAndSinInFct42() throws Exception { // Regel 4
+        task = define("f(a) = a^2; g(b) = 3 * b; h(c) = f(c)^g(c); h'(%.8f)", x1);
+        expected = Math.pow(x1, 6 * x1) * (6 + 3 * Math.log(Math.pow(x1, 2)));
+        System.out.println(x1);
+        Object ref = blackboard.answer(Function.class, task);
+        returned = ((Function<double[], Double>) ref).apply(new double[]{x1});
+        assertEquals(expected,returned, delta);
+    }
+
+
+    @Test
+    //@Timeout(1)
     public void testAsinAndSinInFct5() throws Exception { // Regel 2
         task = define("f(x) = x^2; g(x) = 3 * x; h(x) = f(x) * g(x); h'(%.8f)", x1);
         expected = (2 * x1 * 3 * x1) + Math.pow(x1, 2) * 3;

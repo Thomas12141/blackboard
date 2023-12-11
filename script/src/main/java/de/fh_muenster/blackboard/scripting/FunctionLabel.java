@@ -11,6 +11,15 @@ public class FunctionLabel extends AbstractFunction {
         this.position = position;
         this.label = label;
     }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
     @Override
     public Double apply(double[] doubles) {
         return doubles[position];
