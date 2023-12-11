@@ -311,6 +311,9 @@ public class FunctionVisitor extends AbstractAstVisitor<Function<double [], Doub
 	}
 
 	private static void variableReplace(String newVariable, String oldVariable, AbstractFunction toSolve){
+		if(newVariable.equals("*")){
+			return;
+		}
 		if(toSolve instanceof AbstractFunctionTwoVariable){
 			variableReplace(newVariable, oldVariable, ((AbstractFunctionTwoVariable) toSolve).left);
 			variableReplace(newVariable, oldVariable, ((AbstractFunctionTwoVariable) toSolve).right);
