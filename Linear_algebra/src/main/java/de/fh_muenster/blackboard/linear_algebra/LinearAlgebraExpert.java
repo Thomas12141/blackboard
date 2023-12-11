@@ -266,7 +266,7 @@ public class LinearAlgebraExpert {
         double[][] matrix = new double[row][col];
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                matrix[i][j] = random.nextInt();
+                matrix[i][j] = random.nextDouble();
             }
         }
 
