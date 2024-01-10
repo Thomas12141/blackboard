@@ -56,7 +56,7 @@ double integrate(function f, double a, double b, double accuracy){
     do{
         diff = betrag(t2n-tn);
         n*= 2;
-        if(n<0){
+        if(n<0||n>65536){
             sprintf(errorsArr, "Overflow in the while loop of integrate\n");
             break;
         }
