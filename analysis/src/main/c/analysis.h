@@ -3,6 +3,7 @@ extern "C" {
 #endif
 /** declare function pointer f(x). */
 typedef double (*function)(double x);
+int isLoaded();
 /**
 * Calculate f'(x) = df/dx at point x within given accuracy.
 */

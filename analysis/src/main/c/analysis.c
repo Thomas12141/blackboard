@@ -9,6 +9,10 @@ double integralResults[10000] = {0.0};
 
 char errorsArr[200];
 
+int isLoaded() {
+    return 1;
+}
+
 double betrag(double d) {
     if(d>0){
         return d;
