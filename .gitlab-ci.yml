@@ -1,4 +1,4 @@
-image: gradle:8.4-jdk19   #  still no gcc
+image: gradle:8.4-jdk20   #  still no gcc
 # image: gradle:8.3-jdk19 #  not existent 
 # image: gradle:8.4-jdk19 #  not existent
 # image: gradle:8.3-jdk17 # runing but old versions
