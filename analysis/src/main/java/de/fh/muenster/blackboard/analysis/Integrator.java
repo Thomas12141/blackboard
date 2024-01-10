@@ -146,7 +146,7 @@ public class Integrator {
 		do{
 			diff = Math.abs(t2n-tn);
 			n*= 2;
-			if(n<0){
+			if(n<0||n>65536){
 				break;
 			}
 			tn = t2n;

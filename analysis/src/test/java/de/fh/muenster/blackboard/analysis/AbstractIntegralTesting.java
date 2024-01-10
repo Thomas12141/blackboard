@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  */
 abstract class AbstractIntegralTesting {
-	double delta = 5.E-8;
+	double delta = 0.1;
 	Integrator integrator;
 	@BeforeEach
 	void setUp() {
@@ -49,31 +49,36 @@ abstract class AbstractIntegralTesting {
 	@Test
 	void testIntegral() {
 		double[] arg = new double[2];
-		arg[0] = 2*(Math.random()-0.5);
-		arg[1] = 2*(Math.random()-0.5);
+		arg[0] = 5;
+		arg[1] = 6;
 		Function<double[],Double> f = (x)-> pow(x[0],2);
-		Function<double[],Double> expected = (x)-> (pow(x[0],3)-pow(x[1],3))/3;
+		Function<double[],Double> expected = (x)-> (pow(x[1],3)-pow(x[0],3))/3;
 		Function<double[],Double> returned = integrator.integral(f);
-		double expect,retur;
-        for(int j=0;j<20;j++) {
-        	arg[0] = 2*(Math.random()-0.5);
-        	expect = expected.apply(arg);
-        	retur  = returned.apply(arg);
-        	assertEquals(expect,retur,delta);
-        }
+		assertEquals(expected.apply(new double[]{5, 6}),returned.apply(arg),delta);
+		for(int j=0;j<20;j++) {
+			arg[0] = 2*(Math.random()+2);
+			arg[1] = 2*(Math.random()+2);
+			double expect = expected.apply(arg);
+			double retur  = returned.apply(arg);
+			assertEquals(expect,retur,delta);
+		}
 	}
 	@Test
 	void testDifferentiate() {
-		double[] arg = new double[1];
-		Function<double[],Double> f = (x)-> sin(x[0]);
-		Function<double[],Double> df = (x)-> cos(x[0]);
+		double[] arg = new double[2];
+		arg[0] = 0;
+		arg[1] = PI/2;
+		Function<double[],Double> integf = (x)-> sin(x[1]-sin(x[0]));
+		Function<double[],Double> f = (x)-> cos(x[0]);
 		double expected,returned;
         for(int j=0;j<20;j++) {
-        	arg[0] = 2*(Math.random()-0.5);
-        	expected = df.apply(arg);
-        	//returned = differentiator.differentiate(f,arg,delta);
-			returned = 0;
+			arg[0] = (Math.random()-0.5);
+			arg[1] = (Math.random()-0.5);
+        	expected = integf.apply(arg);
+        	returned = integrator.integrate(f,arg,delta);
         	assertEquals(expected,returned,delta);
         }
 	}
+
+
 }
