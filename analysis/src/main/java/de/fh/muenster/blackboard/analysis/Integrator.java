@@ -124,7 +124,7 @@ public class Integrator {
 		if(useNative) {
 			try {
 				double result = cdintegrator.integrate(fct,x[0], x[1],precision);
-				if(!cdintegrator.errors().isEmpty()){
+				if(cdintegrator.errors()!=null&&!cdintegrator.errors().isEmpty()){
 					throw new RuntimeException(cdintegrator.errors());
 				}
 				return result;

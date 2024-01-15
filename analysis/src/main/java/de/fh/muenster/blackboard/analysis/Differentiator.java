@@ -124,10 +124,10 @@ public class Differentiator {
 		if(useNative) {
 			try {
 				double result = cdifferentiator.differentiate(fct,x[0],precision);
-				if(!cdifferentiator.errors().isEmpty()){
+				if(cdifferentiator.errors()!=null&&!cdifferentiator.errors().isEmpty()){
 					throw new RuntimeException(cdifferentiator.errors());
 				}
-				return cdifferentiator.differentiate(fct,x[0],precision);
+				return result;
 			} catch(RuntimeException error) {
 				System.err.printf("%s %s%n",error,error.getCause());
 				throw error;
