@@ -24,8 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static java.lang.Math.*;
 import java.util.function.Function;
 
+import de.fh_muenster.blackboard.Blackboard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Abstract base test of the Differentiator.
@@ -81,6 +83,16 @@ abstract class AbstractDifferentiatorTesting {
         	returned = differentiator.differentiate(f,arg,delta);
         	assertEquals(expected,returned,delta);
         }
+	}
+
+	@Test
+	public void testSineDerivation() throws Exception {
+		Blackboard blackboard = Blackboard.getInstance();
+		String task = String.format("sin'(%.8f)", 2.0);
+		double returned = blackboard.answer(Double.class ,task);
+		Function<double[], Double> f = (x) -> (x[0]);
+		double expected = differentiator.differentiate(f, new double[]{2.0}, delta);
+		assertEquals(expected,returned, delta);
 	}
 
 	@Test
