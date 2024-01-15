@@ -25,6 +25,10 @@ import static java.lang.Math.*;
 import java.util.function.Function;
 
 import de.fh_muenster.blackboard.Blackboard;
+import de.fh_muenster.blackboard.scripting.DerivativeVisitor;
+import de.fh_muenster.blackboard.scripting.FunctionMap;
+import de.fh_muenster.blackboard.scripting.Parser;
+import de.fh_muenster.blackboard.scripting.VariablesMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
@@ -36,6 +40,10 @@ import org.junit.jupiter.api.Timeout;
  *
  */
 abstract class AbstractDifferentiatorTesting {
+
+	Blackboard blackboard;
+	Parser parser;
+	DerivativeVisitor visitor;
 	double delta = 5.E-8;
 	Differentiator differentiator;
 	Integrator integrator;
@@ -87,7 +95,11 @@ abstract class AbstractDifferentiatorTesting {
 
 	@Test
 	public void testSineDerivation() throws Exception {
-		Blackboard blackboard = Blackboard.getInstance();
+		VariablesMap.variables.clear();
+		FunctionMap.functions.clear();
+		parser = new JavaccParser();
+		visitor = new DerivativeVisitor();
+		blackboard = Blackboard.getInstance();
 		String task = String.format("sin'(%.8f)", 2.0);
 		double returned = blackboard.answer(Double.class ,task);
 		Function<double[], Double> f = (x) -> (x[0]);

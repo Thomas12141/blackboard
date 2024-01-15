@@ -125,7 +125,7 @@ public class Differentiator {
 			try {
 				double result = cdifferentiator.differentiate(fct,x[0],precision);
 				if(cdifferentiator.errors()!=null&&!cdifferentiator.errors().isEmpty()){
-					throw new RuntimeException(cdifferentiator.errors());
+					throw new ArithmeticException(cdifferentiator.errors());
 				}
 				return result;
 			} catch(RuntimeException error) {

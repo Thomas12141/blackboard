@@ -5,6 +5,6 @@ import java.util.Map;
 
 public class VariablesMap {
 
-    static Map<String, Double> variables = new HashMap<String, Double>();
+    public static Map<String, Double> variables = new HashMap<String, Double>();
 
 }
