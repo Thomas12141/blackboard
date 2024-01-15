@@ -60,7 +60,9 @@ public class Differentiator {
 		/** just  a quick check if the library is loaded at all. */
 		int isLoaded();
 		/** the C differentiate method via JNA proxy.     */
-		double differentiate(Fct f, double x, double delta);		
+		double differentiate(Fct f, double x, double delta);
+
+		String errors();
 	}
 	
 	static {
@@ -121,6 +123,10 @@ public class Differentiator {
 		Fct fct = Fct.asFct(f);
 		if(useNative) {
 			try {
+				double result = cdifferentiator.differentiate(fct,x[0],precision);
+				if(!cdifferentiator.errors().isEmpty()){
+					throw new RuntimeException(cdifferentiator.errors());
+				}
 				return cdifferentiator.differentiate(fct,x[0],precision);
 			} catch(RuntimeException error) {
 				System.err.printf("%s %s%n",error,error.getCause());

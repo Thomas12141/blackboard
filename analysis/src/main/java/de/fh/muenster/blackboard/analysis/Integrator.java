@@ -64,6 +64,8 @@ public class Integrator {
 		int isLoaded();
 		/** the C integrate method via JNA proxy.     */
 		double integrate(Fct f, double a, double b, double delta);
+
+		String errors();
 	}
 
 	static {
@@ -121,7 +123,11 @@ public class Integrator {
 		Fct fct = Fct.asFct(f);
 		if(useNative) {
 			try {
-				return cdintegrator.integrate(fct,x[0], x[1],precision);
+				double result = cdintegrator.integrate(fct,x[0], x[1],precision);
+				if(!cdintegrator.errors().isEmpty()){
+					throw new RuntimeException(cdintegrator.errors());
+				}
+				return result;
 			} catch(RuntimeException error) {
 				System.err.printf("%s %s%n",error,error.getCause());
 				throw error;
