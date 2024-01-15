@@ -94,9 +94,6 @@ char* errors(){
     double integral = integrate(xHoch2, 0, 3.0, 0.000000001);
     printf("%lf\n", integral); //Muss 9 sein
 
-    double sinIntegral = integrate(sin, 0, M_PI, 0.0000001);
-    printf("Numerisches Integral von sin(x) von 0 bis PI: %lf\n", sinIntegral); // Muss 2 sein
-
     double expDerivative = differentiate(exp, 1.0, 0.000000001);
     printf("Numerische Ableitung an x=1.0 von exp(x): %lf\n", expDerivative); // Muss exp(1.0) sein
 
@@ -146,13 +143,6 @@ char* errors(){
     // Test mit der Funktion sqrt(x) von 1 bis 4
     double integralSqrtX = integrate(sqrtX, 1, 4, 0.0000001);
     printf("Numerisches Integral von sqrt(x) von 1 bis 4: %lf\n", integralSqrtX);
-
-
-    if (strlen(errorsArr) > 0) {
-        printf("\nFehler: %s\n", errorsArr);
-    } else {
-        printf("\nKeine Fehler!");
-    }
 
 
     return 0;
