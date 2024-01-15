@@ -28,6 +28,12 @@ package de.fh.muenster.blackboard.analysis;
  */
 class DifferentiatorInJavaTest extends AbstractDifferentiatorTesting {
 
+
+	@Override
+	protected Integrator createIntegrator() {
+		return new Integrator(true);
+	}
+
 	/* (non-Javadoc)
 	 * 
 	 * @see de.fh_muenster.blackboard.analysis.DifferentiatorTesting#createDifferentiator()

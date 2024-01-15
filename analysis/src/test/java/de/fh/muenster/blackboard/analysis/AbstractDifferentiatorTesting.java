@@ -36,10 +36,14 @@ import org.junit.jupiter.api.Test;
 abstract class AbstractDifferentiatorTesting {
 	double delta = 5.E-8;
 	Differentiator differentiator;
+	Integrator integrator;
 	@BeforeEach
 	void setUp() {
 		differentiator = createDifferentiator();
+		integrator = createIntegrator();
 	}
+
+	protected abstract Integrator createIntegrator();
 	/**
 	 * Factory method to create native or java Differentiator.
 	 * @return
@@ -78,4 +82,28 @@ abstract class AbstractDifferentiatorTesting {
         	assertEquals(expected,returned,delta);
         }
 	}
+
+	@Test
+	void testDifferentiate2() {
+		double[] arg = new double[1];
+		Function<double[],Double> f = (x)-> Math.random();
+		Function<double[],Double> df = (x)-> cos(x[0]);
+		double expected,returned;
+		returned = differentiator.differentiate(f,arg,delta);
+		fail();
+	}
+
+	@Test
+	void testDifferentiate3() {
+		double[] arg = new double[1];
+		Function<double[],Double> f = (x)-> sin(x[0]);
+		Function<double[],Double> df = (x)-> cos(x[0]);
+		double expected,returned;
+		arg[0] = 2*(Math.random()-0.5);
+		expected = df.apply(arg);
+		returned = differentiator.differentiate(f,arg,delta);
+		assertEquals(expected,returned,delta);
+
+	}
+
 }

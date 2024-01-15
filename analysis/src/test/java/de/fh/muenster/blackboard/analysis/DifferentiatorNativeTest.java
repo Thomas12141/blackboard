@@ -29,11 +29,11 @@ package de.fh.muenster.blackboard.analysis;
  */
 class DifferentiatorNativeTest extends AbstractDifferentiatorTesting {
 
-	/* (non-Javadoc)
-	 * 
-	 * @see de.fh_muenster.blackboard.analysis.DifferentiatorTesting#createDifferentiator()
-	 */
-	
+	@Override
+	protected Integrator createIntegrator() {
+		return new Integrator(false);
+	}
+
 	@Override
 	protected Differentiator createDifferentiator() {
 		return new Differentiator(false);
