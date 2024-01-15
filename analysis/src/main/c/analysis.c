@@ -118,33 +118,6 @@ char* errors(){
     double powIntegral = integrate(powerFunction, 0, 2.0, 0.0000001);
     printf("Numerisches Integral von pow(x,2) von 0 bis 2.0: %lf\n", powIntegral); // Muss 8/3 sein
 
-    double sinExpIntegral = integrate(sinPlusExp, 0, M_PI, 0.0000001);
-    printf("Numerisches Integral von sin(x) + exp(x) von 0 bis PI: %lf\n", sinExpIntegral);
-
-    double logSqrtIntegral = integrate(logPlusSqrt, 1.0, 4.0, 0.0000001);
-    printf("Numerisches Integral von log(x) + sqrt(x) von 1.0 bis 4.0: %lf\n", logSqrtIntegral);
-
-    // Test mit der Funktion x^3 von 0 bis 2
-    double integralXCubed = integrate(xCubed, 0, 2, 0.0000001);
-    printf("Numerisches Integral von x^3 von 0 bis 2: %lf\n", integralXCubed);
-
-    // Test mit der Funktion e^{-x} von 0 bis 1
-    double integralExpNegX = integrate(expNegX, 0, 1, 0.0000001);
-    printf("Numerisches Integral von e^{-x} von 0 bis 1: %lf\n", integralExpNegX);
-
-    // Test mit der Funktion cos(x) von 0 bis PI
-    double integralCosX = integrate(cosX, 0, M_PI, 0.0000001);
-    printf("Numerisches Integral von cos(x) von 0 bis PI: %lf\n", integralCosX);
-
-    // Test mit der Funktion sin(x) von 0 bis PI
-    double integralSinX = integrate(sinX, 0, M_PI, 0.0000001);
-    printf("Numerisches Integral von sin(x) von 0 bis PI: %lf\n", integralSinX);
-
-    // Test mit der Funktion sqrt(x) von 1 bis 4
-    double integralSqrtX = integrate(sqrtX, 1, 4, 0.0000001);
-    printf("Numerisches Integral von sqrt(x) von 1 bis 4: %lf\n", integralSqrtX);
-
-
     return 0;
 }*/
 #ifdef __cplusplus
