@@ -84,6 +84,18 @@ abstract class AbstractDifferentiatorTesting {
 	}
 
 	@Test
+	void testDifferentiate6() {
+		double[] arg = new double[1];
+		arg[0] = 1;
+		Function<double[],Double> f = (x)-> sin(x[0]);
+		double beforeDifferentiate = f.apply(arg);
+		double afterDifferentiate = differentiator.differentiate(f,arg,delta);
+		double[] argI = new double[]{0, afterDifferentiate};
+		f = (x)-> cos(x[0]);
+		double afterIntegrate = integrator.integrate(f, argI, delta);
+		assertEquals(beforeDifferentiate,afterIntegrate,delta);
+	}
+	@Test
 	void testDifferentiate2() {
 		double[] arg = new double[1];
 		Function<double[],Double> f = (x)-> Math.random();
