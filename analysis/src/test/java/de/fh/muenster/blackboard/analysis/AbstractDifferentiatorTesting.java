@@ -101,7 +101,8 @@ abstract class AbstractDifferentiatorTesting {
 		visitor = new DerivativeVisitor();
 		blackboard = Blackboard.getInstance();
 		String task = String.format("sin'(%.8f)", 2.0);
-		double returned = blackboard.answer(Double.class ,task);
+		Function<double[], Double> temp = blackboard.answer(Function.class, task);
+		double returned = temp.apply(new double[]{2.0});
 		Function<double[], Double> f = (x) -> (x[0]);
 		double expected = differentiator.differentiate(f, new double[]{2.0}, delta);
 		assertEquals(expected,returned, delta);
