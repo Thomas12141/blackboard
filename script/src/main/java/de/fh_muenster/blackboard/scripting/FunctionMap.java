@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class FunctionMap {
 
-    static Map<String, FunctionNode> functions = new HashMap<String, FunctionNode>();
+    public static Map<String, FunctionNode> functions = new HashMap<String, FunctionNode>();
 
     static FunctionNode solvingNow;
 
